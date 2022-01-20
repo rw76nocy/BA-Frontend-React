@@ -1,25 +1,85 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { Routes, Route, Link} from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import AuthService from "./services/auth.service";
+
+import Home from "./components/home.component";
+
+
+import Login from "./components/login.component";
+import Register from "./components/register.component";
+import Profile from "./components/profile.component";
+import BoardUser from "./components/board-user.component";
+import BoardModerator from "./components/board-moderator.component";
+import BoardAdmin from "./components/board-admin.component";
+import NavBar from './components/navigation-bar.component';
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.logOut = this.logOut.bind(this);
+
+        this.state = {
+            showModeratorBoard: false,
+            showAdminBoard: false,
+            currentUser: undefined,
+        };
+    }
+
+    componentDidMount() {
+        const user = AuthService.getCurrentUser();
+
+        if (user) {
+            this.setState({
+                currentUser: user,
+                showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
+                showAdminBoard: user.roles.includes("ROLE_ADMIN"),
+            });
+        }
+    }
+
+    logOut() {
+        AuthService.logout();
+    }
+
+    render() {
+        const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+
+        return (
+            <div>
+                <NavBar
+                    currentUser={currentUser}
+                    showModeratorBoard={showModeratorBoard}
+                    showAdminBoard={showAdminBoard}
+                />
+
+                <div>
+                    <Routes>
+                        <Route path="/home" element={<Home/>} />
+                        <Route path="login" element={<Login/>} />
+                        <Route
+                            path="register"
+                            element={
+                                <Register
+                                    showModeratorBoard={showModeratorBoard}
+                                    showAdminBoard={showAdminBoard}
+                                />
+                            }
+                        />
+                        <Route path="living_group" element={<BoardAdmin/>} />
+                        <Route path="children" element={<Profile/>} />
+                        <Route path="profile" element={<Profile/>} />
+                        <Route path="appointment" element={<BoardUser/>} />
+                        <Route path="record" element={<BoardUser/>} />
+                        <Route path="employees" element={<BoardModerator/>} />
+                    </Routes>
+                </div>
+
+            </div>
+        );
+    }
 }
 
 export default App;
