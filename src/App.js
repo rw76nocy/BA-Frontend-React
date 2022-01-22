@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Routes, Route, Link} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -16,70 +16,55 @@ import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
 import NavBar from './components/navigation-bar.component';
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.logOut = this.logOut.bind(this);
+export default function App() {
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showAdminBoard, setShowAdminBoard] = useState(false);
 
-        this.state = {
-            showModeratorBoard: false,
-            showAdminBoard: false,
-            currentUser: undefined,
-        };
-    }
+    useEffect(() => {
+        setCurrentUser(AuthService.getCurrentUser());
 
-    componentDidMount() {
-        const user = AuthService.getCurrentUser();
-
-        if (user) {
-            this.setState({
-                currentUser: user,
-                showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-                showAdminBoard: user.roles.includes("ROLE_ADMIN"),
-            });
+        if (currentUser) {
+            if (currentUser.roles){
+                setShowModeratorBoard(currentUser.roles.includes("ROLE_MODERATOR"))
+                setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
+            } else {
+                setShowModeratorBoard(false);
+                setShowAdminBoard(false);
+            }
         }
-    }
+    })
 
-    logOut() {
-        AuthService.logout();
-    }
+    return (
+        <div>
+            <NavBar
+                currentUser={currentUser}
+                showModeratorBoard={showModeratorBoard}
+                showAdminBoard={showAdminBoard}
+            />
 
-    render() {
-        const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
-
-        return (
             <div>
-                <NavBar
-                    currentUser={currentUser}
-                    showModeratorBoard={showModeratorBoard}
-                    showAdminBoard={showAdminBoard}
-                />
-
-                <div>
-                    <Routes>
-                        <Route path="/home" element={<Home/>} />
-                        <Route path="login" element={<Login/>} />
-                        <Route
-                            path="register"
-                            element={
-                                <Register
-                                    showModeratorBoard={showModeratorBoard}
-                                    showAdminBoard={showAdminBoard}
-                                />
-                            }
-                        />
-                        <Route path="living_group" element={<BoardAdmin/>} />
-                        <Route path="children" element={<Profile/>} />
-                        <Route path="profile" element={<Profile/>} />
-                        <Route path="appointment" element={<BoardUser/>} />
-                        <Route path="record" element={<BoardUser/>} />
-                        <Route path="employees" element={<BoardModerator/>} />
-                    </Routes>
-                </div>
-
+                <Routes>
+                    <Route path="/home" element={<Home/>} />
+                    <Route path="login" element={<Login/>} />
+                    <Route
+                        path="register"
+                        element={
+                            <Register
+                                showModeratorBoard={showModeratorBoard}
+                                showAdminBoard={showAdminBoard}
+                            />
+                        }
+                    />
+                    <Route path="living_group" element={<BoardAdmin/>} />
+                    <Route path="children" element={<Profile/>} />
+                    <Route path="profile" element={<Profile/>} />
+                    <Route path="appointment" element={<BoardUser/>} />
+                    <Route path="record" element={<BoardUser/>} />
+                    <Route path="employees" element={<BoardModerator/>} />
+                </Routes>
             </div>
-        );
-    }
-}
 
-export default App;
+        </div>
+    );
+}
