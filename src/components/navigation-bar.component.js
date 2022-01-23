@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, Route, Routes} from "react-router-dom";
+import {Link} from "react-router-dom";
 import "../style/navigation-bar.component.css";
 import Home from "./home.component";
 import Login from "./login.component";
@@ -11,28 +11,34 @@ import BoardAdmin from "./board-admin.component";
 
 import AuthService from "../services/auth.service";
 
-function Navbar(props) {
-    const [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser);
-    const [showModeratorBoard, setShowModeratorBoard] = useState(props.showModeratorBoard);
-    const [showAdminBoard, setShowAdminBoard] = useState(props.showAdminBoard);
+function Navbar() {
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showAdminBoard, setShowAdminBoard] = useState(false);
+
+    useEffect(() => {
+        setCurrentUser(AuthService.getCurrentUser());
+    }, [])
 
     useEffect(() => {
         // on component update: refresh roles if user exist
         if (currentUser) {
-            if (currentUser.roles){
-                setShowModeratorBoard(currentUser.roles.includes("ROLE_MODERATOR"))
-                setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
-            } else {
-                setShowModeratorBoard(false);
-                setShowAdminBoard(false);
+            let roles = [];
+            roles = currentUser.roles;
+            if (roles) {
+                setShowModeratorBoard(roles.includes("ROLE_MODERATOR"))
+                setShowAdminBoard(roles.includes("ROLE_ADMIN"));
             }
+        } else {
+            setShowModeratorBoard(false);
+            setShowAdminBoard(false);
         }
-    })
+    }, [currentUser])
 
     const logout = () => {
         //clear user from local storage
         AuthService.logout();
-        setCurrentUser(null);
+        setCurrentUser(undefined);
         setShowModeratorBoard(false);
         setShowAdminBoard(false);
     }
@@ -46,17 +52,17 @@ function Navbar(props) {
                         <div>
                             {showAdminBoard ?
                                 <li>
-                                    <a href="#">WG-Administrierung</a>
+                                    <div>WG-Administrierung</div>
                                 </li>
                                 :
                                 <li>
-                                    <a href="#">Wohngruppe: Phoenix</a>
+                                    <div>Wohngruppe: Phoenix</div>
                                 </li>
                             }
                         </div>
                         :
                         <li>
-                            <a href="#">WG-Manager</a>
+                            <div>WG-Manager</div>
                         </li>
                     }
 

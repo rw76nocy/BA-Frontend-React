@@ -15,9 +15,6 @@
 
 .left li {
     display: inline-block;
-}
-
-.left li a {
     cursor: default;
     text-decoration: none;
     font-size: 18px;
@@ -44,7 +41,6 @@
 }
 
 .right {
-    /*text-align: center;*/
     display: inline-block;
     width: 15%;
     border-left: black solid 4px;

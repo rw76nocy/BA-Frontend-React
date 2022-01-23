@@ -7,7 +7,6 @@ import AuthService from "./services/auth.service";
 
 import Home from "./components/home.component";
 
-
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
@@ -17,32 +16,12 @@ import BoardAdmin from "./components/board-admin.component";
 import NavBar from './components/navigation-bar.component';
 
 export default function App() {
-    const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
 
-    useEffect(() => {
-        setCurrentUser(AuthService.getCurrentUser());
-
-        if (currentUser) {
-            if (currentUser.roles){
-                setShowModeratorBoard(currentUser.roles.includes("ROLE_MODERATOR"))
-                setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
-            } else {
-                setShowModeratorBoard(false);
-                setShowAdminBoard(false);
-            }
-        }
-    })
-
     return (
         <div>
-            <NavBar
-                currentUser={currentUser}
-                showModeratorBoard={showModeratorBoard}
-                showAdminBoard={showAdminBoard}
-            />
-
+            <NavBar/>
             <div>
                 <Routes>
                     <Route path="/home" element={<Home/>} />
