@@ -14,11 +14,9 @@ import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
 import NavBar from './components/navigation-bar.component';
+import LivingGroup from "./components/living-group.component";
 
 export default function App() {
-    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
-    const [showAdminBoard, setShowAdminBoard] = useState(false);
-
     return (
         <div>
             <NavBar/>
@@ -26,16 +24,8 @@ export default function App() {
                 <Routes>
                     <Route path="/home" element={<Home/>} />
                     <Route path="login" element={<Login/>} />
-                    <Route
-                        path="register"
-                        element={
-                            <Register
-                                showModeratorBoard={showModeratorBoard}
-                                showAdminBoard={showAdminBoard}
-                            />
-                        }
-                    />
-                    <Route path="living_group" element={<BoardAdmin/>} />
+                    <Route path="register" element={<Register/>} />
+                    <Route path="living_group" element={<LivingGroup/>} />
                     <Route path="children" element={<Profile/>} />
                     <Route path="profile" element={<Profile/>} />
                     <Route path="appointment" element={<BoardUser/>} />
