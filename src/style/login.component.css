@@ -1,7 +1,7 @@
 .login-container {
     max-width: 350px !important;
     padding: 40px 40px;
-    background-color: beige;
+    background-color: #ffc38d;
     border-radius: 10px;
     margin: 0 auto 25px;
     margin-top: 50px;
@@ -33,15 +33,15 @@
     border-radius: .25rem
 }
 
-.label {
+.login-label {
     width: 100%;
 }
 
-.input {
+.login-input {
     width: 100%;
 }
 
-.submit {
+.login-submit {
     font-size: 24px;
     font-weight: bold;
     border-radius: 30px;

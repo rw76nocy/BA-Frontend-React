@@ -4,7 +4,7 @@ import '../style/login.component.css';
 
 import AuthService from "../services/auth.service";
 
-export default function Login(props) {
+export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -88,19 +88,19 @@ export default function Login(props) {
 
             <div className="login-panel">
                 <span className="login-row">
-                    <label className="label" htmlFor="username"><b>Benutzername</b></label>
-                    <input className="input" name="username" id="username" type="text" onChange={onChangeUsername}/>
+                    <label className="login-label" htmlFor="username"><b>Benutzername</b></label>
+                    <input className="login-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
                     <span style={{ color: "red" }}>{userInvalid}</span>
                 </span>
                 <span className="login-row">
-                    <label className="label" htmlFor="password"><b>Passwort</b></label>
-                    <input className="input" name="password" id="password" type="password" onChange={onChangePassword}/>
+                    <label className="login-label" htmlFor="password"><b>Passwort</b></label>
+                    <input className="login-input" name="password" id="password" type="password" onChange={onChangePassword}/>
                     <span style={{ color: "red" }}>{passInvalid}</span>
                 </span>
             </div>
 
             <div className="button-row">
-                <button type="button" className="submit" onClick={handleLogin}>Anmelden</button>
+                <button type="button" className="login-submit" onClick={handleLogin}>Anmelden</button>
             </div>
 
             {message && (
