@@ -8,26 +8,31 @@ import LivingGroups from '../services/living.group.service';
 export default function LivingGroup() {
 
     const [lgName, setLgName] = useState("");
-    const [lgNameInvalid, setLgNameInvalid] = useState("");
+    const [messageInvalid, setMessageInvalid] = useState("");
     const [message, setMessage] = useState("");
     const [tableData, setTableData] = useState([]);
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
+    const fetchData = () => {
+        LivingGroups.getLivingGroups().then(response => {
+            setTableData(response.data);
+        });
+    }
 
     const onChangeLgName = (e) => {
         setLgName(e.target.value);
     }
 
-    useEffect(() => {
-        LivingGroups.getLivingGroups().then(response => {
-            setTableData(response.data);
-        });
-    }, [])
-
     const validate = () => {
         if (lgName) {
-            setLgNameInvalid("");
+            setMessageInvalid("");
             return true;
         } else {
-            setLgNameInvalid("Name der Wohngruppe darf nicht leer sein!");
+            setMessageInvalid("Name der Wohngruppe darf nicht leer sein!");
+            setMessage("");
             return false;
         }
     }
@@ -37,7 +42,9 @@ export default function LivingGroup() {
             LivingGroups.addLivingGroup(lgName).then(
                 response => {
                     setMessage(response.data.message);
-                    window.location.reload();
+                    setMessageInvalid("");
+                    setLgName("");
+                    fetchData();
                 },
                 error => {
                     const resMessage =
@@ -46,17 +53,17 @@ export default function LivingGroup() {
                             error.response.data.message) ||
                         error.message ||
                         error.toString();
-                    setMessage(resMessage);
+                    setMessageInvalid(resMessage);
                 });
         }
     }
 
     const onDeleteClick = (e) => {
-        console.log("ID: "+e.target.value);
         LivingGroups.deleteLivingGroup(e.target.value).then(
             response => {
                 setMessage(response.data.message)
-                window.location.reload();
+                setMessageInvalid("");
+                fetchData();
             },
             error => {
                 const resMessage =
@@ -65,7 +72,7 @@ export default function LivingGroup() {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
-                setMessage(resMessage);
+                setMessageInvalid(resMessage);
             })
     }
 
@@ -114,7 +121,7 @@ export default function LivingGroup() {
                 <button type="button" className="submit" onClick={onCreate}>Anlegen</button>
             </div>
             <div>
-                <span style={{color: "red", width: "100%"}}>{lgNameInvalid}</span>
+                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
             </div>
             <div>
                 <span style={{color: "green", width: "100%"}}>{message}</span>
