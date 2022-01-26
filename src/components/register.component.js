@@ -1,12 +1,163 @@
-import React, { Component } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import { isEmail } from "validator";
+import React, {useEffect, useState} from "react";
+import '../style/register.component.css';
 
 import AuthService from "../services/auth.service";
+import {useNavigate} from "react-router-dom";
+import LivingGroups from "../services/living.group.service";
 
-const required = value => {
+export default function Register() {
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showAdminBoard, setShowAdminBoard] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [role, setRole] = useState("user");
+    const [livingGroup, setLivingGroup] = useState("");
+    const [livingGroups, setLivingGroups] = useState([]);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [userInvalid, setUserInvalid] = useState("");
+    const [passInvalid, setPassInvalid] = useState("");
+    const [passConfirmInvalid, setPassConfirmInvalid] = useState("");
+    const [successful, setSuccessful] = useState(false);
+    const [message, setMessage] = useState("");
+    const navigate = useNavigate();
+
+    const fetchLivingGroups = () => {
+        LivingGroups.getLivingGroups().then(response => {
+            setLivingGroups(response.data);
+            if (response.data[0]) {
+                setLivingGroup(response.data[0].name);
+            }
+        });
+    }
+
+    useEffect(() => {
+        setCurrentUser(AuthService.getCurrentUser());
+        fetchLivingGroups();
+    }, [])
+
+    useEffect(() => {
+        // on component update: refresh roles if user exist
+        if (currentUser) {
+            let roles = [];
+            roles = currentUser.roles;
+            if (roles) {
+                setShowModeratorBoard(roles.includes("ROLE_MODERATOR"))
+                setShowAdminBoard(roles.includes("ROLE_ADMIN"));
+            }
+        } else {
+            setShowModeratorBoard(false);
+            setShowAdminBoard(false);
+        }
+    }, [currentUser])
+
+    const onChangeRole = (e) => {
+        setRole(e.target.value);
+    }
+
+    const onChangeLivingGroup = (e) => {
+        setLivingGroup(e.target.value);
+        console.log(e.target.value);
+    }
+
+    const onChangeUsername = (e) => {
+        setUsername(e.target.value);
+    }
+
+    const onChangePassword = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const onChangePasswordConfirm = (e) => {
+        setPasswordConfirm(e.target.value);
+    }
+
+    const validate = () => {
+
+    }
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        console.log(role);
+        console.log(livingGroup);
+        console.log(username);
+        console.log(password);
+        console.log(passwordConfirm);
+    }
+
+    return (
+        <div className="register-container">
+
+            <div className="title">
+                <h1><u>Registrierung</u></h1>
+            </div>
+
+            <div className="register-panel">
+                <span className="register-row">
+                    <label className="register-label" htmlFor="role"><b>Rolle</b></label>
+                    {showAdminBoard ?
+                        <select onChange={onChangeRole} className="register-select" id="role" name="role">
+                            <option value="mod">Teamleiter</option>
+                            <option value="user">Mitarbeiter</option>
+                        </select>
+                        :
+                        <select onChange={onChangeRole} className="register-select" id="role" name="role">
+                            <option value="user">Mitarbeiter</option>
+                        </select>
+                    }
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="livingGroup"><b>Wohngruppe</b></label>
+                    {livingGroups.length > 0 ?
+                        <select onChange={onChangeLivingGroup} className="register-select" id="livingGroup" name="livingGroup">
+                            {livingGroups.map((lg) => (
+                                <option key={lg.id} value={lg.name}>{lg.name}</option>
+                            ))}
+                        </select>
+                        :
+                        <select onChange={onChangeLivingGroup} className="register-select" id="livingGroup" name="livingGroup">
+                            <option key="0" value="keine">keine</option>
+                        </select>
+                    }
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="username"><b>Benutzername</b></label>
+                    <input className="register-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
+                    <span style={{ color: "red" }}>{userInvalid}</span>
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="password"><b>Passwort</b></label>
+                    <input className="register-input" name="password" id="password" type="password" onChange={onChangePassword}/>
+                    <span style={{ color: "red" }}>{passInvalid}</span>
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="passwordConfirm"><b>Passwort bestätigen</b></label>
+                    <input className="register-input" name="passwordConfirm" id="passwordConfirm" type="password" onChange={onChangePasswordConfirm}/>
+                    <span style={{ color: "red" }}>{passConfirmInvalid}</span>
+                </span>
+            </div>
+
+            <div className="button-row">
+                <button type="button" className="register-submit" onClick={handleLogin}>Registrieren</button>
+            </div>
+
+            {message && (
+                <div className="alert-row">
+                    <div>
+                        {message}
+                    </div>
+                </div>
+            )}
+
+        </div>
+    );
+
+}
+
+
+/*const required = value => {
     if (!value) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -205,7 +356,7 @@ export default class Register extends Component {
             </div>
         );
     }
-}
+}*/
 
 /*<div className="login-container">
 
