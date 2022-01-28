@@ -1,0 +1,116 @@
+.employees-container {
+    max-width: 1920px !important;
+    padding: 40px 40px;
+    background-color: #ffc38d;
+    border-radius: 10px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+}
+
+.employees-create-panel {
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.employees-create-column-left {
+    display: inline-block;
+    width: 48%;
+}
+
+.employees-create-column-right {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.employees-button-row-reset {
+    margin-left: 20px;
+}
+
+.employees-row {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.employees-gender-lg-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.employees-address-row {
+    display: inline-block;
+    width: 100%;
+}
+
+.employees-address-street {
+    width: 30%;
+}
+
+.employees-address-number {
+    width: 15%;
+    margin-left: 4%;
+}
+
+.employees-address-zipcode {
+    width: 15%;
+    margin-left: 4%;
+}
+
+.employees-address-city {
+    width: 28%;
+    margin-left: 4%;
+}
+
+.employees-gender-label {
+    width: 100%;
+}
+
+.employees-gender-select {
+
+}
+
+.employees-lg-label {
+    width: 100%;
+}
+
+.employees-lg-select {
+
+}
+
+.employees-gender-row {
+    display: inline-block;
+    width: 50%;
+}
+
+.employees-lg-row {
+    display: inline-block;
+    width: 50%;
+}
+
+.employees-label {
+    width: 100%;
+}
+
+.employees-input {
+    width: 100%;
+}
+
+.employees-submit-row {
+    /*background-color: white;*/
+}
+
+.employees-submit {
+    width: 14%;
+    margin-left: 43%;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    background-color: lightgrey;
+}
+
+.employees-action-cell {
+    margin-left: 10px;
+}

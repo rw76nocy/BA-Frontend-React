@@ -21,7 +21,7 @@ class AuthService {
         localStorage.removeItem("user");
     }
 
-    //TODO neue Parameter: username, password, role, living group --- email ausbauen
+    //TODO neue Parameter: username, password, role, living group
     register(username, email, password) {
         return axios.post(API_URL + "signup", {
             username,

@@ -10,6 +10,7 @@ import Register from "./components/register.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
+import Employees from './components/employees.component';
 import NavBar from './components/navigation-bar.component';
 import LivingGroup from "./components/living-group.component";
 
@@ -27,7 +28,7 @@ export default function App() {
                     <Route path="profile" element={<Profile/>} />
                     <Route path="appointment" element={<BoardUser/>} />
                     <Route path="record" element={<BoardUser/>} />
-                    <Route path="employees" element={<BoardModerator/>} />
+                    <Route path="employees" element={<Employees/>} />
                 </Routes>
             </div>
 
