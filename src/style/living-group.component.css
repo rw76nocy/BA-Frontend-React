@@ -14,16 +14,16 @@
     display: inline-block;
 }
 
-.label {
+.living-group-label {
     width: 20%;
 }
 
-.input {
+.living-group-input {
     width: 59%;
     margin-left: 1%;
 }
 
-.submit {
+.living-group-submit {
     width: 15%;
     margin-left: 5%;
     font-size: 20px;
@@ -32,6 +32,6 @@
     background-color: lightgrey;
 }
 
-.cell {
+.living-group-cell {
     margin-left: 10px;
 }

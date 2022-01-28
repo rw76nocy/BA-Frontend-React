@@ -93,7 +93,7 @@ export default function LivingGroup() {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: cell => (
-                    <input className="cell"
+                    <input className="living-group-cell"
                            style={{height: 25, width: 25}}
                            type="image"
                            value={cell.row.values.id}
@@ -116,9 +116,9 @@ export default function LivingGroup() {
                 <h1><u>Wohngruppe anlegen</u></h1>
             </div>
             <div className="living-group-create-panel">
-                <label className="label" htmlFor="lgname"><b>Name der Wohngruppe</b></label>
-                <input className="input" value={lgName} id="lgname" type="text" onChange={onChangeLgName}/>
-                <button type="button" className="submit" onClick={onCreate}>Anlegen</button>
+                <label className="living-group-label" htmlFor="lgname"><b>Name der Wohngruppe</b></label>
+                <input className="living-group-input" value={lgName} id="lgname" type="text" onChange={onChangeLgName}/>
+                <button type="button" className="living-group-submit" onClick={onCreate}>Anlegen</button>
             </div>
             <div>
                 <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
@@ -126,11 +126,6 @@ export default function LivingGroup() {
             <div>
                 <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
-            {/*{tableData.map((lg) => (
-                <div key={lg.id}>
-                    <span style={{color: "green", width: "100%"}}>{lg.id + ':' +lg.name}</span>
-                </div>
-            ))}*/}
             <div className="title">
                 <h1><u>Übersicht Wohngruppen </u></h1>
             </div>
