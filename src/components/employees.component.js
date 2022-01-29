@@ -2,12 +2,15 @@ import React, { useEffect, useState, useMemo } from "react";
 import '../style/employees.component.css';
 import EditTable from "./edit.table.component";
 import CreateEmployees from "./employees.create.component";
+import LivingGroups from '../services/living.group.service';
 import EmployeesService from '../services/employees.service';
 import Trash from "../icons/trash.svg";
+import moment from 'moment';
 
 export default function Employees() {
     const [data, setData] = useState([]);
     const [originalData, setOriginalData] = useState([]);
+    const [livingGroups, setLivingGroups] = useState([]);
 
     useEffect(() => {
         fetchData();
@@ -15,6 +18,10 @@ export default function Employees() {
     
     //set data from database
     const fetchData = () => {
+        LivingGroups.getLivingGroups().then(response => {
+           setLivingGroups(response.data);
+        });
+
         EmployeesService.getEmployees().then(response => {
             setData(response.data);
         });
@@ -99,6 +106,16 @@ export default function Employees() {
         setData( temp_state );
     }
 
+    const onChangeLivingGroup = (e,rowIndex) => {
+        let temp_state = [...data];
+        let temp_element = { ...temp_state[rowIndex] };
+        let livingGroup = temp_element.livingGroup;
+        livingGroup.id = "";
+        livingGroup.name = e.target.value;
+        temp_state[rowIndex] = temp_element;
+        setData( temp_state );
+    }
+
     //update if cell value changed
     const updateMyData = (rowIndex, columnId, value) => {
         setData(old =>
@@ -143,7 +160,10 @@ export default function Employees() {
                 width: 100,
                 Header: "Geburtstag",
                 accessor: "birthday",
-                Cell: ({ value }) => String(value),
+                Cell: ({ value }) => {
+                    let formatedDate = moment(value).format("DD.MM.YYYY")
+                    return String(formatedDate);
+                },
                 cellWidth: 100,
             },
             {
@@ -217,7 +237,13 @@ export default function Employees() {
                 width: 200,
                 Header: "Wohngruppe",
                 accessor: "livingGroup.name",
-                Cell: ({value}) => String(value),
+                Cell: ({value, row}) => (
+                    <select defaultValue={value} onChange={(e) => onChangeLivingGroup(e, row.index)} >
+                        {livingGroups.map((lg) => (
+                            <option key={lg.id} value={lg.name}>{lg.name}</option>
+                        ))}
+                    </select>
+                ),
                 cellWidth: 200,
             },
             {

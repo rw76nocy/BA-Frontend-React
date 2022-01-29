@@ -95,9 +95,9 @@ export default function CreateEmployees() {
                         <div className="employees-gender-row">
                             <label className="employees-gender-label" htmlFor="gender"><b>Geschlecht*</b></label>
                                 <select onChange={onChangeGender} className="employees-gender-select" id="gender" name="gender">
-                                    <option value="MALE">Mann</option>
-                                    <option value="FEMALE">Frau</option>
-                                    <option value="DIVERSE">Divers</option>
+                                    <option value="m">Mann( m )</option>
+                                    <option value="w">Frau( w )</option>
+                                    <option value="d">Divers( d )</option>
                                 </select>
                         </div>
                         <div className="employees-lg-row">
