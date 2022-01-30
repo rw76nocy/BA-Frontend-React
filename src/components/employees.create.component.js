@@ -3,8 +3,8 @@ import '../style/employees.component.css';
 import EmployeesService from '../services/employees.service';
 import LivingGroups from "../services/living.group.service";
 
-export default function CreateEmployees() {
-    const [gender, setGender] = useState("MALE");
+export default function CreateEmployees({reloadTable}) {
+    const [gender, setGender] = useState("m");
     const [livingGroup, setLivingGroup] = useState("");
     const [livingGroups, setLivingGroups] = useState([]);
     const [firstname, setFirstname] = useState("");
@@ -16,7 +16,9 @@ export default function CreateEmployees() {
     const [city, setCity] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
+    const [fax, setFax] = useState("");
 
+    const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
 
@@ -73,16 +75,89 @@ export default function CreateEmployees() {
         setEmail(e.target.value);
     }
 
+    const clearInput = () => {
+        setFirstname("");
+        setLastname("");
+        setBirthday("");
+        setStreet("");
+        setNumber("");
+        setZipcode("");
+        setCity("");
+        setPhone("");
+        setEmail("");
+    }
+
+    const validate = () => {
+        setErrors([]);
+
+        if (errors.length === 0) {
+            console.log("Error Array ist hier noch leer");
+        }
+
+        if (firstname === "") {
+            errors.push("Vorname darf nicht leer sein!");
+        }
+
+        if (lastname === "") {
+            errors.push("Nachname darf nicht leer sein!");
+        }
+
+        if (birthday === "") {
+            errors.push("Geburtstag darf nicht unvollständig sein!");
+        }
+
+        if (street === "" || number === "" || zipcode === "" || city === "") {
+            errors.push("Adresse darf nicht unvollständig sein!");
+        }
+
+        if (phone === "") {
+            errors.push("Telefon darf nicht leer sein!");
+        }
+
+        if (errors.length !== 0) {
+            setMessageInvalid(JSON.stringify(errors));
+            return false;
+        } else {
+            setMessageInvalid("");
+            return true;
+        }
+    }
+
     const onCreate = () => {
-        console.log(gender);
-        console.log(livingGroup);
-        console.log(firstname);
-        console.log(lastname);
-        console.log(birthday);
-        console.log(street + ' ' + number + ', ' + zipcode + ' ' + city);
-        console.log(phone);
-        console.log(email);
-        //TODO hier dann employees add service
+        if (validate()) {
+            console.log("Alle Eingaben sind gültig!");
+
+            let name = firstname + ' ' + lastname;
+            console.log(name);
+
+            let address = {};
+            address.street = street;
+            address.number = number;
+            address.zipCode = zipcode;
+            address.city = city;
+
+            let lg = {};
+            lg.name = livingGroup;
+
+            console.log(JSON.stringify(address));
+
+            EmployeesService.addEmployee(gender, name, phone, fax, email, birthday, address, lg).then(
+                response => {
+                    setMessage(response.data.message);
+                    setMessageInvalid("");
+                    clearInput();
+                    reloadTable();
+                },
+                error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    setMessageInvalid(resMessage);
+                });
+        }
     }
 
     return(
@@ -94,7 +169,7 @@ export default function CreateEmployees() {
                     <span className="employees-gender-lg-row">
                         <div className="employees-gender-row">
                             <label className="employees-gender-label" htmlFor="gender"><b>Geschlecht*</b></label>
-                                <select onChange={onChangeGender} className="employees-gender-select" id="gender" name="gender">
+                                <select value={gender} onChange={onChangeGender} className="employees-gender-select" id="gender" name="gender">
                                     <option value="m">Mann (m)</option>
                                     <option value="w">Frau (w)</option>
                                     <option value="d">Divers (d)</option>
@@ -103,7 +178,7 @@ export default function CreateEmployees() {
                         <div className="employees-lg-row">
                             <label className="employees-lg-label" htmlFor="gender"><b>Wohngruppe*</b></label>
                             {livingGroups.length > 0 ?
-                                <select onChange={onChangeLivingGroup} className="employees-lg-select" id="livingGroup" name="livingGroup">
+                                <select value={livingGroup} onChange={onChangeLivingGroup} className="employees-lg-select" id="livingGroup" name="livingGroup">
                                     {livingGroups.map((lg) => (
                                         <option key={lg.id} value={lg.name}>{lg.name}</option>
                                     ))}
@@ -118,17 +193,17 @@ export default function CreateEmployees() {
 
                     <span className="employees-row">
                         <label className="employees-label" htmlFor="firstname"><b>Vorname*</b></label>
-                        <input onChange={onChangeFirstname} className="employees-input" name="firstname" id="firstname" type="text" placeholder="Vorname"/>
+                        <input value={firstname} onChange={onChangeFirstname} className="employees-input" name="firstname" id="firstname" type="text" placeholder="Vorname"/>
                     </span>
 
                     <span className="employees-row">
                         <label className="employees-label" htmlFor="lastname"><b>Nachname*</b></label>
-                        <input onChange={onChangeLastname} className="employees-input" name="lastname" id="lastname" type="text" placeholder="Nachname"/>
+                        <input value={lastname} onChange={onChangeLastname} className="employees-input" name="lastname" id="lastname" type="text" placeholder="Nachname"/>
                     </span>
 
                     <span className="employees-row">
                         <label className="employees-label" htmlFor="birthday"><b>Geburtstag*</b></label>
-                        <input onChange={onChangeBirthday} className="employees-input" name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
+                        <input value={birthday} onChange={onChangeBirthday} className="employees-input" name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
                     </span>
 
                 </div>
@@ -138,21 +213,21 @@ export default function CreateEmployees() {
                     <span className="employees-row">
                         <label className="employees-label"><b>Adresse*</b></label>
                         <div className="employees-address-row">
-                            <input onChange={onChangeStreet} className="employees-address-street" name="address-street" id="address-street" type="text" placeholder="Straße"/>
-                            <input onChange={onChangeNumber} className="employees-address-number" name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
-                            <input onChange={onChangeZipcode} className="employees-address-zipcode" name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
-                            <input onChange={onChangeCity} className="employees-address-city" name="address-city" id="address-city" type="text" placeholder="Stadt"/>
+                            <input value={street} onChange={onChangeStreet} className="employees-address-street" name="address-street" id="address-street" type="text" placeholder="Straße"/>
+                            <input value={number} onChange={onChangeNumber} className="employees-address-number" name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
+                            <input value={zipcode} onChange={onChangeZipcode} className="employees-address-zipcode" name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
+                            <input value={city} onChange={onChangeCity} className="employees-address-city" name="address-city" id="address-city" type="text" placeholder="Stadt"/>
                         </div>
                     </span>
 
                     <span className="employees-row">
                         <label className="employees-label" htmlFor="phone"><b>Telefon*</b></label>
-                        <input onChange={onChangePhone} className="employees-input" name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                        <input value={phone} onChange={onChangePhone} className="employees-input" name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                     </span>
 
                     <span className="employees-row">
                         <label className="employees-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input onChange={onChangeEmail} className="employees-input" name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                        <input value={email} onChange={onChangeEmail} className="employees-input" name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>

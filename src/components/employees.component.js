@@ -12,6 +12,9 @@ export default function Employees() {
     const [originalData, setOriginalData] = useState([]);
     const [livingGroups, setLivingGroups] = useState([]);
 
+    const [message, setMessage] = useState("");
+    const [messageInvalid, setMessageInvalid] = useState("");
+
     useEffect(() => {
         fetchData();
     }, [])
@@ -32,10 +35,29 @@ export default function Employees() {
     }
 
     const onDeleteClick = (e) => {
-        /*alert("Are you sure?");*/
-        console.log(e.target.value);
-        printData();
-        printOriginalData();
+        let confirm = window.confirm("Bist du dir sicher?");
+        if (confirm) {
+            console.log(e.target.value);
+            EmployeesService.deleteEmployee(e.target.value).then(
+                response => {
+                    setMessage(response.data.message);
+                    setMessageInvalid("");
+                    fetchData();
+                },
+                error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    setMessage("");
+                    setMessageInvalid(resMessage);
+                });
+        } else {
+            console.log("Abbruch!");
+        }
+
     }
 
     //TODO Hier dann noch die Daten tatsächlich in der Datenbank ändern
@@ -158,7 +180,7 @@ export default function Employees() {
             },
             {
                 width: 100,
-                Header: "Geburtstag",
+                Header: "Geburtsdatum",
                 accessor: "birthday",
                 Cell: ({ value }) => {
                     let formatedDate = moment(value).format("DD.MM.YYYY")
@@ -254,7 +276,7 @@ export default function Employees() {
                     <input className="employees-action-cell"
                            style={{height: 25, width: 25}}
                            type="image"
-                           value={row.index}
+                           value={row.values.id}
                            src={Trash}
                            alt="löschen"
                            onClick={onDeleteClick}
@@ -266,6 +288,10 @@ export default function Employees() {
         [onDeleteClick]
    )
 
+    const reloadTable = () => {
+        fetchData();
+    }
+
     return (
         <div className="employees-container">
 
@@ -273,7 +299,7 @@ export default function Employees() {
                 <h1><u>Mitarbeiter anlegen</u></h1>
             </div>
 
-            <CreateEmployees/>
+            <CreateEmployees reloadTable={reloadTable}/>
 
             <div className="title">
                 <h1><u>Übersicht Mitarbeiter </u></h1>
@@ -287,6 +313,13 @@ export default function Employees() {
             <div className="employees-button-row">
                 <button className="employees-button-row-save" onClick={saveData}>Speichern</button>
                 <button className="employees-button-row-reset" onClick={resetData}>Zurücksetzen</button>
+            </div>
+
+            <div>
+                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
+            </div>
+            <div>
+                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
 
         </div>

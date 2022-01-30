@@ -11,29 +11,25 @@ class Employees {
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
-    addEmployee(gender, livingGroup, name, birthday, address, phone, email) {
+    addEmployee(gender, name, phone, fax, email, birthday, address, livingGroup) {
         return axios.post(
             API_URL + 'add',
             {
                 gender: gender,
-                livingGroup: livingGroup,
                 name: name,
+                phone: phone,
+                fax: fax,
+                email: email,
                 birthday: birthday,
                 address: address,
-                phone: phone,
-                email: email
+                livingGroup: livingGroup
             },
-            /*{gender, livingGroup, name, birthday, address, phone, email},*/
             { headers: authHeader() });
     }
 
-    /*addLivingGroup(name) {
-        return axios.post(API_URL + 'add', { name }, { headers : authHeader() });
-    }
-
-    deleteLivingGroup(id) {
+    deleteEmployee(id) {
         return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
-    }*/
+    }
 }
 
 export default new Employees();
