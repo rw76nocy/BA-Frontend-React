@@ -60,32 +60,79 @@ export default function Employees() {
 
     }
 
-    //TODO Hier dann noch die Daten tatsächlich in der Datenbank ändern
+    const validateRow = (e) => {
+        if (e.name === "") {
+            return false;
+        }
+
+        let address = e.address;
+
+        if (address.street === "") {
+            return false;
+        }
+
+        if (address.number === "") {
+            return false;
+        }
+
+        if (address.zipCode === "") {
+            return false;
+        }
+
+        if (address.city === "") {
+            return false;
+        }
+
+        if (e.phone === "") {
+            return false;
+        }
+
+        return true;
+    }
+
     const saveData = () => {
-        console.log('Save Data');
         setOriginalData(data);
+
+        {data.map((e) => {
+            if (validateRow(e)) {
+                EmployeesService.updateEmployee(
+                    e.id, e.gender, e.name, e.phone, e.fax, e.email, e.birthday, e.address, e.livingGroup)
+                    .then(response => {
+                            setMessage(response.data.message);
+                            setMessageInvalid("");
+                        }, error => {
+                            const resMessage =
+                                (error.response &&
+                                    error.response.data &&
+                                    error.response.data.message) ||
+                                error.message ||
+                                error.toString();
+                            setMessageInvalid(resMessage);
+                            setMessage("");
+                        }
+                    )
+            } else {
+                setMessageInvalid("Werte für Mitarbeiter-ID: "+e.id+" sind ungültig!");
+            }
+        })}
     }
 
     //reset to original data
     const resetData = () => {
-        console.log('Reset Data');
         EmployeesService.getEmployees().then(response => {
             setData(response.data);
+            setMessage("Erfolreich zurückgesetzt!")
+            setMessageInvalid("");
+        }, error => {
+            const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            setMessageInvalid(resMessage);
+            setMessage("");
         });
-    }
-
-    const printData = () => {
-        console.log('Data: ');
-        {data.map((obj) => {
-            return console.log('object: ' + JSON.stringify(obj));
-        })}
-    }
-
-    const printOriginalData = () => {
-        console.log('Original: ');
-        {originalData.map((obj) => {
-            return console.log('object: ' + JSON.stringify(obj));
-        })}
     }
 
     const onBlurStreet = (e,rowIndex) => {
