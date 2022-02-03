@@ -22,11 +22,13 @@ class AuthService {
     }
 
     //TODO neue Parameter: username, password, role, living group
-    register(username, email, password) {
+    register(username, email, password, roles, employeeId) {
         return axios.post(API_URL + "signup", {
             username,
             email,
-            password
+            password,
+            roles,
+            employeeId
         });
     }
 

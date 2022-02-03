@@ -2,39 +2,61 @@ import React, {useEffect, useState} from "react";
 import '../style/register.component.css';
 
 import AuthService from "../services/auth.service";
-import {useNavigate} from "react-router-dom";
 import LivingGroups from "../services/living.group.service";
+import Employees from "../services/employees.service";
 
 export default function Register() {
     const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [role, setRole] = useState("user");
     const [livingGroup, setLivingGroup] = useState("");
     const [livingGroups, setLivingGroups] = useState([]);
+    const [employee, setEmployee] = useState("");
+    const [employees, setEmployees] = useState([]);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [email, setEmail] = useState("");
+    const [livingGroupInvalid, setLivingGroupInvalid] = useState("");
+    const [employeeInvalid, setEmployeeInvalid] = useState("");
     const [userInvalid, setUserInvalid] = useState("");
     const [passInvalid, setPassInvalid] = useState("");
     const [passConfirmInvalid, setPassConfirmInvalid] = useState("");
-    const [successful, setSuccessful] = useState(false);
+    const [emailInvalid, setEmailInvalid] = useState("");
     const [message, setMessage] = useState("");
-    const navigate = useNavigate();
+    const [messageInvalid, setMessageInvalid] = useState("");
+    const [errors, setErrors] = useState([]);
+    const [roles, setRoles] = useState([]);
 
-    const fetchLivingGroups = () => {
-        LivingGroups.getLivingGroups().then(response => {
-            setLivingGroups(response.data);
+    const fetchEmployees = (livingGroup) => {
+        Employees.getEmployeesByLivingGroupWithoutAccount(livingGroup).then(response => {
+            setEmployees(response.data);
             if (response.data[0]) {
-                setLivingGroup(response.data[0].name);
+                setEmployee(response.data[0].id);
+            } else {
+                setEmployee("");
             }
         });
     }
 
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
-        fetchLivingGroups();
+
+        LivingGroups.getLivingGroups().then(response => {
+            setLivingGroups(response.data);
+            if (response.data[0]) {
+                setLivingGroup(response.data[0].name);
+                Employees.getEmployeesByLivingGroupWithoutAccount(response.data[0].name).then(response => {
+                    setEmployees(response.data);
+                    if (response.data[0]) {
+                        setEmployee(response.data[0].id);
+                    } else {
+                        setEmployee("");
+                    }
+                });
+            }
+        });
     }, [])
 
     useEffect(() => {
@@ -58,6 +80,12 @@ export default function Register() {
 
     const onChangeLivingGroup = (e) => {
         setLivingGroup(e.target.value);
+        fetchEmployees(e.target.value);
+        console.log(e.target.value);
+    }
+
+    const onChangeEmployee = (e) => {
+        setEmployee(e.target.value);
         console.log(e.target.value);
     }
 
@@ -73,18 +101,111 @@ export default function Register() {
         setPasswordConfirm(e.target.value);
     }
 
-    const validate = () => {
-
+    const onChangeEmail = (e) => {
+        setEmail(e.target.value);
     }
 
-    const handleLogin = (e) => {
+    const validate = () => {
+        setErrors([]);
+        setRoles([]);
+        setMessage("");
+        setMessageInvalid("");
+        setLivingGroupInvalid("");
+        setEmployeeInvalid("");
+        setUserInvalid("");
+        setPassInvalid("");
+        setPassConfirmInvalid("");
+        setEmailInvalid("");
+
+        if (errors.length === 0) {
+            console.log("Error Array ist hier noch leer");
+        }
+
+        if (livingGroup === "") {
+            errors.push("Es muss eine Wohngruppe ausgewählt werden!");
+            setLivingGroupInvalid("Es muss eine Wohngruppe ausgewählt werden!");
+        }
+
+        if (employee === "") {
+            errors.push("Es muss ein Mitarbeiter ausgewählt werden!");
+            setEmployeeInvalid("Es muss ein Mitarbeiter ausgewählt werden!");
+        }
+
+        if (username === "") {
+            errors.push("Benutzername darf nicht leer sein!");
+            setUserInvalid("Benutzername darf nicht leer sein!");
+        }
+
+        if (password === "") {
+            errors.push("Passwort darf nicht leer sein!");
+            setPassInvalid("Passwort darf nicht leer sein!");
+        }
+
+        if (passwordConfirm === "") {
+            errors.push("Passwort bestätigen darf nicht leer sein!");
+            setPassConfirmInvalid("Passwort bestätigen darf nicht leer sein!");
+        }
+
+        if (password !== passwordConfirm) {
+            errors.push("Passwort und Bestätigung stimmen nicht überein");
+            setPassConfirmInvalid("Passwort und Bestätigung stimmen nicht überein");
+        }
+
+        if (email === "") {
+            errors.push("E-Mail-Adresse darf nicht leer sein!");
+            setEmailInvalid("E-Mail-Adresse darf nicht leer sein!");
+        }
+
+        if (errors.length !== 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    const clearInput = () => {
+        setUsername("");
+        setPassword("");
+        setPasswordConfirm("");
+        setEmail("");
+    }
+
+    const handleRegister = (e) => {
         e.preventDefault();
 
-        console.log(role);
-        console.log(livingGroup);
-        console.log(username);
-        console.log(password);
-        console.log(passwordConfirm);
+        if (validate()) {
+            console.log("Alle Eingabefelder sind gültig!");
+
+            console.log(role);
+            console.log(livingGroup);
+            console.log(employee);
+            console.log(username);
+            console.log(password);
+            console.log(passwordConfirm);
+            console.log(email);
+
+            roles.push(role);
+
+            AuthService.register(username, email, password, roles, employee).then(
+                response => {
+                    setMessage(response.data.message);
+                    setMessageInvalid("");
+                    fetchEmployees(livingGroup);
+                    clearInput();
+                },
+                error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    setMessageInvalid(resMessage);
+                    setMessage("");
+                });
+        } else {
+            console.log("Es gibt ungültige Felder!");
+        }
     }
 
     return (
@@ -98,12 +219,12 @@ export default function Register() {
                 <span className="register-row">
                     <label className="register-label" htmlFor="role"><b>Rolle</b></label>
                     {showAdminBoard ?
-                        <select onChange={onChangeRole} className="register-select" id="role" name="role">
+                        <select value={role} onChange={onChangeRole} className="register-select" id="role" name="role">
                             <option value="mod">Teamleiter</option>
                             <option value="user">Mitarbeiter</option>
                         </select>
                         :
-                        <select onChange={onChangeRole} className="register-select" id="role" name="role">
+                        <select value={role} onChange={onChangeRole} className="register-select" id="role" name="role">
                             <option value="user">Mitarbeiter</option>
                         </select>
                     }
@@ -121,284 +242,56 @@ export default function Register() {
                             <option key="0" value="keine">keine</option>
                         </select>
                     }
+                    <span style={{ color: "red" }}>{livingGroupInvalid}</span>
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="employee"><b>Mitarbeiter</b></label>
+                    {employees.length > 0 ?
+                        <select onChange={onChangeEmployee} className="register-select" id="employee" name="employee">
+                            {employees.map((emp) => (
+                                <option key={emp.id} value={emp.id}>{emp.name}</option>
+                            ))}
+                        </select>
+                        :
+                        <select onChange={onChangeEmployee} className="register-select" id="employee" name="employee">
+                            <option key="0" value="keine">keine</option>
+                        </select>
+                    }
+                    <span style={{ color: "red" }}>{employeeInvalid}</span>
                 </span>
                 <span className="register-row">
                     <label className="register-label" htmlFor="username"><b>Benutzername</b></label>
-                    <input className="register-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
+                    <input value={username} className="register-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
                     <span style={{ color: "red" }}>{userInvalid}</span>
                 </span>
                 <span className="register-row">
                     <label className="register-label" htmlFor="password"><b>Passwort</b></label>
-                    <input className="register-input" name="password" id="password" type="password" onChange={onChangePassword}/>
+                    <input value={password} className="register-input" name="password" id="password" type="password" onChange={onChangePassword}/>
                     <span style={{ color: "red" }}>{passInvalid}</span>
                 </span>
                 <span className="register-row">
                     <label className="register-label" htmlFor="passwordConfirm"><b>Passwort bestätigen</b></label>
-                    <input className="register-input" name="passwordConfirm" id="passwordConfirm" type="password" onChange={onChangePasswordConfirm}/>
+                    <input value={passwordConfirm} className="register-input" name="passwordConfirm" id="passwordConfirm" type="password" onChange={onChangePasswordConfirm}/>
                     <span style={{ color: "red" }}>{passConfirmInvalid}</span>
+                </span>
+                <span className="register-row">
+                    <label className="register-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
+                    <input  value={email} className="register-input" name="email" id="email" type="email" onChange={onChangeEmail}/>
+                    <span style={{ color: "red" }}>{emailInvalid}</span>
                 </span>
             </div>
 
             <div className="button-row">
-                <button type="button" className="register-submit" onClick={handleLogin}>Registrieren</button>
+                <button type="button" className="register-submit" onClick={handleRegister}>Registrieren</button>
             </div>
 
-            {message && (
-                <div className="alert-row">
-                    <div>
-                        {message}
-                    </div>
-                </div>
-            )}
+            <div>
+                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
+            </div>
+            <div>
+                <span style={{color: "green", width: "100%"}}>{message}</span>
+            </div>
 
         </div>
     );
-
 }
-
-
-/*const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
-
-const email = value => {
-    if (!isEmail(value)) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This is not a valid email.
-            </div>
-        );
-    }
-};
-
-const vusername = value => {
-    if (value.length < 3 || value.length > 20) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                The username must be between 3 and 20 characters.
-            </div>
-        );
-    }
-};
-
-const vpassword = value => {
-    if (value.length < 6 || value.length > 40) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                The password must be between 6 and 40 characters.
-            </div>
-        );
-    }
-};
-
-export default class Register extends Component {
-    constructor(props) {
-        super(props);
-        this.handleRegister = this.handleRegister.bind(this);
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onChangePassword = this.onChangePassword.bind(this);
-
-        this.state = {
-            username: "",
-            email: "",
-            password: "",
-            successful: false,
-            message: ""
-        };
-    }
-
-    onChangeUsername(e) {
-        this.setState({
-            username: e.target.value
-        });
-    }
-
-    onChangeEmail(e) {
-        this.setState({
-            email: e.target.value
-        });
-    }
-
-    onChangePassword(e) {
-        this.setState({
-            password: e.target.value
-        });
-    }
-
-    handleRegister(e) {
-        e.preventDefault();
-
-        this.setState({
-            message: "",
-            successful: false
-        });
-
-        this.form.validateAll();
-
-        if (this.checkBtn.context._errors.length === 0) {
-            AuthService.register(
-                this.state.username,
-                this.state.email,
-                this.state.password
-            ).then(
-                response => {
-                    this.setState({
-                        message: response.data.message,
-                        successful: true
-                    });
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-
-                    this.setState({
-                        successful: false,
-                        message: resMessage
-                    });
-                }
-            );
-        }
-    }
-
-    render() {
-        return (
-            <div className="col-md-12">
-                <div className="card card-container">
-                    <img
-                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
-
-                    <Form
-                        onSubmit={this.handleRegister}
-                        ref={c => {
-                            this.form = c;
-                        }}
-                    >
-                        {!this.state.successful && (
-                            <div>
-                                <div className="form-dayCareGroup">
-                                    <label htmlFor="username">Username</label>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        name="username"
-                                        value={this.state.username}
-                                        onChange={this.onChangeUsername}
-                                        validations={[required, vusername]}
-                                    />
-                                </div>
-
-                                <div className="form-dayCareGroup">
-                                    <label htmlFor="email">Email</label>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        name="email"
-                                        value={this.state.email}
-                                        onChange={this.onChangeEmail}
-                                        validations={[required, email]}
-                                    />
-                                </div>
-
-                                <div className="form-dayCareGroup">
-                                    <label htmlFor="password">Password</label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="password"
-                                        value={this.state.password}
-                                        onChange={this.onChangePassword}
-                                        validations={[required, vpassword]}
-                                    />
-                                </div>
-
-                                <div className="form-dayCareGroup">
-                                    <button className="btn btn-primary btn-block">Sign Up</button>
-                                </div>
-                            </div>
-                        )}
-
-                        {this.state.message && (
-                            <div className="form-dayCareGroup">
-                                <div
-                                    className={
-                                        this.state.successful
-                                            ? "alert alert-success"
-                                            : "alert alert-danger"
-                                    }
-                                    role="alert"
-                                >
-                                    {this.state.message}
-                                </div>
-                            </div>
-                        )}
-                        <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {
-                                this.checkBtn = c;
-                            }}
-                        />
-                    </Form>
-                </div>
-            </div>
-        );
-    }
-}*/
-
-/*<div className="login-container">
-
-    <div className="title">
-        <h1><u>Registrierung</u></h1>
-    </div>
-
-    <div className="login-panel">
-                    <span className="login-row">
-                        <label htmlFor="role"><b>Rolle</b></label>
-                            <select className="role" name="role" id="role">
-                                <option value="admin">Administrator</option>
-                                <option value="employee">Mitarbeiter</option>
-                            </select>
-                    </span>
-        <span className="login-row">
-                        <label htmlFor="username"><b>Benutzername</b></label>
-                        <input className="input" name="username" id="username" type="text"/>
-                    </span>
-        <span className="login-row">
-                        <label htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input className="input" name="email" id="email" type="email"/>
-                    </span>
-        <span className="login-row">
-                        <label htmlFor="password"><b>Passwort</b></label>
-                        <input className="input" name="password" id="password" type="password"/>
-                    </span>
-        <span className="login-row">
-                        <label htmlFor="password2"><b>Passwort bestätigen</b></label>
-                        <input className="input" name="password2" id="password2" type="password"/>
-                    </span>
-    </div>
-
-    <div className="button-row">
-        <button type="button" className="submit">Registrieren</button>
-    </div>
-
-    <div className="change-panel">
-                    <span className="change-row">
-                          <p id="loginText">Sie haben bereits einen Account?</p>
-                          <p><button type="button" className="submit" onClick={changeForm}>Anmeldung</button></p>
-                    </span>
-    </div>
-
-</div>*/
