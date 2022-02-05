@@ -106,6 +106,16 @@ function Navbar() {
                                 :
                                 <div></div>
                             }
+
+                            {showModeratorBoard || showAdminBoard ?
+                                <div className="middle-action-panel">
+                                    <li>
+                                        <Link to="/accounts">Konten</Link>
+                                    </li>
+                                </div>
+                                :
+                                <div></div>
+                            }
                         </div>
                         :
                         <div></div>

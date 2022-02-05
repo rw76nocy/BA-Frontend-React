@@ -57,7 +57,6 @@ export default function Employees() {
         } else {
             console.log("Abbruch!");
         }
-
     }
 
     const validateRow = (e) => {

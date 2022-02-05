@@ -13,6 +13,7 @@ import BoardModerator from "./components/board-moderator.component";
 import Employees from './components/employees.component';
 import NavBar from './components/navigation-bar.component';
 import LivingGroup from "./components/living-group.component";
+import Accounts from './components/account.component';
 
 export default function App() {
     return (
@@ -29,6 +30,7 @@ export default function App() {
                     <Route path="appointment" element={<BoardUser/>} />
                     <Route path="record" element={<BoardUser/>} />
                     <Route path="employees" element={<Employees/>} />
+                    <Route path="accounts" element={<Accounts/>} />
                 </Routes>
             </div>
 
