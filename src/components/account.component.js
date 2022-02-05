@@ -68,7 +68,7 @@ export default function Account() {
                     },
                     {
                         Header: "Rolle",
-                        accessor: "userRoles[0].name",
+                        accessor: "roles[0].name",
                         Cell: ({value}) => {
                             if (value === "ROLE_USER") {
                                 return String("Mitarbeiter");
