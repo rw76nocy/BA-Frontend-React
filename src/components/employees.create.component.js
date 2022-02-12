@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
 import '../style/employees.component.css';
 import EmployeesService from '../services/employees.service';
+import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
+import AuthService from "../services/auth.service";
 
 export default function CreateEmployees({reloadTable}) {
     const [gender, setGender] = useState("m");
@@ -23,12 +25,31 @@ export default function CreateEmployees({reloadTable}) {
     const [messageInvalid, setMessageInvalid] = useState("");
 
     useEffect(() => {
-        LivingGroups.getLivingGroups().then(response => {
-            setLivingGroups(response.data);
-            if (response.data[0]) {
-                setLivingGroup(response.data[0].name);
-            }
-        });
+        let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let id = AuthService.getCurrentUser().id;
+
+        if (admin) {
+            LivingGroups.getLivingGroups().then(response => {
+                setLivingGroups(response.data);
+                if (response.data[0]) {
+                    setLivingGroup(response.data[0].name);
+                }
+            });
+        }
+
+        if (mod) {
+            Accounts.getAccountById(id).then(response => {
+                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setLivingGroups(response.data);
+                    if (response.data[0]) {
+                        setLivingGroup(response.data[0].name);
+                    }
+                });
+            });
+        }
+
+
     },[])
 
     const onChangeGender = (e) => {

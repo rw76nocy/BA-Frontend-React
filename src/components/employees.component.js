@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import '../style/employees.component.css';
 import EditTable from "./edit.table.component";
 import CreateEmployees from "./employees.create.component";
+import Accounts from '../services/accounts.service';
+import AuthService from "../services/auth.service";
 import LivingGroups from '../services/living.group.service';
 import EmployeesService from '../services/employees.service';
 import Trash from "../icons/trash.svg";
@@ -11,6 +13,8 @@ export default function Employees() {
     const [data, setData] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [livingGroups, setLivingGroups] = useState([]);
+    const [mod, setMod] = useState(false);
+    const [admin, setAdmin] = useState(false);
 
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
@@ -25,13 +29,33 @@ export default function Employees() {
            setLivingGroups(response.data);
         });
 
-        EmployeesService.getEmployees().then(response => {
-            setData(response.data);
-        });
+        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let id = AuthService.getCurrentUser().id;
 
-        EmployeesService.getEmployees().then(response => {
-            setOriginalData(response.data);
-        });
+        setMod(mod);
+        setAdmin(admin);
+
+        if (admin) {
+            EmployeesService.getEmployees().then(response => {
+                setData(response.data);
+            });
+
+            EmployeesService.getEmployees().then(response => {
+                setOriginalData(response.data);
+            });
+        }
+
+        if (mod) {
+            Accounts.getAccountById(id).then(response => {
+                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setData(response.data);
+                });
+                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setOriginalData(response.data);
+                });
+            });
+        }
     }
 
     const onDeleteClick = (e) => {
@@ -118,20 +142,41 @@ export default function Employees() {
 
     //reset to original data
     const resetData = () => {
-        EmployeesService.getEmployees().then(response => {
-            setData(response.data);
-            setMessage("Erfolreich zurückgesetzt!")
-            setMessageInvalid("");
-        }, error => {
-            const resMessage =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            setMessageInvalid(resMessage);
-            setMessage("");
-        });
+        if (admin) {
+            EmployeesService.getEmployees().then(response => {
+                setData(response.data);
+                setMessage("Erfolreich zurückgesetzt!")
+                setMessageInvalid("");
+            }, error => {
+                const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                setMessageInvalid(resMessage);
+                setMessage("");
+            });
+        }
+
+        if (mod) {
+            Accounts.getAccountById(AuthService.getCurrentUser().id).then(response => {
+                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setData(response.data);
+                    setMessage("Erfolreich zurückgesetzt!")
+                    setMessageInvalid("");
+                }, error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    setMessageInvalid(resMessage);
+                    setMessage("");
+                });
+            });
+        }
     }
 
     const onBlurStreet = (e,rowIndex) => {
@@ -197,6 +242,24 @@ export default function Employees() {
                 return row
             })
         )
+    }
+
+    const renderLgCell = (value, row) => {
+        if (admin) {
+            return (
+                <select defaultValue={value} onChange={(e) => onChangeLivingGroup(e, row.index)} >
+                {livingGroups.map((lg) => (
+                    <option key={lg.id} value={lg.name}>{lg.name}</option>
+                ))}
+                </select>
+            )
+        } else if (mod) {
+            return (
+                <select defaultValue={value} onChange={(e) => onChangeLivingGroup(e, row.index)} >
+                    <option key={value} value={value}>{value}</option>
+                </select>
+            )
+        }
     }
 
     // columns of the table
@@ -306,11 +369,7 @@ export default function Employees() {
                 Header: "Wohngruppe",
                 accessor: "livingGroup.name",
                 Cell: ({value, row}) => (
-                    <select defaultValue={value} onChange={(e) => onChangeLivingGroup(e, row.index)} >
-                        {livingGroups.map((lg) => (
-                            <option key={lg.id} value={lg.name}>{lg.name}</option>
-                        ))}
-                    </select>
+                    renderLgCell(value, row)
                 ),
                 cellWidth: 200,
             },
