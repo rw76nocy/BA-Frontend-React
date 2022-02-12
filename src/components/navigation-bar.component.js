@@ -21,15 +21,17 @@ function Navbar() {
 
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
-        let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
-        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
-        let id = AuthService.getCurrentUser().id;
-        if (user || mod) {
-            Accounts.getAccountById(id).then(response => {
-                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setLivingGroup(response.data[0].name)
+        if (AuthService.getCurrentUser()) {
+            let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
+            let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+            let id = AuthService.getCurrentUser().id;
+            if (user || mod) {
+                Accounts.getAccountById(id).then(response => {
+                    LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                        setLivingGroup(response.data[0].name)
+                    });
                 });
-            });
+            }
         }
     }, [])
 
