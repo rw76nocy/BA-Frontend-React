@@ -11,6 +11,10 @@ class LivingGroup {
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
+    getLivingGroup(name) {
+        return axios.get(API_URL + 'get/' + name, { headers: authHeader() });
+    }
+
     addLivingGroup(name) {
         return axios.post(API_URL + 'add', { name }, { headers : authHeader() });
     }

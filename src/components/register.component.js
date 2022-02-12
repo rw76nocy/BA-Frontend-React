@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import '../style/register.component.css';
 
 import AuthService from "../services/auth.service";
+import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
 import Employees from "../services/employees.service";
 
@@ -43,20 +44,46 @@ export default function Register() {
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
 
-        LivingGroups.getLivingGroups().then(response => {
-            setLivingGroups(response.data);
-            if (response.data[0]) {
-                setLivingGroup(response.data[0].name);
-                Employees.getEmployeesByLivingGroupWithoutAccount(response.data[0].name).then(response => {
-                    setEmployees(response.data);
+        let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let id = AuthService.getCurrentUser().id;
+
+        if (admin) {
+            LivingGroups.getLivingGroups().then(response => {
+                setLivingGroups(response.data);
+                if (response.data[0]) {
+                    setLivingGroup(response.data[0].name);
+                    Employees.getEmployeesByLivingGroupWithoutAccount(response.data[0].name).then(response => {
+                        setEmployees(response.data);
+                        if (response.data[0]) {
+                            setEmployee(response.data[0].id);
+                        } else {
+                            setEmployee("");
+                        }
+                    });
+                }
+            });
+        }
+
+        if (mod) {
+            Accounts.getAccountById(id).then(response => {
+                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setLivingGroups(response.data);
                     if (response.data[0]) {
-                        setEmployee(response.data[0].id);
-                    } else {
-                        setEmployee("");
+                        setLivingGroup(response.data[0].name);
+                        Employees.getEmployeesByLivingGroupWithoutAccount(response.data[0].name).then(response => {
+                            setEmployees(response.data);
+                            if (response.data[0]) {
+                                setEmployee(response.data[0].id);
+                            } else {
+                                setEmployee("");
+                            }
+                        });
                     }
                 });
-            }
-        });
+            });
+        }
+
     }, [])
 
     useEffect(() => {
