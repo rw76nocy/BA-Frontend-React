@@ -10,14 +10,27 @@ import BoardModerator from "./board-moderator.component";
 import BoardAdmin from "./board-admin.component";
 
 import AuthService from "../services/auth.service";
+import Accounts from '../services/accounts.service';
+import LivingGroups from "../services/living.group.service";
 
 function Navbar() {
+    const [livingGroup, setLivingGroup] = useState("");
     const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
 
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
+        let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
+        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let id = AuthService.getCurrentUser().id;
+        if (user || mod) {
+            Accounts.getAccountById(id).then(response => {
+                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setLivingGroup(response.data[0].name)
+                });
+            });
+        }
     }, [])
 
     useEffect(() => {
@@ -56,7 +69,7 @@ function Navbar() {
                                 </li>
                                 :
                                 <li>
-                                    <div>Wohngruppe: Phoenix</div>
+                                    <div>Wohngruppe: {livingGroup}</div>
                                 </li>
                             }
                         </div>
