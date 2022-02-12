@@ -11,6 +11,14 @@ class Accounts {
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
+    getUserAccountByLivingGroup(livingGroup) {
+        return axios.get(API_URL + 'get/' + livingGroup, { headers: authHeader() });
+    }
+
+    getAccountById(id) {
+        return axios.get(API_URL + 'get/user/' + id, { headers: authHeader() });
+    }
+
     deleteAccount(id) {
         return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
     }

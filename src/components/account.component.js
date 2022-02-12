@@ -4,7 +4,7 @@ import '../style/account.component.css';
 import Trash from '../icons/trash.svg';
 
 import Accounts from '../services/accounts.service';
-import EmployeesService from "../services/employees.service";
+import AuthService from "../services/auth.service";
 
 export default function Account() {
 
@@ -17,9 +17,21 @@ export default function Account() {
     }, [])
 
     const fetchData = () => {
-        Accounts.getAllAccounts().then(response => {
-            setTableData(response.data);
-        });
+        let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let id = AuthService.getCurrentUser().id;
+        if (admin) {
+            Accounts.getAllAccounts().then(response => {
+                setTableData(response.data);
+            });
+        }
+        if (mod) {
+            Accounts.getAccountById(id).then(response => {
+                Accounts.getUserAccountByLivingGroup(response.data.person.livingGroup.name).then(response => {
+                    setTableData(response.data);
+                });
+            });
+        }
     }
 
     const onDeleteClick = (e) => {
@@ -50,7 +62,7 @@ export default function Account() {
     const columns = useMemo(
         () => [
             {
-                width: 1020,
+                width: 920,
                 Header: "Konto",
                 columns: [
                     {
@@ -80,6 +92,11 @@ export default function Account() {
                         }
                     },
                 ],
+            },
+            {
+                width: 100,
+                Header: " ",
+                accessor: "none",
             },
             {
                 width: 720,
