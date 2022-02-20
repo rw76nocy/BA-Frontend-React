@@ -1,0 +1,85 @@
+.daycare-border {
+    width: 540px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.daycare-container {
+    padding: 20px;
+}
+
+.daycare-create-container {
+    display: inline-block;
+}
+
+.daycare-row {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.daycare-teacher-group-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.daycare-teacher-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.daycare-group-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.daycare-address-row {
+    display: inline-block;
+    width: 100%;
+}
+
+.daycare-address-street {
+    width: 74%;
+}
+
+.daycare-address-number {
+    width: 22%;
+    margin-left: 4%;
+}
+
+.daycare-address-zipcode {
+    width: 18%;
+    margin-top: 2%;
+}
+
+.daycare-address-city {
+    width: 78%;
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.daycare-contact-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.daycare-phone-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.daycare-fax-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.daycare-label {
+    width: 100%;
+}
+
+.daycare-input {
+    width: 100%;
+}

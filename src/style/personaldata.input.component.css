@@ -1,0 +1,98 @@
+.personaldata-border {
+    width: 540px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.personaldata-container {
+    padding: 20px;
+}
+
+.personaldata-create-container {
+    display: inline-block;
+}
+
+.personaldata-row {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.personaldata-gender-birthday-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.personaldata-gender-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.personaldata-birthday-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.personaldata-name-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.personaldata-firstname-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.personaldata-lastname-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.personaldata-supervisor-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.personaldata-supervisor1-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.personaldata-supervisor2-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.personaldata-date-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.personaldata-entrance-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.personaldata-release-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.personaldata-label {
+    width: 100%;
+}
+
+.personaldata-input {
+    width: 100%;
+}
+
+.personaldata-select {
+    width: 100%;
+}

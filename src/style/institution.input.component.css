@@ -1,0 +1,68 @@
+.institution-border {
+    width: 540px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.institution-container {
+    padding: 20px;
+}
+
+.institution-create-container {
+    display: inline-block;
+}
+
+.institution-row {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.institution-address-row {
+    display: inline-block;
+    width: 100%;
+}
+
+.institution-address-street {
+    width: 74%;
+}
+
+.institution-address-number {
+    width: 22%;
+    margin-left: 4%;
+}
+
+.institution-address-zipcode {
+    width: 18%;
+    margin-top: 2%;
+}
+
+.institution-address-city {
+    width: 78%;
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.institution-contact-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.institution-phone-row {
+    display: inline-block;
+    width: 48%;
+}
+
+.institution-fax-row {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.institution-label {
+    width: 100%;
+}
+
+.institution-input {
+    width: 100%;
+}

@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 import "../style/navigation-bar.component.css";
+
+import ChildNav from './children.navigation.component';
+
 import Home from "./home.component";
 import Login from "./login.component";
 import Register from "./register.component";
@@ -12,12 +15,17 @@ import BoardAdmin from "./board-admin.component";
 import AuthService from "../services/auth.service";
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
+import LivingGroup from "./living-group.component";
+import Children from "./children.component";
+import Employees from "./employees.component";
 
 function Navbar() {
     const [livingGroup, setLivingGroup] = useState("");
     const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
+    const [childNav, setChildNav] = useState(false);
+    const [showChildNav, setShowChildNav] = useState(false);
 
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
@@ -50,7 +58,12 @@ function Navbar() {
         }
     }, [currentUser])
 
+    useEffect(() => {
+        setShowChildNav(childNav);
+    }, [childNav])
+
     const logout = () => {
+        deactivateChildNav()
         //clear user from local storage
         AuthService.logout();
         setCurrentUser(undefined);
@@ -58,109 +71,141 @@ function Navbar() {
         setShowAdminBoard(false);
     }
 
+    const changeChildNav = () => {
+        if (childNav) {
+            setChildNav(false);
+        } else {
+            setChildNav(true);
+        }
+    }
+
+    const deactivateChildNav = () => {
+        setChildNav(false);
+    }
+
     return (
         <header className="header">
 
-            <div className="left">
-                <ul>
-                    {currentUser ?
-                        <div>
-                            {showAdminBoard ?
-                                <li>
-                                    <div>WG-Administrierung</div>
-                                </li>
-                                :
-                                <li>
-                                    <div>Wohngruppe: {livingGroup}</div>
-                                </li>
-                            }
-                        </div>
-                        :
-                        <li>
-                            <div>WG-Manager</div>
-                        </li>
-                    }
+            <div className="first-level">
 
-                </ul>
+                <div className="left">
+                    <ul>
+                        {currentUser ?
+                            <div>
+                                {showAdminBoard ?
+                                    <li>
+                                        <div>WG-Administrierung</div>
+                                    </li>
+                                    :
+                                    <li>
+                                        <div>Wohngruppe: {livingGroup}</div>
+                                    </li>
+                                }
+                            </div>
+                            :
+                            <li>
+                                <div>WG-Manager</div>
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+
+                <div className="middle">
+                    <ul className="navBar">
+                        {currentUser ?
+                            <div className="middle-panel">
+                                {showAdminBoard ?
+                                    <div className="middle-action-panel">
+                                        <li>
+                                            <Link to="/living_group">Wohngruppen</Link>
+                                        </li>
+                                    </div>
+                                    :
+                                    <div className="middle-action-panel">
+                                        <li>
+                                            <Link to="/children" onClick={changeChildNav}>Kinder</Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/profile" onClick={deactivateChildNav}>Profil</Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/appointment" onClick={deactivateChildNav}>Termine</Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/record" onClick={deactivateChildNav}>Ereignisse</Link>
+                                        </li>
+                                    </div>
+                                }
+
+                                {showModeratorBoard || showAdminBoard ?
+                                    <div className="middle-action-panel">
+                                        <li>
+                                            <Link to="/employees" onClick={deactivateChildNav}>Mitarbeiter</Link>
+                                        </li>
+                                    </div>
+                                    :
+                                    <div></div>
+                                }
+
+                                {showModeratorBoard || showAdminBoard ?
+                                    <div className="middle-action-panel">
+                                        <li>
+                                            <Link to="/accounts" onClick={deactivateChildNav}>Konten</Link>
+                                        </li>
+                                    </div>
+                                    :
+                                    <div></div>
+                                }
+                            </div>
+                            :
+                            <div></div>
+                        }
+                    </ul>
+                </div>
+
+                <div className="right">
+                    <ul>
+                        {currentUser ?
+                            <div className="right-panel">
+                                <li>
+                                    <Link to="/login" onClick={logout}>Abmelden</Link>
+                                </li>
+                                {(showModeratorBoard || showAdminBoard) ?
+                                    <li>
+                                        <Link to="/register" onClick={deactivateChildNav}>Registrierung</Link>
+                                    </li>
+                                    :
+                                    <div></div>
+                                }
+                            </div>
+                            :
+                            <div>
+                                <li>
+                                    <Link to="/login">Anmelden</Link>
+                                </li>
+                            </div>
+                        }
+                    </ul>
+                </div>
 
             </div>
 
-            <div className="middle">
-                <ul className="navBar">
-                    {currentUser ?
-                        <div className="middle-panel">
-                            {showAdminBoard ?
-                                <div className="middle-action-panel">
-                                    <li>
-                                        <Link to="/living_group">Wohngruppen</Link>
-                                    </li>
-                                </div>
-                                :
-                                <div className="middle-action-panel">
-                                    <li>
-                                        <Link to="/children">Kinder</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/profile">Profil</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/appointment">Termine</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/record">Ereignisse</Link>
-                                    </li>
-                                </div>
-                            }
-
-                            {showModeratorBoard || showAdminBoard ?
-                                <div className="middle-action-panel">
-                                    <li>
-                                        <Link to="/employees">Mitarbeiter</Link>
-                                    </li>
-                                </div>
-                                :
-                                <div></div>
-                            }
-
-                            {showModeratorBoard || showAdminBoard ?
-                                <div className="middle-action-panel">
-                                    <li>
-                                        <Link to="/accounts">Konten</Link>
-                                    </li>
-                                </div>
-                                :
-                                <div></div>
-                            }
-                        </div>
-                        :
-                        <div></div>
-                    }
-                </ul>
-            </div>
-
-            <div className="right">
-                <ul>
-                    {currentUser ?
-                        <div className="right-panel">
-                            <li>
-                                <Link to="/login" onClick={logout}>Abmelden</Link>
-                            </li>
-                            {(showModeratorBoard || showAdminBoard) ?
-                                <li>
-                                    <Link to="/register">Registrierung</Link>
-                                </li>
-                                :
-                                <div></div>
-                            }
-                        </div>
-                        :
+            <div className="second-level">
+                {showChildNav ?
+                    <div>
+                        <ChildNav/>
                         <div>
-                            <li>
-                                <Link to="/login">Anmelden</Link>
-                            </li>
+                            <Routes>
+                                <Route path="/create" element={<Children/>} />
+                                {/*//TODO edit und delete*/}
+                            </Routes>
                         </div>
-                    }
-                </ul>
+                    </div>
+                    :
+                    <div></div>
+                }
             </div>
 
         </header>
