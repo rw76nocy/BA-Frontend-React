@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import '../style/register.component.css';
+import '../style/login.component.css';
 
 import AuthService from "../services/auth.service";
 import Accounts from '../services/accounts.service';
@@ -236,80 +236,80 @@ export default function Register() {
     }
 
     return (
-        <div className="register-container">
+        <div className="login-container">
 
             <div className="title">
                 <h1><u>Registrierung</u></h1>
             </div>
 
-            <div className="register-panel">
-                <span className="register-row">
-                    <label className="register-label" htmlFor="role"><b>Rolle</b></label>
+            <div className="login-panel">
+                <span className="login-row">
+                    <label className="login-label" htmlFor="role"><b>Rolle</b></label>
                     {showAdminBoard ?
-                        <select value={role} onChange={onChangeRole} className="register-select" id="role" name="role">
+                        <select value={role} onChange={onChangeRole} className="login-select" id="role" name="role">
                             <option value="mod">Teamleiter</option>
                             <option value="user">Mitarbeiter</option>
                         </select>
                         :
-                        <select value={role} onChange={onChangeRole} className="register-select" id="role" name="role">
+                        <select value={role} onChange={onChangeRole} className="login-select" id="role" name="role">
                             <option value="user">Mitarbeiter</option>
                         </select>
                     }
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="livingGroup"><b>Wohngruppe</b></label>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="livingGroup"><b>Wohngruppe</b></label>
                     {livingGroups.length > 0 ?
-                        <select onChange={onChangeLivingGroup} className="register-select" id="livingGroup" name="livingGroup">
+                        <select onChange={onChangeLivingGroup} className="login-select" id="livingGroup" name="livingGroup">
                             {livingGroups.map((lg) => (
                                 <option key={lg.id} value={lg.name}>{lg.name}</option>
                             ))}
                         </select>
                         :
-                        <select onChange={onChangeLivingGroup} className="register-select" id="livingGroup" name="livingGroup">
+                        <select onChange={onChangeLivingGroup} className="login-select" id="livingGroup" name="livingGroup">
                             <option key="0" value="keine">keine</option>
                         </select>
                     }
                     <span style={{ color: "red" }}>{livingGroupInvalid}</span>
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="employee"><b>Mitarbeiter</b></label>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="employee"><b>Mitarbeiter</b></label>
                     {employees.length > 0 ?
-                        <select onChange={onChangeEmployee} className="register-select" id="employee" name="employee">
+                        <select onChange={onChangeEmployee} className="login-select" id="employee" name="employee">
                             {employees.map((emp) => (
                                 <option key={emp.id} value={emp.id}>{emp.name}</option>
                             ))}
                         </select>
                         :
-                        <select onChange={onChangeEmployee} className="register-select" id="employee" name="employee">
+                        <select onChange={onChangeEmployee} className="login-select" id="employee" name="employee">
                             <option key="0" value="keine">keine</option>
                         </select>
                     }
                     <span style={{ color: "red" }}>{employeeInvalid}</span>
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="username"><b>Benutzername</b></label>
-                    <input value={username} className="register-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="username"><b>Benutzername</b></label>
+                    <input value={username} className="login-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
                     <span style={{ color: "red" }}>{userInvalid}</span>
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="password"><b>Passwort</b></label>
-                    <input value={password} className="register-input" name="password" id="password" type="password" onChange={onChangePassword}/>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="password"><b>Passwort</b></label>
+                    <input value={password} className="login-input" name="password" id="password" type="password" onChange={onChangePassword}/>
                     <span style={{ color: "red" }}>{passInvalid}</span>
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="passwordConfirm"><b>Passwort bestätigen</b></label>
-                    <input value={passwordConfirm} className="register-input" name="passwordConfirm" id="passwordConfirm" type="password" onChange={onChangePasswordConfirm}/>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="passwordConfirm"><b>Passwort bestätigen</b></label>
+                    <input value={passwordConfirm} className="login-input" name="passwordConfirm" id="passwordConfirm" type="password" onChange={onChangePasswordConfirm}/>
                     <span style={{ color: "red" }}>{passConfirmInvalid}</span>
                 </span>
-                <span className="register-row">
-                    <label className="register-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                    <input  value={email} className="register-input" name="email" id="email" type="email" onChange={onChangeEmail}/>
+                <span className="login-row">
+                    <label className="login-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
+                    <input  value={email} className="login-input" name="email" id="email" type="email" onChange={onChangeEmail}/>
                     <span style={{ color: "red" }}>{emailInvalid}</span>
                 </span>
             </div>
 
             <div className="button-row">
-                <button type="button" className="register-submit" onClick={handleRegister}>Registrieren</button>
+                <button type="button" className="login-submit" onClick={handleRegister}>Registrieren</button>
             </div>
 
             <div>

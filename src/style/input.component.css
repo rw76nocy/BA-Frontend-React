@@ -1,0 +1,108 @@
+.input-border {
+    width: 540px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.input-container {
+    padding: 20px;
+}
+
+.input-create-container {
+    display: inline-block;
+}
+
+.input-row {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.input-sub-row {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.input-half-row-first {
+    display: inline-block;
+    width: 48%;
+}
+
+.input-half-row-second {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.input-address-row {
+    display: inline-block;
+    width: 100%;
+}
+
+.input-address-street {
+    width: 74%;
+}
+
+.input-address-number {
+    width: 22%;
+    margin-left: 4%;
+}
+
+.input-address-zipcode {
+    width: 18%;
+    margin-top: 2%;
+}
+
+.input-address-city {
+    width: 78%;
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.image-container {
+    padding: 20px;
+    height: 372px;
+}
+
+.image-create-container {
+    display: inline-block;
+    width: 100%;
+    height: 290px;
+}
+
+.image-row {
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+.image-holder {
+    display: inline-block;
+    width: 100%;
+    height: 250px;
+    margin-bottom: 2%;
+    text-align: center;
+    border: black solid 4px;
+}
+
+.image-element {
+    width: 500px;
+    height: 250px;
+}
+
+.input-label {
+    width: 100%;
+}
+
+.input-input {
+    width: 100%;
+}
+
+.input-select {
+    width: 100%;
+}
+
+.textarea-input {
+    width: 100%;
+    resize: none;
+}

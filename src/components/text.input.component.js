@@ -1,15 +1,15 @@
 import React, {useState} from "react";
 
-import '../style/text.input.component.css';
+import '../style/input.component.css';
 
 export default function TextInput({title}) {
 
     return(
-        <div className="text-border">
-            <div className="text-container">
+        <div className="input-border">
+            <div className="input-container">
                 <h3><u>{title}</u></h3>
-                <div className="text-create-container">
-                    <textarea className="text-input" name="text" id="text" cols="70" rows="11" wrap="soft"/>
+                <div className="input-create-container">
+                    <textarea className="textarea-input" name="text" id="text" cols="70" rows="11" wrap="soft"/>
                 </div>
             </div>
         </div>

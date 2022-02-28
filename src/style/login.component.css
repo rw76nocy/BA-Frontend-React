@@ -41,6 +41,10 @@
     width: 100%;
 }
 
+.login-select {
+    width: 100%;
+}
+
 .login-submit {
     font-size: 24px;
     font-weight: bold;

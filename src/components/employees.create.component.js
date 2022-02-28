@@ -190,7 +190,7 @@ export default function CreateEmployees({reloadTable}) {
                     <span className="employees-gender-lg-row">
                         <div className="employees-gender-row">
                             <label className="employees-gender-label" htmlFor="gender"><b>Geschlecht*</b></label>
-                                <select value={gender} onChange={onChangeGender} className="employees-gender-select" id="gender" name="gender">
+                                <select value={gender} onChange={onChangeGender} id="gender" name="gender">
                                     <option value="m">Mann (m)</option>
                                     <option value="w">Frau (w)</option>
                                     <option value="d">Divers (d)</option>
@@ -199,13 +199,13 @@ export default function CreateEmployees({reloadTable}) {
                         <div className="employees-lg-row">
                             <label className="employees-lg-label" htmlFor="gender"><b>Wohngruppe*</b></label>
                             {livingGroups.length > 0 ?
-                                <select value={livingGroup} onChange={onChangeLivingGroup} className="employees-lg-select" id="livingGroup" name="livingGroup">
+                                <select value={livingGroup} onChange={onChangeLivingGroup} id="livingGroup" name="livingGroup">
                                     {livingGroups.map((lg) => (
                                         <option key={lg.id} value={lg.name}>{lg.name}</option>
                                     ))}
                                 </select>
                                 :
-                                <select onChange={onChangeLivingGroup} className="employees-lg-select" id="livingGroup" name="livingGroup">
+                                <select onChange={onChangeLivingGroup} id="livingGroup" name="livingGroup">
                                     <option key="0" value="keine">keine</option>
                                 </select>
                             }

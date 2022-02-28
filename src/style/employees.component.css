@@ -68,16 +68,8 @@
     width: 100%;
 }
 
-.employees-gender-select {
-
-}
-
 .employees-lg-label {
     width: 100%;
-}
-
-.employees-lg-select {
-
 }
 
 .employees-gender-row {
@@ -96,10 +88,6 @@
 
 .employees-input {
     width: 100%;
-}
-
-.employees-submit-row {
-    /*background-color: white;*/
 }
 
 .employees-submit {
