@@ -71,8 +71,7 @@
 }
 
 .image-row {
-    display: block;
-    text-align: center;
+    display: inline-block;
     width: 100%;
 }
 
@@ -88,6 +87,15 @@
 .image-element {
     width: 500px;
     height: 250px;
+}
+
+.image-input {
+    width: 95%;
+}
+
+.image-delete {
+    width: 5%;
+    height: 25px;
 }
 
 .input-label {
