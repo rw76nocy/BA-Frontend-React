@@ -15,6 +15,10 @@ class Employees {
         return axios.get(API_URL + 'get/all/' + livingGroup, { headers: authHeader() });
     }
 
+    getAllEmployeesByLivingGroup(livingGroup) {
+        return axios.get(API_URL + 'get/supervisor/all/' + livingGroup, { headers: authHeader() });
+    }
+
     getEmployeesByLivingGroupWithoutAccount(livingGroup) {
         return axios.get(API_URL + 'get/' + livingGroup, { headers: authHeader() });
     }
