@@ -1,11 +1,15 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = 'http://localhost:8080/api/test/employees/';
+const API_URL = 'http://localhost:8080/api/test/persons/';
 
-class Employees {
+class Persons {
 
-    getEmployees() {
+    getAllGuardians() {
+        return axios.get(API_URL + 'get/guardian/all', { headers: authHeader() });
+    }
+
+    /*getEmployees() {
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
@@ -59,7 +63,7 @@ class Employees {
 
     deleteEmployee(id) {
         return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
-    }
+    }*/
 }
 
-export default new Employees();
+export default new Persons();

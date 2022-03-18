@@ -25,7 +25,7 @@ export default function App() {
                     <Route path="login" element={<Login/>} />
                     <Route path="register" element={<Register/>} />
                     <Route path="living_group" element={<LivingGroup/>} />
-                    <Route path="children" element={<Children/>} />
+                    {/*<Route path="children" element={<Children/>} />*/}
                     <Route path="profile" element={<Profile/>} />
                     <Route path="appointment" element={<BoardUser/>} />
                     <Route path="record" element={<BoardUser/>} />

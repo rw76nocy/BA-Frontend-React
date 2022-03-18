@@ -16,14 +16,23 @@ import '../style/children.component.css';
 
 export default function Children() {
 
+    const [guardian, setGuardian] = useState({});
+
+    const getInputAsGuardian = (input) => {
+        setGuardian(input);
+    }
+
+    const printData = () => {
+        console.log(JSON.stringify(guardian));
+    }
+
     return(
         <div className="children-container">
             <div className="children-components">
-                {/*//TODO image*/}
                 <ImageInput title="Foto"/>
                 <PersonalDataInput title="Persönliche Daten"/>
                 <TextInput title="Grund der Aufnahme"/>
-                <GuardianInput title="Vormund/Pfleger"/>
+                <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
                 <AsdInput title="Allgemeiner sozialer Dienst"/>
                 <PersonInput title="Mutter"/>
                 <PersonInput title="Vater"/>
@@ -35,6 +44,9 @@ export default function Children() {
                 <HealthInsuranceInput title="Krankenkasse"/>
                 <FoodSupplierInput title="Essensanbieter"/>
                 <InstitutionInput title="Fahrdienst"/>
+            </div>
+            <div>
+                <button className="input-input" onClick={printData}>Anlegen</button>
             </div>
 
         </div>
