@@ -21,6 +21,8 @@ export default function Children() {
     const [reason, setReason] = useState("");
     const [guardian, setGuardian] = useState({});
     const [asd, setAsd] = useState({});
+    const [mother, setMother] = useState({});
+    const [father, setFather] = useState({});
     const [care, setCare] = useState("");
     const [visit, setVisit] = useState("");
     const [diseases, setDiseases] = useState("");
@@ -45,6 +47,14 @@ export default function Children() {
         setAsd(input);
     }
 
+    const getInputAsMother = (input) => {
+        setMother(input);
+    }
+
+    const getInputAsFather = (input) => {
+        setFather(input);
+    }
+
     const getInputAsCare = (input) => {
         setCare(input);
     }
@@ -63,6 +73,8 @@ export default function Children() {
         console.log("Reason: "+JSON.stringify(reason));
         console.log("Guardian: "+JSON.stringify(guardian));
         console.log("Asd: "+JSON.stringify(asd));
+        console.log("Mother: "+JSON.stringify(mother));
+        console.log("Father: "+JSON.stringify(father));
         console.log("Care: "+JSON.stringify(care));
         console.log("Visit: "+JSON.stringify(visit));
         console.log("Diseases: "+JSON.stringify(diseases));
@@ -76,8 +88,8 @@ export default function Children() {
                 <TextInput title="Grund der Aufnahme" callback={getInputAsReason}/>
                 <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
                 <AsdInput title="Allgemeiner sozialer Dienst" callback={getInputAsAsd}/>
-                <PersonInput title="Mutter"/>
-                <PersonInput title="Vater"/>
+                <PersonInput title="Mutter" callback={getInputAsMother}/>
+                <PersonInput title="Vater" callback={getInputAsFather}/>
                 <TextInput title="Regelung Sorgerecht" callback={getInputAsCare}/>
                 <TextInput title="Besuch / Umgang / Kontakt" callback={getInputAsVisit}/>
                 <ChildDoctorInput title="Kinderarzt"/>
