@@ -2,21 +2,24 @@ import React, {useState} from "react";
 
 import '../style/input.component.css';
 import Trash from "../icons/trash.svg";
+import {number} from "react-table/src/sortTypes";
 
-export default function ImageInput({title}) {
+export default function ImageInput({title, callback}) {
 
-    const [image, setImage] = useState(null);
-    const [inputkey, setInputKey] = useState();
+    const [image, setImage] = useState("");
+    const [inputkey, setInputKey] = useState("");
 
     const onImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             setImage(URL.createObjectURL(e.target.files[0]));
+            callback(URL.createObjectURL(e.target.files[0]));
         }
     }
 
     const onDeleteClick = () => {
-        setImage(null);
+        setImage("");
         setInputKey(Date.now);
+        callback("");
     }
 
     return(

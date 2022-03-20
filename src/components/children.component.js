@@ -16,8 +16,13 @@ import '../style/children.component.css';
 
 export default function Children() {
 
+    const [image, setImage] = useState("");
     const [guardian, setGuardian] = useState({});
     const [asd, setAsd] = useState({});
+
+    const getInputAsImage = (input) => {
+        setImage(input);
+    }
 
     const getInputAsGuardian = (input) => {
         setGuardian(input);
@@ -28,6 +33,7 @@ export default function Children() {
     }
 
     const printData = () => {
+        console.log("Image: "+JSON.stringify(image));
         console.log("Guardian: "+JSON.stringify(guardian));
         console.log("Asd: "+JSON.stringify(asd));
     }
@@ -35,7 +41,7 @@ export default function Children() {
     return(
         <div className="children-container">
             <div className="children-components">
-                <ImageInput title="Foto"/>
+                <ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten"/>
                 <TextInput title="Grund der Aufnahme"/>
                 <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
