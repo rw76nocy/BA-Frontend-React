@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
-import Employees from "../services/employees.service";
 import Persons from "../services/person.service";
 
 export default function GuardianInput({title, callback}) {
@@ -20,7 +19,6 @@ export default function GuardianInput({title, callback}) {
                 response.data.map(guard => {
                     guards.push(guard);
                 })
-                console.log(JSON.stringify(guards));
                 setGuardians(guards);
             }
         });

@@ -20,7 +20,6 @@ export default function AsdInput({title, callback}) {
                 response.data.map(asd => {
                     asds.push(asd);
                 })
-                console.log(JSON.stringify(asds));
                 setAsds(asds);
             }
         });

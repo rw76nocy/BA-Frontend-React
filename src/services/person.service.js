@@ -21,6 +21,10 @@ class Persons {
         return axios.get(API_URL + 'get/asd/all', { headers: authHeader() });
     }
 
+    getAllChilddoctors() {
+        return axios.get(API_URL + 'get/childdoctor/all', { headers: authHeader() });
+    }
+
     /*getEmployees() {
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
