@@ -17,13 +17,19 @@ import '../style/children.component.css';
 export default function Children() {
 
     const [guardian, setGuardian] = useState({});
+    const [asd, setAsd] = useState({});
 
     const getInputAsGuardian = (input) => {
         setGuardian(input);
     }
 
+    const getInputAsAsd = (input) => {
+        setAsd(input);
+    }
+
     const printData = () => {
-        console.log(JSON.stringify(guardian));
+        console.log("Guardian: "+JSON.stringify(guardian));
+        console.log("Asd: "+JSON.stringify(asd));
     }
 
     return(
@@ -33,7 +39,7 @@ export default function Children() {
                 <PersonalDataInput title="Persönliche Daten"/>
                 <TextInput title="Grund der Aufnahme"/>
                 <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
-                <AsdInput title="Allgemeiner sozialer Dienst"/>
+                <AsdInput title="Allgemeiner sozialer Dienst" callback={getInputAsAsd}/>
                 <PersonInput title="Mutter"/>
                 <PersonInput title="Vater"/>
                 <TextInput title="Regelung Sorgerecht"/>

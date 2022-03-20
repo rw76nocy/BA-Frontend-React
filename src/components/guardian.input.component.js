@@ -1,15 +1,11 @@
 import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
-import AuthService from "../services/auth.service";
-import Accounts from "../services/accounts.service";
-import LivingGroups from "../services/living.group.service";
 import Employees from "../services/employees.service";
 import Persons from "../services/person.service";
 
 export default function GuardianInput({title, callback}) {
 
-    /*const [employees, setEmployees] = useState([]);*/
     const [guardians, setGuardians] = useState([]);
     const [id, setId] = useState("");
     const [name, setName] = useState("");
@@ -18,22 +14,6 @@ export default function GuardianInput({title, callback}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        /*let id = AuthService.getCurrentUser().id;
-
-        Accounts.getAccountById(id).then(response => {
-            LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                if (response.data[0]) {
-                    Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
-                        let emps = [{ id: 0, name: "keine"}];
-                        response.data.map(emp => {
-                            emps.push(emp);
-                        })
-                        setEmployees(emps);
-                    });
-                }
-            });
-        });*/
-
         Persons.getAllGuardians().then(response => {
             if (response.data) {
                 let guards = [{ id: 0, name: "keine"}];
@@ -44,13 +24,12 @@ export default function GuardianInput({title, callback}) {
                 setGuardians(guards);
             }
         });
-
     }, [])
 
     const onExistingChange = (e) => {
         let id = e.target.value;
 
-        Employees.getEmployeesById(id).then(response => {
+        Persons.getPersonById(id).then(response => {
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
@@ -115,9 +94,6 @@ export default function GuardianInput({title, callback}) {
                     <span className="input-row">
                         <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
                         <select onChange={onExistingChange} className="input-select" id="existing" name="existing">
-                            {/*{employees.map((emp) => (
-                                <option key={emp.id} value={emp.id}>{emp.name}</option>
-                            ))}*/}
                             {guardians.map((guard) => (
                                 <option key={guard.id} value={guard.id}>{guard.name}</option>
                             ))}
