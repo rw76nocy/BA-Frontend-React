@@ -28,6 +28,7 @@ export default function Children() {
     const [childdoctor, setChilddoctor] = useState({});
     const [daycare, setDaycare] = useState({});
     const [diseases, setDiseases] = useState("");
+    const [healthinsurance, setHealthinsurance] = useState({});
 
     const getInputAsImage = (input) => {
         setImage(input);
@@ -77,6 +78,10 @@ export default function Children() {
         setDiseases(input);
     }
 
+    const getInputAsHealthinsurance = (input) => {
+        setHealthinsurance(input);
+    }
+
     const printData = () => {
         console.log("Image: "+JSON.stringify(image));
         console.log("Personal Data: "+JSON.stringify(personal));
@@ -90,6 +95,7 @@ export default function Children() {
         console.log("Childdoctor: "+JSON.stringify(childdoctor));
         console.log("Daycare: "+JSON.stringify(daycare));
         console.log("Diseases: "+JSON.stringify(diseases));
+        console.log("Healthinsurance: "+JSON.stringify(healthinsurance));
     }
 
     return(
@@ -107,7 +113,7 @@ export default function Children() {
                 <ChildDoctorInput title="Kinderarzt" callback={getInputAsChilddoctor}/>
                 <DayCareInput title="Kita / Tagespflege" callback={getInputAsDaycare}/>
                 <TextInput title="Erkrankungen / Medikamente" callback={getInputAsDiseases}/>
-                <HealthInsuranceInput title="Krankenkasse"/>
+                <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
                 <FoodSupplierInput title="Essensanbieter"/>
                 <InstitutionInput title="Fahrdienst"/>
             </div>

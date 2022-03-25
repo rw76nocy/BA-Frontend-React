@@ -13,11 +13,11 @@ class Institutions {
         return axios.get(API_URL + 'get/daycare/' + id, { headers: authHeader() });
     }
 
-    /*getHealthinsuranceById(id) {
+    getHealthinsuranceById(id) {
         return axios.get(API_URL + 'get/healthinsurance/' + id, { headers: authHeader() });
     }
 
-    getFoodsupplierById(id) {
+    /*getFoodsupplierById(id) {
         return axios.get(API_URL + 'get/foodsupplier/' + id, { headers: authHeader() });
     }
 
@@ -29,11 +29,11 @@ class Institutions {
         return axios.get(API_URL + 'get/daycare/all', { headers: authHeader() });
     }
 
-    /*getAllHealthinsurances() {
+    getAllHealthinsurances() {
         return axios.get(API_URL + 'get/healthinsurance/all', { headers: authHeader() });
     }
 
-    getAllFoodsuppliers() {
+    /*getAllFoodsuppliers() {
         return axios.get(API_URL + 'get/foodsupplier/all', { headers: authHeader() });
     }
 
