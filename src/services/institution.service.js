@@ -5,9 +5,9 @@ const API_URL = 'http://localhost:8080/api/test/institutions/';
 
 class Institutions {
 
-    /*getInstitutionById(id) {
+    getInstitutionById(id) {
         return axios.get(API_URL + 'get/' + id, { headers: authHeader() });
-    }*/
+    }
 
     getDaycareById(id) {
         return axios.get(API_URL + 'get/daycare/' + id, { headers: authHeader() });
@@ -21,9 +21,9 @@ class Institutions {
         return axios.get(API_URL + 'get/foodsupplier/' + id, { headers: authHeader() });
     }
 
-    /*getAllInstitutions() {
+    getAllInstitutions() {
         return axios.get(API_URL + 'get/all', { headers: authHeader() });
-    }*/
+    }
 
     getAllDaycares() {
         return axios.get(API_URL + 'get/daycare/all', { headers: authHeader() });
@@ -37,9 +37,9 @@ class Institutions {
         return axios.get(API_URL + 'get/foodsupplier/all', { headers: authHeader() });
     }
 
-    /*getAllDrivers() {
+    getAllDrivers() {
         return axios.get(API_URL + 'get/driver/all', { headers: authHeader() });
-    }*/
+    }
 
 
 

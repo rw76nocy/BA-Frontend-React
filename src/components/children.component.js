@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import ChildNav from './children.navigation.component';
 import ImageInput from "./image.input.component";
 import PersonalDataInput from "./personaldata.input.component";
 import TextInput from "./text.input.component";
@@ -30,6 +29,7 @@ export default function Children() {
     const [diseases, setDiseases] = useState("");
     const [healthinsurance, setHealthinsurance] = useState({});
     const [foodsupplier, setFoodsupplier] = useState({});
+    const [driver, setDriver] = useState({});
 
     const getInputAsImage = (input) => {
         setImage(input);
@@ -87,6 +87,10 @@ export default function Children() {
         setFoodsupplier(input);
     }
 
+    const getInputAsDriver = (input) => {
+        setDriver(input);
+    }
+
     const printData = () => {
         console.log("Image: "+JSON.stringify(image));
         console.log("Personal Data: "+JSON.stringify(personal));
@@ -102,6 +106,7 @@ export default function Children() {
         console.log("Diseases: "+JSON.stringify(diseases));
         console.log("Healthinsurance: "+JSON.stringify(healthinsurance));
         console.log("Foodsupplier: "+JSON.stringify(foodsupplier));
+        console.log("Driver: "+JSON.stringify(driver));
     }
 
     return(
@@ -121,7 +126,10 @@ export default function Children() {
                 <TextInput title="Erkrankungen / Medikamente" callback={getInputAsDiseases}/>
                 <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
                 <FoodSupplierInput title="Essensanbieter" callback={getInputAsFoodsupplier}/>
-                <InstitutionInput title="Fahrdienst"/>
+                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>
+            </div>
+            <div>
+                {/*//TODO Hier dann die Komponenten die sich aus-/einklappen*/}
             </div>
             <div>
                 <button className="input-input" onClick={printData}>Anlegen</button>
