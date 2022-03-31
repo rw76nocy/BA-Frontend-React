@@ -17,11 +17,11 @@ class Institutions {
         return axios.get(API_URL + 'get/healthinsurance/' + id, { headers: authHeader() });
     }
 
-    /*getFoodsupplierById(id) {
+    getFoodsupplierById(id) {
         return axios.get(API_URL + 'get/foodsupplier/' + id, { headers: authHeader() });
     }
 
-    getAllInstitutions() {
+    /*getAllInstitutions() {
         return axios.get(API_URL + 'get/all', { headers: authHeader() });
     }*/
 
@@ -33,13 +33,16 @@ class Institutions {
         return axios.get(API_URL + 'get/healthinsurance/all', { headers: authHeader() });
     }
 
-    /*getAllFoodsuppliers() {
+    getAllFoodsuppliers() {
         return axios.get(API_URL + 'get/foodsupplier/all', { headers: authHeader() });
     }
 
-    getAllDrivers() {
+    /*getAllDrivers() {
         return axios.get(API_URL + 'get/driver/all', { headers: authHeader() });
     }*/
+
+
+
 
     /*getEmployees() {
         return axios.get(API_URL + 'all', { headers: authHeader() });
