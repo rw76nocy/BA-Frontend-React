@@ -38,11 +38,13 @@ export default function HealthInsuranceInput({title, callback}) {
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
-                setAddress(buildAddress(response.data.address.street,response.data.address.number,response.data.address.zipCode,response.data.address.city));
-                setStreet(response.data.address.street);
-                setNumber(response.data.address.number);
-                setZipcode(response.data.address.zipCode);
-                setCity(response.data.address.city);
+                if (response.data.address) {
+                    setAddress(buildAddress(response.data.address.street,response.data.address.number,response.data.address.zipCode,response.data.address.city));
+                    setStreet(response.data.address.street);
+                    setNumber(response.data.address.number);
+                    setZipcode(response.data.address.zipCode);
+                    setCity(response.data.address.city);
+                }
                 setPhone(response.data.phone);
                 setFax(response.data.fax);
                 sendInputToParent(response.data.id,response.data.name,response.data.teacher,response.data.group,response.data.address,response.data.phone,response.data.fax);

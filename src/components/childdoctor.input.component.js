@@ -8,6 +8,11 @@ export default function ChildDoctorInput({title, callback}) {
     const [childdoctors, setChilddoctors] = useState([]);
     const [id, setId] = useState("");
     const [name, setName] = useState("");
+    const [address, setAddress] = useState({});
+    const [street, setStreet] = useState("");
+    const [number, setNumber] = useState("");
+    const [zipcode, setZipcode] = useState("");
+    const [city, setCity] = useState("");
     const [phone, setPhone] = useState("");
     const [fax, setFax] = useState("");
     const [email, setEmail] = useState("");
@@ -15,6 +20,7 @@ export default function ChildDoctorInput({title, callback}) {
     useEffect(() => {
         Persons.getAllChilddoctors().then(response => {
             if (response.data) {
+                console.log(JSON.stringify(response.data));
                 let docs = [{ id: 0, name: "keine"}];
                 response.data.map(doc => {
                     docs.push(doc);
@@ -31,13 +37,25 @@ export default function ChildDoctorInput({title, callback}) {
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
+                if (response.data.address) {
+                    setAddress(buildAddress(response.data.address.street,response.data.address.number,response.data.address.zipCode,response.data.address.city));
+                    setStreet(response.data.address.street);
+                    setNumber(response.data.address.number);
+                    setZipcode(response.data.address.zipCode);
+                    setCity(response.data.address.city);
+                }
                 setPhone(response.data.phone);
                 setFax(response.data.fax);
                 setEmail(response.data.email);
-                sendInputToParent(response.data.id,response.data.name,response.data.phone,response.data.fax,response.data.email);
+                sendInputToParent(response.data.id,response.data.name,response.data.address,response.data.phone,response.data.fax,response.data.email);
             } else {
                 setId("0");
                 setName("");
+                setAddress({});
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
                 setPhone("");
                 setFax("");
                 setEmail("");
@@ -48,28 +66,62 @@ export default function ChildDoctorInput({title, callback}) {
 
     const onNameChange = (e) => {
         setName(e.target.value);
-        sendInputToParent(id,e.target.value,phone,fax,email);
+        sendInputToParent(id,e.target.value,address,phone,fax,email);
+    }
+
+    const onChangeStreet = (e) => {
+        setStreet(e.target.value);
+        setAddress(buildAddress(e.target.value,number,zipcode,city));
+        sendInputToParent(id,name,buildAddress(e.target.value,number,zipcode,city),phone,fax,email);
+    }
+
+    const onChangeNumber = (e) => {
+        setNumber(e.target.value);
+        setAddress(buildAddress(street,e.target.value,zipcode,city));
+        sendInputToParent(id,name,buildAddress(street,e.target.value,zipcode,city),phone,fax,email);
+    }
+
+    const onChangeZipcode = (e) => {
+        setZipcode(e.target.value);
+        setAddress(buildAddress(street,number,e.target.value,city));
+        sendInputToParent(id,name,buildAddress(street,number,e.target.value,city),phone,fax,email);
+    }
+
+    const onChangeCity = (e) => {
+        setCity(e.target.value);
+        setAddress(buildAddress(street,number,zipcode,e.target.value));
+        sendInputToParent(id,name,buildAddress(street,number,zipcode,e.target.value),phone,fax,email);
     }
 
     const onPhoneChange = (e) => {
         setPhone(e.target.value);
-        sendInputToParent(id,name,e.target.value,fax,email);
+        sendInputToParent(id,name,address,e.target.value,fax,email);
     }
 
     const onFaxChange = (e) => {
         setFax(e.target.value);
-        sendInputToParent(id,name,phone,e.target.value,email);
+        sendInputToParent(id,name,address,phone,e.target.value,email);
     }
 
     const onEmailChange = (e) => {
         setEmail(e.target.value);
-        sendInputToParent(id,name,phone,fax,e.target.value);
+        sendInputToParent(id,name,address,phone,fax,e.target.value);
     }
 
-    const sendInputToParent = (id,name,phone,fax,email) => {
+    const buildAddress = (street,number,zipcode,city) => {
+        let address = {};
+        address.street = street;
+        address.number = number;
+        address.zipCode = zipcode;
+        address.city = city;
+        return address;
+    }
+
+    const sendInputToParent = (id,name,address,phone,fax,email) => {
         let doc = {};
         doc.id = id;
         doc.name = name;
+        doc.address = address;
         doc.phone = phone;
         doc.fax = fax;
         doc.email = email;
@@ -101,6 +153,18 @@ export default function ChildDoctorInput({title, callback}) {
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
                         <input onChange={onNameChange} className="input-input" value={name} name="name" id="name" type="text" placeholder="Name"/>
+                    </span>
+
+                    <span className="input-row">
+                        <label className="input-label"><b>Adresse</b></label>
+                        <div className="input-address-row">
+                            <input onChange={onChangeStreet} className="input-address-street" value={street} name="address-street" id="address-street" type="text" placeholder="Straße"/>
+                            <input onChange={onChangeNumber} className="input-address-number" value={number} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
+                        </div>
+                        <div className="input-address-row">
+                            <input onChange={onChangeZipcode} className="input-address-zipcode" value={zipcode} name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
+                            <input onChange={onChangeCity} className="input-address-city" value={city} name="address-city" id="address-city" type="text" placeholder="Stadt"/>
+                        </div>
                     </span>
 
                     <span className="input-sub-row">
