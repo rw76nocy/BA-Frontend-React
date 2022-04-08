@@ -1,0 +1,78 @@
+.table-input-container {
+    padding: 10px 40px;
+    background-color: #ffc38d;
+    /*border-radius: 10px;*/
+    margin: 0 auto 25px;
+    margin-top: 10px;
+    border-top: black solid 4px;
+    border-bottom: black solid 4px;
+}
+
+.table-input-cell {
+    margin-left: 10px;
+}
+
+.table-input-title {
+    text-align: center;
+}
+
+.table-input-toggle-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.table-input-toggle-button {
+    margin-right: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    background-color: lightgrey;
+}
+
+.table-input-create-panel {
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.table-input-create-column-left {
+    display: inline-block;
+    width: 48%;
+}
+
+.table-input-create-column-right {
+    display: inline-block;
+    width: 48%;
+    margin-left: 4%;
+}
+
+.table-input-address-street {
+    width: 30%;
+}
+
+.table-input-address-number {
+    width: 15%;
+    margin-left: 4%;
+}
+
+.table-input-address-zipcode {
+    width: 15%;
+    margin-left: 4%;
+}
+
+.table-input-address-city {
+    width: 28%;
+    margin-left: 4%;
+}
+
+.table-input-submit {
+    width: 14%;
+    margin-left: 43%;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    background-color: lightgrey;
+}

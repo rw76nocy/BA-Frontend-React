@@ -10,6 +10,10 @@ import DayCareInput from "./daycare.input.component";
 import HealthInsuranceInput from "./healthinsurance.input.component";
 import FoodSupplierInput from "./foodsupplier.input.component";
 import InstitutionInput from "./institution.input.component";
+import ReferencePerson from "./reference.person.input.component";
+import Doctor from "./doctors.input.component";
+import Therapist from "./therapists.input.component";
+import Partner from "./partners.input.component";
 
 import '../style/children.component.css';
 
@@ -30,6 +34,10 @@ export default function Children() {
     const [healthinsurance, setHealthinsurance] = useState({});
     const [foodsupplier, setFoodsupplier] = useState({});
     const [driver, setDriver] = useState({});
+    const [referencePersons, setReferencePersons] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+    const [therapists, setTherapists] = useState([]);
+    const [partners, setPartners] = useState([]);
 
     const getInputAsImage = (input) => {
         setImage(input);
@@ -91,7 +99,24 @@ export default function Children() {
         setDriver(input);
     }
 
+    const getInputAsReferencePersons = (input) => {
+        setReferencePersons(input);
+    }
+
+    const getInputAsDoctors = (input) => {
+        setDoctors(input);
+    }
+
+    const getInputAsTherapists = (input) => {
+        setTherapists(input);
+    }
+
+    const getInputAsPartners = (input) => {
+        setPartners(input);
+    }
+
     const printData = () => {
+        console.log("CHILD-DATA IN CREATE-CHILDREN-PANEL");
         console.log("Image: "+JSON.stringify(image));
         console.log("Personal Data: "+JSON.stringify(personal));
         console.log("Reason: "+JSON.stringify(reason));
@@ -107,6 +132,10 @@ export default function Children() {
         console.log("Healthinsurance: "+JSON.stringify(healthinsurance));
         console.log("Foodsupplier: "+JSON.stringify(foodsupplier));
         console.log("Driver: "+JSON.stringify(driver));
+        console.log("Reference Persons: "+JSON.stringify(referencePersons));
+        console.log("Doctors: "+JSON.stringify(doctors));
+        console.log("Therapists: "+JSON.stringify(therapists));
+        console.log("Partners: "+JSON.stringify(partners));
     }
 
     return(
@@ -129,10 +158,13 @@ export default function Children() {
                 <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>
             </div>
             <div>
-                {/*//TODO Hier dann die Komponenten die sich aus-/einklappen*/}
+                <ReferencePerson callback={getInputAsReferencePersons}/>
+                <Doctor callback={getInputAsDoctors}/>
+                <Therapist callback={getInputAsTherapists}/>
+                <Partner callback={getInputAsPartners}/>
             </div>
             <div>
-                <button className="input-input" onClick={printData}>Anlegen</button>
+                <button className="children-submit" onClick={printData}>Kind anlegen</button>
             </div>
 
         </div>

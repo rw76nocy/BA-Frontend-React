@@ -123,7 +123,6 @@ export default function GuardianInput({title, callback}) {
 
             </div>
 
-
         </div>
     );
 }

@@ -10,6 +10,7 @@
 
 .input-create-container {
     display: inline-block;
+    width: 100%;
 }
 
 .input-row {
