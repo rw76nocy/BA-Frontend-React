@@ -1,23 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Link, Route, Routes} from "react-router-dom";
+
 import "../style/navigation-bar.component.css";
 
 import ChildNav from './children.navigation.component';
-
-import Home from "./home.component";
-import Login from "./login.component";
-import Register from "./register.component";
-import Profile from "./profile.component";
-import BoardUser from "./board-user.component";
-import BoardModerator from "./board-moderator.component";
-import BoardAdmin from "./board-admin.component";
+import Children from "./children.create.component";
 
 import AuthService from "../services/auth.service";
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
-import LivingGroup from "./living-group.component";
-import Children from "./children.component";
-import Employees from "./employees.component";
 
 function Navbar() {
     const [livingGroup, setLivingGroup] = useState("");

@@ -13,7 +13,6 @@ import Employees from './components/employees.component';
 import NavBar from './components/navigation-bar.component';
 import LivingGroup from "./components/living-group.component";
 import Accounts from './components/account.component';
-import Children from './components/children.component';
 
 export default function App() {
     return (
@@ -25,7 +24,6 @@ export default function App() {
                     <Route path="login" element={<Login/>} />
                     <Route path="register" element={<Register/>} />
                     <Route path="living_group" element={<LivingGroup/>} />
-                    {/*<Route path="children" element={<Children/>} />*/}
                     <Route path="profile" element={<Profile/>} />
                     <Route path="appointment" element={<BoardUser/>} />
                     <Route path="record" element={<BoardUser/>} />
