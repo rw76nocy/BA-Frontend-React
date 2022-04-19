@@ -15,7 +15,7 @@ import Doctor from "./doctors.input.component";
 import Therapist from "./therapists.input.component";
 import Partner from "./partners.input.component";
 
-import '../style/children.component.css';
+import '../style/table.input.component.css';
 
 export default function Children() {
 

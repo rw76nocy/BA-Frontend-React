@@ -38,12 +38,11 @@ export default function ReferencePerson({callback}) {
                 accessor: "internal_id",
             },
             {
-                width: 100,
+                width: 200,
                 Header: "Typ",
                 accessor: "type",
             },
             {
-                //default editable cell
                 width: 200,
                 Header: "Name",
                 accessor: "name",

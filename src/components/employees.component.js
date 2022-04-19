@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import '../style/employees.component.css';
+import '../style/table.input.component.css';
 import EditTable from "./edit.table.component";
 import CreateEmployees from "./employees.create.component";
 import Accounts from '../services/accounts.service';
@@ -378,7 +378,7 @@ export default function Employees() {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: ({ value, row }) => (
-                    <input className="employees-action-cell"
+                    <input className="table-input-cell"
                            style={{height: 25, width: 25}}
                            type="image"
                            value={row.values.id}
@@ -398,7 +398,7 @@ export default function Employees() {
     }
 
     return (
-        <div className="employees-container">
+        <div className="tableview-container">
 
             <div className="title">
                 <h1><u>Mitarbeiter anlegen</u></h1>
@@ -415,8 +415,8 @@ export default function Employees() {
                        updateMyData={updateMyData}
             />
 
-            <div className="employees-button-row">
-                <button className="employees-button-row-save" onClick={saveData}>Speichern</button>
+            <div>
+                <button onClick={saveData}>Speichern</button>
                 <button className="employees-button-row-reset" onClick={resetData}>Zurücksetzen</button>
             </div>
 

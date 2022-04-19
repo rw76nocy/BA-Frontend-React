@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import Table from './table.component';
-import '../style/account.component.css';
+import '../style/table.input.component.css';
 import Trash from '../icons/trash.svg';
 
 import Accounts from '../services/accounts.service';
@@ -117,7 +117,7 @@ export default function Account() {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: cell => (
-                    <input className="account-cell"
+                    <input className="table-input-cell"
                            style={{height: 25, width: 25}}
                            type="image"
                            value={cell.row.values.id}
@@ -134,7 +134,7 @@ export default function Account() {
     const data = useMemo(() => tableData, [tableData]);
 
     return(
-        <div className="account-container">
+        <div className="tableview-container">
             <div className="title">
                 <h1><u>Übersicht Konten </u></h1>
             </div>

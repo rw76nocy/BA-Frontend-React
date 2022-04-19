@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useState} from "react";
 import Table from "./table.component";
 import CreateTherapist from "./therapists.create.component";
 import Trash from "../icons/trash.svg";
-import moment from "moment";
 
 import '../style/table.input.component.css';
 
@@ -38,28 +37,14 @@ export default function Doctors({callback}) {
                 accessor: "internal_id",
             },
             {
-                width: 100,
-                Header: "Typ",
+                width: 200,
+                Header: "Fachrichtung",
                 accessor: "type",
             },
             {
-                //default editable cell
                 width: 200,
                 Header: "Name",
                 accessor: "name",
-            },
-            {
-                width: 150,
-                Header: "Geburtsdatum",
-                accessor: "birthday",
-                Cell: ({ value }) => {
-                    if (value !== undefined && value !== "") {
-                        let formatedDate = moment(value).format("DD.MM.YYYY")
-                        return String(formatedDate);
-                    } else {
-                        return "";
-                    }
-                },
             },
             {
                 width: 300,
@@ -82,13 +67,16 @@ export default function Doctors({callback}) {
                 accessor: 'address.city',
             },
             {
-                //default editable cell
                 width: 200,
                 Header: "Telefon",
                 accessor: "phone",
             },
             {
-                //default editable cell
+                width: 200,
+                Header: "Fax",
+                accessor: "fax",
+            },
+            {
                 width: 300,
                 Header: "E-Mail",
                 accessor: "email",
@@ -114,7 +102,7 @@ export default function Doctors({callback}) {
 
     const data = useMemo(() => tableData, [tableData]);
 
-    const addInputToReferencePersons = (input) => {
+    const addInputToTherapists = (input) => {
         let temp_data = [...tableData];
         let temp_obj = input;
         temp_obj.internal_id = findNextFreeId(temp_data);
@@ -164,7 +152,7 @@ export default function Doctors({callback}) {
                         <h2><u>Therapeut hinzufügen</u></h2>
                     </div>
 
-                    <CreateTherapist callback={addInputToReferencePersons}/>
+                    <CreateTherapist callback={addInputToTherapists}/>
 
                 </div>
             }

@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
-import '../style/employees.component.css';
+import React, { useEffect, useState } from "react";
+import '../style/table.input.component.css';
+import '../style/input.component.css';
 import EmployeesService from '../services/employees.service';
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
@@ -183,21 +184,21 @@ export default function CreateEmployees({reloadTable}) {
 
     return(
         <div>
-            <div className="employees-create-panel">
+            <div className="table-input-create-panel">
 
-                <div className="employees-create-column-left">
+                <div className="table-input-create-column-left">
 
-                    <span className="employees-gender-lg-row">
-                        <div className="employees-gender-row">
-                            <label className="employees-gender-label" htmlFor="gender"><b>Geschlecht*</b></label>
+                    <span className="input-sub-row">
+                        <div className="table-input-create-column-left">
+                            <label className="input-label" htmlFor="gender"><b>Geschlecht*</b></label>
                                 <select value={gender} onChange={onChangeGender} id="gender" name="gender">
                                     <option value="m">Mann (m)</option>
                                     <option value="w">Frau (w)</option>
                                     <option value="d">Divers (d)</option>
                                 </select>
                         </div>
-                        <div className="employees-lg-row">
-                            <label className="employees-lg-label" htmlFor="gender"><b>Wohngruppe*</b></label>
+                        <div className="table-input-create-column-right">
+                            <label className="input-label" htmlFor="gender"><b>Wohngruppe*</b></label>
                             {livingGroups.length > 0 ?
                                 <select value={livingGroup} onChange={onChangeLivingGroup} id="livingGroup" name="livingGroup">
                                     {livingGroups.map((lg) => (
@@ -212,51 +213,51 @@ export default function CreateEmployees({reloadTable}) {
                          </div>
                     </span>
 
-                    <span className="employees-row">
-                        <label className="employees-label" htmlFor="firstname"><b>Vorname*</b></label>
-                        <input value={firstname} onChange={onChangeFirstname} className="employees-input" name="firstname" id="firstname" type="text" placeholder="Vorname"/>
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="firstname"><b>Vorname*</b></label>
+                        <input value={firstname} onChange={onChangeFirstname} className="input-input" name="firstname" id="firstname" type="text" placeholder="Vorname"/>
                     </span>
 
-                    <span className="employees-row">
-                        <label className="employees-label" htmlFor="lastname"><b>Nachname*</b></label>
-                        <input value={lastname} onChange={onChangeLastname} className="employees-input" name="lastname" id="lastname" type="text" placeholder="Nachname"/>
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="lastname"><b>Nachname*</b></label>
+                        <input value={lastname} onChange={onChangeLastname} className="input-input" name="lastname" id="lastname" type="text" placeholder="Nachname"/>
                     </span>
 
-                    <span className="employees-row">
-                        <label className="employees-label" htmlFor="birthday"><b>Geburtstag*</b></label>
-                        <input value={birthday} onChange={onChangeBirthday} className="employees-input" name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="birthday"><b>Geburtstag*</b></label>
+                        <input value={birthday} onChange={onChangeBirthday} className="input-input" name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
                     </span>
 
                 </div>
 
-                <div className="employees-create-column-right">
+                <div className="table-input-create-column-right">
 
-                    <span className="employees-row">
-                        <label className="employees-label"><b>Adresse*</b></label>
-                        <div className="employees-address-row">
-                            <input value={street} onChange={onChangeStreet} className="employees-address-street" name="address-street" id="address-street" type="text" placeholder="Straße"/>
-                            <input value={number} onChange={onChangeNumber} className="employees-address-number" name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
-                            <input value={zipcode} onChange={onChangeZipcode} className="employees-address-zipcode" name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
-                            <input value={city} onChange={onChangeCity} className="employees-address-city" name="address-city" id="address-city" type="text" placeholder="Stadt"/>
+                    <span className="input-row">
+                        <label className="input-label"><b>Adresse*</b></label>
+                        <div className="input-address-row">
+                            <input value={street} onChange={onChangeStreet} className="table-input-address-street" name="address-street" id="address-street" type="text" placeholder="Straße"/>
+                            <input value={number} onChange={onChangeNumber} className="table-input-address-number" name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
+                            <input value={zipcode} onChange={onChangeZipcode} className="table-input-address-zipcode" name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
+                            <input value={city} onChange={onChangeCity} className="table-input-address-city" name="address-city" id="address-city" type="text" placeholder="Stadt"/>
                         </div>
                     </span>
 
-                    <span className="employees-row">
-                        <label className="employees-label" htmlFor="phone"><b>Telefon*</b></label>
-                        <input value={phone} onChange={onChangePhone} className="employees-input" name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
+                        <input value={phone} onChange={onChangePhone} className="input-input" name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                     </span>
 
-                    <span className="employees-row">
-                        <label className="employees-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input value={email} onChange={onChangeEmail} className="employees-input" name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
+                        <input value={email} onChange={onChangeEmail} className="input-input" name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>
 
             </div>
 
-            <div className="employees-submit-row">
-                <button type="button" className="employees-submit" onClick={onCreate}>Anlegen</button>
+            <div>
+                <button type="button" className="table-input-submit" onClick={onCreate}>Anlegen</button>
             </div>
 
             <div>

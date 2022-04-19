@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import Table from './table.component';
-import '../style/living-group.component.css';
+import '../style/table.input.component.css';
 import Trash from '../icons/trash.svg';
 
 import LivingGroups from '../services/living.group.service';
@@ -93,7 +93,7 @@ export default function LivingGroup() {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: cell => (
-                    <input className="living-group-cell"
+                    <input className="table-input-cell"
                            style={{height: 25, width: 25}}
                            type="image"
                            value={cell.row.values.id}
@@ -110,12 +110,12 @@ export default function LivingGroup() {
     const data = useMemo(() => tableData, [tableData]);
 
     return(
-        <div className="living-group-container">
+        <div className="tableview-container">
 
             <div className="title">
                 <h1><u>Wohngruppe anlegen</u></h1>
             </div>
-            <div className="living-group-create-panel">
+            <div className="table-input-create-panel">
                 <label className="living-group-label" htmlFor="lgname"><b>Name der Wohngruppe</b></label>
                 <input className="living-group-input" value={lgName} id="lgname" type="text" onChange={onChangeLgName}/>
                 <button type="button" className="living-group-submit" onClick={onCreate}>Anlegen</button>

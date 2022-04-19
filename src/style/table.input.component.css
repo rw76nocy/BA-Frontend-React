@@ -1,11 +1,62 @@
 .table-input-container {
     padding: 10px 40px;
     background-color: #ffc38d;
-    /*border-radius: 10px;*/
     margin: 0 auto 25px;
     margin-top: 10px;
+    border-radius: 10px;
     border-top: black solid 4px;
     border-bottom: black solid 4px;
+}
+
+.tableview-container {
+    max-width: 1920px !important;
+    padding: 40px 40px;
+    background-color: #ffc38d;
+    border-radius: 10px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+}
+
+.children-container {
+    margin: 20px;
+    background-color: #ffc38d;
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+.children-components {
+    display: inline-block;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.children-submit {
+    font-size: 30px;
+    font-weight: bold;
+    background-color: lightgrey;
+    width: 100%;
+}
+
+.living-group-label {
+    width: 20%;
+}
+
+.living-group-input {
+    width: 59%;
+    margin-left: 1%;
+}
+
+.living-group-submit {
+    width: 15%;
+    margin-left: 5%;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    background-color: lightgrey;
+}
+
+.employees-button-row-reset {
+    margin-left: 20px;
 }
 
 .table-input-cell {
@@ -20,7 +71,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .table-input-toggle-button {

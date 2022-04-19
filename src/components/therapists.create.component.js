@@ -4,14 +4,13 @@ import '../style/input.component.css';
 
 export default function CreateTherapist({callback}) {
     const [type, setType] = useState("");
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [birthday, setBirthday] = useState("");
+    const [name, setName] = useState("");
     const [street, setStreet] = useState("");
     const [number, setNumber] = useState("");
     const [zipcode, setZipcode] = useState("");
     const [city, setCity] = useState("");
     const [phone, setPhone] = useState("");
+    const [fax, setFax] = useState("");
     const [email, setEmail] = useState("");
 
     const [errors, setErrors] = useState([]);
@@ -22,16 +21,8 @@ export default function CreateTherapist({callback}) {
         setType(e.target.value);
     }
 
-    const onChangeFirstname = (e) => {
-        setFirstname(e.target.value);
-    }
-
-    const onChangeLastname = (e) => {
-        setLastname(e.target.value);
-    }
-
-    const onChangeBirthday = (e) => {
-        setBirthday(e.target.value);
+    const onChangeName = (e) => {
+        setName(e.target.value);
     }
 
     const onChangeStreet = (e) => {
@@ -54,20 +45,23 @@ export default function CreateTherapist({callback}) {
         setPhone(e.target.value);
     }
 
+    const onChangeFax = (e) => {
+        setFax(e.target.value);
+    }
+
     const onChangeEmail = (e) => {
         setEmail(e.target.value);
     }
 
     const clearInput = () => {
         setType("");
-        setFirstname("");
-        setLastname("");
-        setBirthday("");
+        setName("");
         setStreet("");
         setNumber("");
         setZipcode("");
         setCity("");
         setPhone("");
+        setFax("");
         setEmail("");
     }
 
@@ -78,12 +72,8 @@ export default function CreateTherapist({callback}) {
             errors.push("Typ darf nicht leer sein!");
         }
 
-        if (firstname === "") {
-            errors.push("Vorname darf nicht leer sein!");
-        }
-
-        if (lastname === "") {
-            errors.push("Nachname darf nicht leer sein!");
+        if (name === "") {
+            errors.push("Name darf nicht leer sein!");
         }
 
         if (phone === "") {
@@ -102,29 +92,28 @@ export default function CreateTherapist({callback}) {
 
     const onCreate = () => {
         if (validate()) {
-            let name = firstname + ' ' + lastname;
             let address = {};
             address.street = street;
             address.number = number;
             address.zipCode = zipcode;
             address.city = city;
 
-            setMessage("Bezugsperson hinzugefügt");
+            setMessage("Therapeut hinzugefügt");
             setMessageInvalid("");
             clearInput();
-            sendInputToParent(type,name,birthday,address,phone,email);
+            sendInputToParent(type,name,address,phone,fax,email);
         }
     }
 
-    const sendInputToParent = (type,name,birthday,address,phone,email) => {
-        let person = {};
-        person.type = type;
-        person.name = name;
-        person.birthday = birthday;
-        person.address = address;
-        person.phone = phone;
-        person.email = email;
-        callback(person);
+    const sendInputToParent = (type,name,address,phone,fax,email) => {
+        let therapist = {};
+        therapist.type = type;
+        therapist.name = name;
+        therapist.address = address;
+        therapist.phone = phone;
+        therapist.fax = fax;
+        therapist.email = email;
+        callback(therapist);
     }
 
     return(
@@ -134,28 +123,14 @@ export default function CreateTherapist({callback}) {
                 <div className="table-input-create-column-left">
 
                     <span className="input-row">
-                        <label className="input-label" htmlFor="firstname"><b>Typ*</b></label>
-                        <input value={type} onChange={onChangeType} className="input-input" name="type" id="type" type="text" placeholder="Typ"/>
+                        <label className="input-label" htmlFor="type"><b>Fachrichtung*</b></label>
+                        <input value={type} onChange={onChangeType} className="input-input" name="type" id="type" type="text" placeholder="Fachrichtung"/>
                     </span>
 
                     <span className="input-row">
-                        <label className="input-label" htmlFor="firstname"><b>Vorname*</b></label>
-                        <input value={firstname} onChange={onChangeFirstname} className="input-input" name="firstname" id="firstname" type="text" placeholder="Vorname"/>
+                        <label className="input-label" htmlFor="name"><b>Name*</b></label>
+                        <input value={name} onChange={onChangeName} className="input-input" name="name" id="name" type="text" placeholder="Name"/>
                     </span>
-
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="lastname"><b>Nachname*</b></label>
-                        <input value={lastname} onChange={onChangeLastname} className="input-input" name="lastname" id="lastname" type="text" placeholder="Nachname"/>
-                    </span>
-
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="birthday"><b>Geburtstag</b></label>
-                        <input value={birthday} onChange={onChangeBirthday} className="input-input" name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
-                    </span>
-
-                </div>
-
-                <div className="table-input-create-column-right">
 
                     <span className="input-row">
                         <label className="input-label"><b>Adresse</b></label>
@@ -167,9 +142,18 @@ export default function CreateTherapist({callback}) {
                         </div>
                     </span>
 
+                </div>
+
+                <div className="table-input-create-column-right">
+
                     <span className="input-row">
                         <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
                         <input value={phone} onChange={onChangePhone} className="input-input" name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                    </span>
+
+                    <span className="input-row">
+                        <label className="input-label" htmlFor="fax"><b>Fax</b></label>
+                        <input value={fax} onChange={onChangeFax} className="input-input" name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                     </span>
 
                     <span className="input-row">

@@ -38,28 +38,14 @@ export default function Partners({callback}) {
                 accessor: "internal_id",
             },
             {
-                width: 100,
+                width: 200,
                 Header: "Typ",
                 accessor: "type",
             },
             {
-                //default editable cell
                 width: 200,
                 Header: "Name",
                 accessor: "name",
-            },
-            {
-                width: 150,
-                Header: "Geburtsdatum",
-                accessor: "birthday",
-                Cell: ({ value }) => {
-                    if (value !== undefined && value !== "") {
-                        let formatedDate = moment(value).format("DD.MM.YYYY")
-                        return String(formatedDate);
-                    } else {
-                        return "";
-                    }
-                },
             },
             {
                 width: 300,
@@ -82,13 +68,16 @@ export default function Partners({callback}) {
                 accessor: 'address.city',
             },
             {
-                //default editable cell
                 width: 200,
                 Header: "Telefon",
                 accessor: "phone",
             },
             {
-                //default editable cell
+                width: 200,
+                Header: "Fax",
+                accessor: "fax",
+            },
+            {
                 width: 300,
                 Header: "E-Mail",
                 accessor: "email",
@@ -114,7 +103,7 @@ export default function Partners({callback}) {
 
     const data = useMemo(() => tableData, [tableData]);
 
-    const addInputToReferencePersons = (input) => {
+    const addInputToPartners = (input) => {
         let temp_data = [...tableData];
         let temp_obj = input;
         temp_obj.internal_id = findNextFreeId(temp_data);
@@ -164,7 +153,7 @@ export default function Partners({callback}) {
                         <h2><u>Netzwerkpartner hinzufügen</u></h2>
                     </div>
 
-                    <CreatePartner callback={addInputToReferencePersons}/>
+                    <CreatePartner callback={addInputToPartners}/>
 
                 </div>
             }
