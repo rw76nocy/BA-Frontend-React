@@ -74,7 +74,7 @@ export default function PersonInput({title, callback}) {
         let address = {};
         address.street = street;
         address.number = number;
-        address.zipcode = zipcode;
+        address.zipCode = zipcode;
         address.city = city;
         return address;
     }
