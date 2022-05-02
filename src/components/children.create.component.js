@@ -20,6 +20,7 @@ import AuthService from "../services/auth.service";
 import Accounts from "../services/accounts.service";
 import LivingGroups from "../services/living.group.service";
 import ChildrenService from "../services/children.service";
+import FileService from "../services/file.service";
 
 export default function Children() {
 
@@ -171,7 +172,6 @@ export default function Children() {
     const buildChildFromInput = () => {
         let child = {};
         child.livingGroup = livingGroup;
-        child.image = image;
         child.gender = personal.gender;
         child.firstName = personal.firstname;
         child.lastName = personal.lastname;
@@ -236,8 +236,21 @@ export default function Children() {
 
             ChildrenService.addChild(child).then(
                 response => {
+                    let childId = response.data.childId;
                     console.log("ERFOLG:" + response.data.message);
-                    window.location.reload();
+                    console.log("ChildId:" + childId);
+                    if (image !== undefined) {
+                        let formData = new FormData();
+                        formData.append('file', image);
+                        formData.append('child_id', childId);
+
+                        FileService.uploadFile(formData).then(response => {
+                            console.log("ERFOLG FOTO:" + response.data.message);
+                            window.location.reload();
+                        });
+                    } else {
+                        window.location.reload();
+                    }
                 },
                 error => {
                     const resMessage =
