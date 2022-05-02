@@ -6,20 +6,23 @@ import {number} from "react-table/src/sortTypes";
 
 export default function ImageInput({title, callback}) {
 
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState();
     const [inputkey, setInputKey] = useState("");
 
     const onImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            setImage(URL.createObjectURL(e.target.files[0]));
-            callback(URL.createObjectURL(e.target.files[0]));
+            setImage(e.target.files[0]);
+            callback(e.target.files[0]);
+            console.log(e.target.files[0]);
+            /*setImage(URL.createObjectURL(e.target.files[0]));*/
+            /*callback(URL.createObjectURL(e.target.files[0]));*/
         }
     }
 
     const onDeleteClick = () => {
-        setImage("");
+        setImage(undefined);
         setInputKey(Date.now);
-        callback("");
+        callback(undefined);
     }
 
     return(

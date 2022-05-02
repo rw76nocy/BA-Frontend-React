@@ -7,7 +7,7 @@
 
 .children-nav-left {
     display: inline-block;
-    width: 82%;
+    width: 92%;
     padding-top: 12px;
 }
 
@@ -25,7 +25,7 @@
 
 .children-nav-right {
     display: inline-block;
-    width: 18%;
+    width: 8%;
     border-left: black solid 4px;
     padding-top: 12px;
 }

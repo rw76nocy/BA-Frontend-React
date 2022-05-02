@@ -1,8 +1,35 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import "../style/children.navigation.component.css";
+import AuthService from "../services/auth.service";
+import Accounts from "../services/accounts.service";
+import LivingGroups from "../services/living.group.service";
+import ChildrenService from "../services/children.service";
 
 function ChildNav() {
+
+    const [livingGroup, setLivingGroup] = useState("");
+    const [children, setChildren] = useState([]);
+
+    useEffect(() => {
+        if (AuthService.getCurrentUser()) {
+            let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
+            let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+            let id = AuthService.getCurrentUser().id;
+            if (user || mod) {
+                Accounts.getAccountById(id).then(response => {
+                    LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                        console.log("LivingGroup: "+ response.data[0].name);
+                        setLivingGroup(response.data[0].name)
+                        ChildrenService.getChildrenByLivingGroup(response.data[0].name).then(response => {
+                            console.log("Children: "+JSON.stringify(response.data));
+                            setChildren(response.data);
+                        });
+                    });
+                });
+            }
+        }
+    }, [])
 
     return (
         <header className="children-nav-header">
@@ -11,37 +38,11 @@ function ChildNav() {
                 <ul className="children-navBar">
                     <div className="children-nav-left-panel">
                         <div className="children-nav-left-action-panel">
-                            <li>
-                                <Link to="/child/1">Kind 1</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/2">Kind 2</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/3">Kind 3</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/4">Kind 4</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/5">Kind 5</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/6">Kind 6</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/7">Kind 7</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/8">Kind 8</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/9">Kind 9</Link>
-                            </li>
-                            <li>
-                                <Link to="/child/10">Kind 10</Link>
-                            </li>
-
+                            {children.map((c) => (
+                                <li key={c.id}>
+                                    <Link key={c.id} to="/child/1" >{c.firstName} {c.lastName}</Link>
+                                </li>
+                            ))}
                         </div>
                     </div>
                 </ul>
@@ -53,12 +54,12 @@ function ChildNav() {
                         <li>
                             <Link to="/create">Anlegen</Link>
                         </li>
-                        <li>
+                        {/*<li>
                             <Link to="/edit">Bearbeiten</Link>
                         </li>
                         <li>
                             <Link to="/delete">Entfernen</Link>
-                        </li>
+                        </li>*/}
                     </div>
                 </ul>
             </div>

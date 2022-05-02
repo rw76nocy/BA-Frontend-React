@@ -16,26 +16,6 @@ class ChildrenService {
             { headers : authHeader() });
     }
 
-    /*{
-                livingGroup : child.livingGroup,
-                gender : child.gender,
-                image : child.image,
-                firstName : child.firstName,
-                lastName : child.lastName,
-                birthday : child.birthday
-            },*/
-
-    /*getLivingGroups() {
-        return axios.get(API_URL + 'all', { headers: authHeader() });
-    }
-
-    getLivingGroup(name) {
-        return axios.get(API_URL + 'get/' + name, { headers: authHeader() });
-    }
-
-    deleteLivingGroup(id) {
-        return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
-    }*/
 }
 
 export default new ChildrenService();

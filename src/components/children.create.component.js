@@ -23,7 +23,7 @@ import ChildrenService from "../services/children.service";
 
 export default function Children() {
 
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState();
     const [personal, setPersonal] = useState({});
     const [reason, setReason] = useState("");
     const [guardian, setGuardian] = useState({});
@@ -156,10 +156,6 @@ export default function Children() {
             errors.push("Aufnahmedatum muss angegeben werden!");
         }
 
-        if (reason === "") {
-            errors.push("Grund der Aufnahme muss angegeben werden!");
-        }
-
         if (errors.length !== 0) {
             setMessageInvalid(JSON.stringify(errors));
             setMessage("");
@@ -260,7 +256,7 @@ export default function Children() {
     const printData = () => {
         console.log("CHILD-DATA IN CREATE-CHILDREN-PANEL");
         console.log("Living Group: "+JSON.stringify(livingGroup));
-        console.log("Image: "+JSON.stringify(image));
+        console.log("Image: "+image);
         console.log("Personal Data: "+JSON.stringify(personal));
         console.log("Reason: "+JSON.stringify(reason));
         console.log("Guardian: "+JSON.stringify(guardian));
