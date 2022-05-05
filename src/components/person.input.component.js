@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
+import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
 
-export default function PersonInput({title, callback}) {
+export default function PersonInput({title, callback, data, disabled}) {
 
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
@@ -15,6 +16,44 @@ export default function PersonInput({title, callback}) {
     const [fax, setFax] = useState("");
     const [birthday, setBirthday] = useState("");
     const [email, setEmail] = useState("");
+
+    useEffect(() => {
+        if (disabled && data !== undefined) {
+            let person = {};
+            if (title === "Mutter") {
+                person = findPersonByType(data.personRoles, "MOTHER");
+            }
+            if (title === "Vater") {
+                person = findPersonByType(data.personRoles, "FATHER");
+            }
+            if (!isJsonEmpty(person)) {
+                let names = person.name.split(/(\s+)/);
+                setFirstname(names[0]);
+                setLastname(names[1]);
+                setAddress(person.address);
+                setStreet(person.address.street);
+                setNumber(person.address.number);
+                setZipcode(person.address.zipCode);
+                setCity(person.address.city);
+                setPhone(person.phone);
+                setFax(person.fax);
+                setBirthday(person.birthday);
+                setEmail(person.email);
+            } else {
+                setFirstname("");
+                setLastname("");
+                setAddress({});
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+                setPhone("");
+                setFax("");
+                setBirthday("");
+                setEmail("");
+            }
+        }
+    }, [data, disabled])
 
     const onChangeFirstname = (e) => {
         setFirstname(e.target.value);
@@ -88,7 +127,9 @@ export default function PersonInput({title, callback}) {
         person.fax = fax;
         person.birthday = birthday;
         person.email = email;
-        callback(person);
+        if (propExist(this.props.callback)) {
+            callback(person);
+        }
     }
 
     return(
@@ -102,45 +143,45 @@ export default function PersonInput({title, callback}) {
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="firstname"><b>Vorname*</b></label>
-                            <input onChange={onChangeFirstname} className="input-input" value={firstname} name="firstname" id="firstname" type="text" placeholder="Vorname"/>
+                            <input onChange={onChangeFirstname} className="input-input" value={firstname} readOnly={disabled} name="firstname" id="firstname" type="text" placeholder="Vorname"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="firstname"><b>Nachname*</b></label>
-                            <input onChange={onChangeLastname} className="input-input" value={lastname} name="lastname" id="lastname" type="text" placeholder="Nachname"/>
+                            <input onChange={onChangeLastname} className="input-input" value={lastname} readOnly={disabled} name="lastname" id="lastname" type="text" placeholder="Nachname"/>
                         </div>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label"><b>Adresse*</b></label>
                         <div className="input-address-row">
-                            <input onChange={onChangeStreet} className="input-address-street" value={street} name="address-street" id="address-street" type="text" placeholder="Straße"/>
-                            <input onChange={onChangeNumber} className="input-address-number" value={number} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
+                            <input onChange={onChangeStreet} className="input-address-street" value={street} readOnly={disabled} name="address-street" id="address-street" type="text" placeholder="Straße"/>
+                            <input onChange={onChangeNumber} className="input-address-number" value={number} readOnly={disabled} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
                         </div>
                         <div className="input-address-row">
-                            <input onChange={onChangeZipcode} className="input-address-zipcode" value={zipcode} name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
-                            <input onChange={onChangeCity} className="input-address-city" value={city} name="address-city" id="address-city" type="text" placeholder="Stadt"/>
+                            <input onChange={onChangeZipcode} className="input-address-zipcode" value={zipcode} readOnly={disabled} name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
+                            <input onChange={onChangeCity} className="input-address-city" value={city} readOnly={disabled} name="address-city" id="address-city" type="text" placeholder="Stadt"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
-                            <input onChange={onChangePhone} className="input-input" value={phone} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                            <input onChange={onChangePhone} className="input-input" value={phone} readOnly={disabled} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="phone"><b>Fax</b></label>
-                            <input onChange={onChangeFax} className="input-input" value={fax} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
+                            <input onChange={onChangeFax} className="input-input" value={fax} readOnly={disabled} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="birthday"><b>Geburtsdatum</b></label>
-                            <input onChange={onChangeBirthday} className="input-input" value={birthday} name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
+                            <input onChange={onChangeBirthday} className="input-input" value={birthday} readOnly={disabled} name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                            <input onChange={onChangeEmail} className="input-input" value={email} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                            <input onChange={onChangeEmail} className="input-input" value={email} readOnly={disabled} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                         </div>
                     </span>
 

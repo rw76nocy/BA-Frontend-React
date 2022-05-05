@@ -4,6 +4,7 @@ import PersonalDataInput from "./personaldata.input.component";
 import TextInput from "./text.input.component";
 import GuardianInput from "./guardian.input.component";
 import AsdInput from "./asd.input.component";
+import PersonInput from "./person.input.component";
 
 import '../style/table.input.component.css';
 
@@ -27,13 +28,10 @@ export default function Child({child}) {
                 <TextInput title="Grund der Aufnahme" data={child.reason} disabled={disabled}/>
                 <GuardianInput title="Vormund/Pfleger" data={child} disabled={disabled}/>
                 <AsdInput title="Allgemeiner sozialer Dienst" data={child} disabled={disabled}/>
+                <PersonInput title="Mutter" data={child} disabled={disabled}/>
+                <PersonInput title="Vater" data={child} disabled={disabled}/>
                 {/*<ImageInput title="Foto" callback={getInputAsImage}/>
-                <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>
-                <TextInput title="Grund der Aufnahme*" callback={getInputAsReason}/>
-                <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
-                <AsdInput title="Allgemeiner sozialer Dienst" callback={getInputAsAsd}/>
-                <PersonInput title="Mutter" callback={getInputAsMother}/>
-                <PersonInput title="Vater" callback={getInputAsFather}/>
+
                 <TextInput title="Regelung Sorgerecht" callback={getInputAsCare}/>
                 <TextInput title="Besuch / Umgang / Kontakt" callback={getInputAsVisit}/>
                 <ChildDoctorInput title="Kinderarzt" callback={getInputAsChilddoctor}/>
@@ -41,7 +39,9 @@ export default function Child({child}) {
                 <TextInput title="Erkrankungen / Medikamente" callback={getInputAsDiseases}/>
                 <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
                 <FoodSupplierInput title="Essensanbieter" callback={getInputAsFoodsupplier}/>
-                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>*/}
+                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>*/
+
+                }
             </div>
             {/*<div>
                 <ReferencePerson callback={getInputAsReferencePersons}/>

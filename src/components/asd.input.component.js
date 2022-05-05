@@ -17,7 +17,6 @@ export default function AsdInput({title, callback, data, disabled}) {
     useEffect(() => {
         if (disabled && data !== undefined) {
             let asd = findPersonByType(data.personRoles, "ASD");
-            console.log(JSON.stringify(asd));
             if (!isJsonEmpty(asd)) {
                 setId(asd.id);
                 setName(asd.name);
