@@ -10,8 +10,8 @@ class ChildrenService {
         return axios.get(API_URL + 'all/', { headers: authHeader() });
     }
 
-    getFile(id) {
-        return axios.get(API_URL + 'file/' + id, { headers: authHeader() });
+    getFile(childId) {
+        return axios.get(API_URL + 'file/' + childId, { headers: authHeader(), responseType: "blob" });
     }
 
     uploadFile(file) {

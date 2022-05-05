@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 import "../style/children.navigation.component.css";
 import AuthService from "../services/auth.service";
 import Accounts from "../services/accounts.service";
@@ -40,10 +40,10 @@ function ChildNav() {
                         <div className="children-nav-left-action-panel">
                             {children.map((c) => (
                                 <li key={c.id}>
-                                    <Link key={c.id} to="/child/1" >{c.firstName} {c.lastName}</Link>
+                                    <Link key={c.id} to={"/child/" + c.id} >{c.firstName} {c.lastName}</Link>
                                 </li>
                             ))}
-                        </div>
+                            </div>
                     </div>
                 </ul>
             </div>
@@ -54,12 +54,6 @@ function ChildNav() {
                         <li>
                             <Link to="/create">Anlegen</Link>
                         </li>
-                        {/*<li>
-                            <Link to="/edit">Bearbeiten</Link>
-                        </li>
-                        <li>
-                            <Link to="/delete">Entfernen</Link>
-                        </li>*/}
                     </div>
                 </ul>
             </div>

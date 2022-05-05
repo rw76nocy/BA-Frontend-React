@@ -5,8 +5,9 @@ import AuthService from "../services/auth.service";
 import LivingGroups from "../services/living.group.service";
 import Employees from "../services/employees.service";
 import Accounts from "../services/accounts.service";
+import {findPersonByType} from "../utils/utils";
 
-export default function PersonalDataInput({title, callback}) {
+export default function PersonalDataInput({title, callback, data, disabled}) {
 
     const [livingGroup, setLivingGroup] = useState("");
     const [employees, setEmployees] = useState([]);
@@ -15,10 +16,25 @@ export default function PersonalDataInput({title, callback}) {
     const [birthday, setBirthday] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
-    const [employee1, setEmployee1] = useState({});
-    const [employee2, setEmployee2] = useState({});
+    const [employee1, setEmployee1] = useState("");
+    const [employee2, setEmployee2] = useState("");
     const [entrance, setEntrance] = useState("");
     const [release, setRelease] = useState("");
+
+    useEffect(() => {
+        if (disabled && data !== undefined) {
+            setGender(data.gender.toLowerCase());
+            setBirthday(data.birthday);
+            setFirstname(data.firstName);
+            setLastname(data.lastName);
+            let p1 = findPersonByType(data.personRoles,"SUPERVISOR1");
+            let p2 = findPersonByType(data.personRoles,"SUPERVISOR2");
+            setEmployee1(p1.name);
+            setEmployee2(p2.name);
+            setEntrance(data.entranceDate);
+            setRelease(data.releaseDate);
+        }
+    }, [data, disabled])
 
     useEffect(() => {
         let id = AuthService.getCurrentUser().id;
@@ -28,15 +44,16 @@ export default function PersonalDataInput({title, callback}) {
                 if (response.data[0]) {
                     setLivingGroup(response.data[0].name);
                     Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
+                        console.log(JSON.stringify(response.data));
                         setEmployees(response.data);
                         if (response.data[0]) {
-                            setEmployee1(response.data[0]);
-                            setEmployee2(response.data[0]);
-                            sendInputToParent(gender,birthday,firstname,lastname,response.data[0],response.data[0],entrance,release);
+                            setEmployee1(response.data[0].name);
+                            setEmployee2(response.data[0].name);
+                            sendInputToParent(gender,birthday,firstname,lastname,response.data[0].name,response.data[0].name,entrance,release);
                         } else {
-                            setEmployee1({});
-                            setEmployee2({});
-                            sendInputToParent(gender,birthday,firstname,lastname,{},{},entrance,release);
+                            setEmployee1("");
+                            setEmployee2("");
+                            sendInputToParent(gender,birthday,firstname,lastname,"","",entrance,release);
                         }
                     });
                 }
@@ -109,7 +126,7 @@ export default function PersonalDataInput({title, callback}) {
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="gender"><b>Geschlecht*</b></label>
-                            <select onChange={onChangeGender} className="input-select" value={gender} name="gender" id="gender">
+                            <select onChange={onChangeGender} className="input-select" value={gender} aria-readonly={disabled} name="gender" id="gender">
                                 <option value="male">m</option>
                                 <option value="female">w</option>
                                 <option value="diverse">d</option>
@@ -117,35 +134,35 @@ export default function PersonalDataInput({title, callback}) {
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="birthday"><b>Geburtsddatum*</b></label>
-                            <input onChange={onChangeBirthday} className="input-input" value={birthday} name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
+                            <input onChange={onChangeBirthday} className="input-input" value={birthday} readOnly={disabled} name="birthday" id="birthday" type="date" placeholder="TT.MM.JJJJ"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="firstname"><b>Vorname*</b></label>
-                            <input onChange={onChangeFirstname} className="input-input" value={firstname} name="firstname" id="firstname" type="text" placeholder="Vorname"/>
+                            <input onChange={onChangeFirstname} className="input-input" value={firstname} readOnly={disabled} name="firstname" id="firstname" type="text" placeholder="Vorname"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="lastname"><b>Nachname*</b></label>
-                            <input onChange={onChangeLastname} className="input-input" value={lastname} name="lastname" id="lastname" type="text" placeholder="Nachname"/>
+                            <input onChange={onChangeLastname} className="input-input" value={lastname} readOnly={disabled} name="lastname" id="lastname" type="text" placeholder="Nachname"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="supervisor1"><b>1.Bezugsbetreuer</b></label>
-                            <select onChange={onChangeEmployee1} className="input-select" id="supervisor1" name="supervisor1">
+                            <select onChange={onChangeEmployee1} className="input-select" value={employee1} aria-readonly={disabled} id="supervisor1" name="supervisor1">
                                 {employees.map((emp) => (
-                                    <option key={emp.id} value={emp}>{emp.name}</option>
+                                    <option key={emp.id} value={emp.name}>{emp.name}</option>
                                 ))}
                             </select>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="supervisor2"><b>2.Bezugsbetreuer</b></label>
-                            <select onChange={onChangeEmployee2} className="input-select" id="supervisor2" name="supervisor2">
+                            <select onChange={onChangeEmployee2} className="input-select" value={employee2} aria-readonly={disabled} id="supervisor2" name="supervisor2">
                                 {employees.map((emp) => (
-                                    <option key={emp.id} value={emp}>{emp.name}</option>
+                                    <option key={emp.id} value={emp.name}>{emp.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -154,11 +171,11 @@ export default function PersonalDataInput({title, callback}) {
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="entrance"><b>Aufnahmedatum*</b></label>
-                            <input onChange={onChangeEntrance} className="input-input" value={entrance} name="entrance" id="entrance" type="date" placeholder="TT.MM.JJJJ"/>
+                            <input onChange={onChangeEntrance} className="input-input" value={entrance} readOnly={disabled} name="entrance" id="entrance" type="date" placeholder="TT.MM.JJJJ"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="release"><b>Entlassungsdatum</b></label>
-                            <input onChange={onChangeRelease} className="input-input" value={release} name="release" id="release" type="date" placeholder="TT.MM.JJJJ"/>
+                            <input onChange={onChangeRelease} className="input-input" value={release} readOnly={disabled} name="release" id="release" type="date" placeholder="TT.MM.JJJJ"/>
                         </div>
                     </span>
 

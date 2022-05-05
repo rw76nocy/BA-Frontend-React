@@ -5,10 +5,12 @@ import "../style/navigation-bar.component.css";
 
 import ChildNav from './children.navigation.component';
 import Children from "./children.create.component";
+import Child from "./child.show.component";
 
 import AuthService from "../services/auth.service";
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
+import ChildrenService from "../services/children.service";
 
 function Navbar() {
     const [livingGroup, setLivingGroup] = useState("");
@@ -17,6 +19,7 @@ function Navbar() {
     const [showAdminBoard, setShowAdminBoard] = useState(false);
     const [childNav, setChildNav] = useState(false);
     const [showChildNav, setShowChildNav] = useState(false);
+    const [children, setChildren] = useState([]);
 
     useEffect(() => {
         setCurrentUser(AuthService.getCurrentUser());
@@ -28,6 +31,10 @@ function Navbar() {
                 Accounts.getAccountById(id).then(response => {
                     LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
                         setLivingGroup(response.data[0].name)
+                        ChildrenService.getChildrenByLivingGroup(response.data[0].name).then(response => {
+                            console.log("Children: "+JSON.stringify(response.data));
+                            setChildren(response.data);
+                        });
                     });
                 });
             }
@@ -105,7 +112,7 @@ function Navbar() {
 
                 <div className="middle">
                     <ul className="navBar">
-                        {currentUser ?
+                        {currentUser &&
                             <div className="middle-panel">
                                 {showAdminBoard ?
                                     <div className="middle-action-panel">
@@ -130,28 +137,22 @@ function Navbar() {
                                     </div>
                                 }
 
-                                {showModeratorBoard || showAdminBoard ?
+                                {showModeratorBoard || showAdminBoard &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/employees" onClick={deactivateChildNav}>Mitarbeiter</Link>
                                         </li>
                                     </div>
-                                    :
-                                    <div></div>
                                 }
 
-                                {showModeratorBoard || showAdminBoard ?
+                                {showModeratorBoard || showAdminBoard &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/accounts" onClick={deactivateChildNav}>Konten</Link>
                                         </li>
                                     </div>
-                                    :
-                                    <div></div>
                                 }
                             </div>
-                            :
-                            <div></div>
                         }
                     </ul>
                 </div>
@@ -184,18 +185,20 @@ function Navbar() {
             </div>
 
             <div className="second-level">
-                {showChildNav ?
+                {showChildNav &&
                     <div>
                         <ChildNav/>
-                        <div>
-                            <Routes>
-                                <Route path="/create" element={<Children/>} />
-                                {/*//TODO edit und delete*/}
-                            </Routes>
-                        </div>
+                        <ul>
+                            <div>
+                                <Routes>
+                                    {children.map((c) => (
+                                        <Route key={c.id} path={"/child/" + c.id} element={<Child child={c}/>}/>
+                                    ))}
+                                    <Route path="/create" element={<Children/>} />
+                                </Routes>
+                            </div>
+                        </ul>
                     </div>
-                    :
-                    <div></div>
                 }
             </div>
 

@@ -1,10 +1,16 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 
-export default function TextInput({title, callback}) {
+export default function TextInput({title, callback, data, disabled}) {
 
     const [input, setInput] = useState("");
+
+    useEffect(() => {
+        if (disabled && data !== undefined) {
+            setInput(data);
+        }
+    }, [data, disabled])
 
     const onChangeInput = (e) => {
         setInput(e.target.value);
@@ -16,7 +22,7 @@ export default function TextInput({title, callback}) {
             <div className="input-container">
                 <h3><u>{title}</u></h3>
                 <div className="input-create-container">
-                    <textarea onChange={onChangeInput} className="textarea-input" value={input} name="text" id="text" cols="70" rows="11" wrap="soft"/>
+                    <textarea onChange={onChangeInput} className="textarea-input" value={input} readOnly={disabled} name="text" id="text" cols="70" rows="11" wrap="soft"/>
                 </div>
             </div>
         </div>

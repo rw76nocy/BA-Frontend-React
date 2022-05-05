@@ -111,6 +111,14 @@
     width: 100%;
 }
 
+.input-select[aria-readonly = true] {
+    pointer-events: none;
+}
+
+.input-select[aria-readonly = false] {
+    pointer-events: auto;
+}
+
 .textarea-input {
     width: 100%;
     resize: none;
