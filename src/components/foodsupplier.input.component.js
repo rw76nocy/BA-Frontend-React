@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
+import {findInstitutionByType, isJsonEmpty, propExist} from "../utils/utils";
 
-export default function FoodSupplierInput({title, callback}) {
+export default function FoodSupplierInput({title, callback, data, disabled}) {
 
     const [foodsuppliers, setFoodsuppliers] = useState([]);
     const [id, setId] = useState("");
@@ -15,9 +16,33 @@ export default function FoodSupplierInput({title, callback}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
+        if (disabled && data !== undefined) {
+            let fs = findInstitutionByType(data.institutionRoles, "FOODSUPPLIER");
+            if (!isJsonEmpty(fs)) {
+                setId(fs.id);
+                setName(fs.name);
+                if (data.supply) {
+                    setCNumber(data.supply.customerNumber);
+                    setPin(data.supply.pin);
+                }
+                setPhone(fs.phone);
+                setFax(fs.fax);
+                setEmail(fs.email);
+            } else {
+                setId("0");
+                setName("");
+                setCNumber("");
+                setPin("");
+                setPhone("");
+                setFax("");
+                setEmail("");
+            }
+        }
+    }, [data, disabled])
+
+    useEffect(() => {
         Institutions.getAllFoodsuppliers().then(response => {
             if (response.data) {
-                console.log(JSON.stringify(response.data));
                 let suppliers = [{ id: 0, name: "keine"}];
                 response.data.map(supplier => {
                     suppliers.push(supplier);
@@ -90,12 +115,16 @@ export default function FoodSupplierInput({title, callback}) {
         supplier.phone = phone;
         supplier.fax = fax;
         supplier.email = email;
-        callback(supplier);
+        if (propExist(this.props.callback)) {
+            callback(supplier);
+        }
     }
 
     const sendEmptyInputToParent = () => {
         let supplier = {};
-        callback(supplier);
+        if (propExist(this.props.callback)) {
+            callback(supplier);
+        }
     }
 
     return(
@@ -108,7 +137,7 @@ export default function FoodSupplierInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingFoodsupplierChange} className="input-select" id="existing" name="existing">
+                        <select onChange={onExistingFoodsupplierChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
                             {foodsuppliers.map((foodsupplier) => (
                                 <option key={foodsupplier.id} value={foodsupplier.id}>{foodsupplier.name}</option>
                             ))}
@@ -117,34 +146,34 @@ export default function FoodSupplierInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
-                        <input onChange={onChangeName} className="input-input" value={name} name="name" id="name" type="text" placeholder="Name"/>
+                        <input onChange={onChangeName} className="input-input" value={name} readOnly={disabled} name="name" id="name" type="text" placeholder="Name"/>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="number"><b>Kundennummer</b></label>
-                            <input onChange={onChangeCNumber} className="input-input" value={cNumber} name="number" id="number" type="text" placeholder="Kundennummer"/>
+                            <input onChange={onChangeCNumber} className="input-input" value={cNumber} readOnly={disabled} name="number" id="number" type="text" placeholder="Kundennummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="pin"><b>PIN</b></label>
-                            <input onChange={onChangePin} className="input-input" value={pin} name="pin" id="pin" type="text" placeholder="PIN"/>
+                            <input onChange={onChangePin} className="input-input" value={pin} readOnly={disabled} name="pin" id="pin" type="text" placeholder="PIN"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
-                            <input onChange={onChangePhone} className="input-input" value={phone} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                            <input onChange={onChangePhone} className="input-input" value={phone} readOnly={disabled} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="phone"><b>Fax</b></label>
-                            <input onChange={onChangeFax} className="input-input" value={fax} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
+                            <input onChange={onChangeFax} className="input-input" value={fax} readOnly={disabled} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                         </div>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input onChange={onChangeEmail} className="input-input" value={email} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                        <input onChange={onChangeEmail} className="input-input" value={email} readOnly={disabled} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>

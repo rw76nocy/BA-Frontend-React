@@ -9,6 +9,7 @@ import ChildDoctorInput from "./childdoctor.input.component";
 import DayCareInput from "./daycare.input.component";
 import HealthInsuranceInput from "./healthinsurance.input.component";
 import '../style/table.input.component.css';
+import FoodSupplierInput from "./foodsupplier.input.component";
 
 export default function Child({child}) {
 
@@ -38,6 +39,7 @@ export default function Child({child}) {
                 <TextInput title="Erkrankungen / Medikamente" data={child.diseases} disabled={disabled}/>
                 <DayCareInput title="Kita / Tagespflege" data={child} disabled={disabled}/>
                 <HealthInsuranceInput title="Krankenkasse" data={child} disabled={disabled}/>
+                <FoodSupplierInput title="Essensanbieter" data={child} disabled={disabled}/>
                 {
                  /*
                 <DayCareInput title="Kita / Tagespflege" callback={getInputAsDaycare}/>
