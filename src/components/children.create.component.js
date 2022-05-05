@@ -24,6 +24,8 @@ import FileService from "../services/file.service";
 
 export default function Children() {
 
+    const [disabled, setDisabled] = useState(false);
+
     const [image, setImage] = useState();
     const [personal, setPersonal] = useState({});
     const [reason, setReason] = useState("");
@@ -291,7 +293,7 @@ export default function Children() {
     }
 
     return(
-        <div className="children-container">
+        <div className="children-container" aria-readonly={disabled}>
             <div className="children-components">
                 <ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>

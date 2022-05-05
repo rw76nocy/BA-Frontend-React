@@ -22,7 +22,7 @@ export default function Child({child}) {
     }
 
     return(
-        <div className="children-container">
+        <div className="children-container" aria-readonly={disabled}>
             <div className="table-input-toggle-row">
                 <button className="table-input-toggle-button" type="button" onClick={edit}>Bearbeiten</button>
                 <button className="table-input-toggle-button" type="button">Entfernen</button>
@@ -38,8 +38,8 @@ export default function Child({child}) {
                 <TextInput title="Regelung Sorgerecht" data={child.care} disabled={disabled}/>
                 <TextInput title="Besuch / Umgang / Kontakt" data={child.visit} disabled={disabled}/>
                 <ChildDoctorInput title="Kinderarzt" data={child} disabled={disabled}/>
-                <TextInput title="Erkrankungen / Medikamente" data={child.diseases} disabled={disabled}/>
                 <DayCareInput title="Kita / Tagespflege" data={child} disabled={disabled}/>
+                <TextInput title="Erkrankungen / Medikamente" data={child.diseases} disabled={disabled}/>
                 <HealthInsuranceInput title="Krankenkasse" data={child} disabled={disabled}/>
                 <FoodSupplierInput title="Essensanbieter" data={child} disabled={disabled}/>
                 <InstitutionInput title="Fahrdienst" data={child} disabled={disabled}/>

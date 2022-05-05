@@ -179,14 +179,16 @@ export default function DayCareInput({title, callback, data, disabled}) {
 
                 <div className="input-create-container">
 
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingDayCareChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
-                            {daycares.map((care) => (
-                                <option key={care.id} value={care.id}>{care.name}</option>
-                            ))}
-                        </select>
-                    </span>
+                    {!disabled &&
+                        <span className="input-row">
+                            <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
+                            <select onChange={onExistingDayCareChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                                {daycares.map((care) => (
+                                    <option key={care.id} value={care.id}>{care.name}</option>
+                                ))}
+                            </select>
+                        </span>
+                    }
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>

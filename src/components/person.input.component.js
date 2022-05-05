@@ -29,7 +29,7 @@ export default function PersonInput({title, callback, data, disabled}) {
             if (!isJsonEmpty(person)) {
                 let names = person.name.split(/(\s+)/);
                 setFirstname(names[0]);
-                setLastname(names[1]);
+                setLastname(names[2]);
                 setAddress(person.address);
                 setStreet(person.address.street);
                 setNumber(person.address.number);

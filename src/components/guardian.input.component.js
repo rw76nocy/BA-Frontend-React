@@ -109,14 +109,16 @@ export default function GuardianInput({title, callback, data, disabled}) {
 
                 <div className="input-create-container">
 
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
-                            {guardians.map((guard) => (
-                                <option key={guard.id} value={guard.id}>{guard.name}</option>
-                            ))}
-                        </select>
-                    </span>
+                    {!disabled &&
+                        <span className="input-row">
+                            <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
+                            <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                                {guardians.map((guard) => (
+                                    <option key={guard.id} value={guard.id}>{guard.name}</option>
+                                ))}
+                            </select>
+                        </span>
+                    }
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>

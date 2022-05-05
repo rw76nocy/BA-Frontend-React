@@ -120,14 +120,16 @@ export default function AsdInput({title, callback, data, disabled}) {
 
                 <div className="input-create-container">
 
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
-                            {asds.map((asd) => (
-                                <option key={asd.id} value={asd.id}>{asd.name}</option>
-                            ))}
-                        </select>
-                    </span>
+                    {!disabled &&
+                        <span className="input-row">
+                            <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
+                            <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                                {asds.map((asd) => (
+                                    <option key={asd.id} value={asd.id}>{asd.name}</option>
+                                ))}
+                            </select>
+                        </span>
+                    }
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>

@@ -47,8 +47,10 @@ function Navbar() {
             let roles = [];
             roles = currentUser.roles;
             if (roles) {
-                setShowModeratorBoard(roles.includes("ROLE_MODERATOR"))
+                setShowModeratorBoard(roles.includes("ROLE_MODERATOR"));
                 setShowAdminBoard(roles.includes("ROLE_ADMIN"));
+                console.log("Is_Mod: "+roles.includes("ROLE_MODERATOR"));
+                console.log("Is_Admin: "+roles.includes("ROLE_ADMIN"));
             }
         } else {
             setShowModeratorBoard(false);
@@ -137,7 +139,7 @@ function Navbar() {
                                     </div>
                                 }
 
-                                {showModeratorBoard || showAdminBoard &&
+                                {(showModeratorBoard || showAdminBoard) &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/employees" onClick={deactivateChildNav}>Mitarbeiter</Link>
@@ -145,7 +147,7 @@ function Navbar() {
                                     </div>
                                 }
 
-                                {showModeratorBoard || showAdminBoard &&
+                                {(showModeratorBoard || showAdminBoard) &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/accounts" onClick={deactivateChildNav}>Konten</Link>

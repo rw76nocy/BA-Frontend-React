@@ -171,14 +171,16 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
 
                 <div className="input-create-container">
 
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingDocChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
-                            {childdoctors.map((doc) => (
-                                <option key={doc.id} value={doc.id}>{doc.name}</option>
-                            ))}
-                        </select>
-                    </span>
+                    {!disabled &&
+                        <span className="input-row">
+                            <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
+                            <select onChange={onExistingDocChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                                {childdoctors.map((doc) => (
+                                    <option key={doc.id} value={doc.id}>{doc.name}</option>
+                                ))}
+                            </select>
+                        </span>
+                    }
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>

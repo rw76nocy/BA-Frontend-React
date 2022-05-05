@@ -1,6 +1,5 @@
 .table-input-container {
     padding: 10px 40px;
-    background-color: #ffc38d;
     margin: 0 auto 25px;
     margin-top: 10px;
     border-radius: 10px;
@@ -19,9 +18,24 @@
 
 .children-container {
     margin: 20px;
-    background-color: #ffc38d;
     border-radius: 10px;
     padding-bottom: 20px;
+}
+
+.table-input-container[aria-readonly = true] {
+    background-color: #ffc38d;
+}
+
+.table-input-container[aria-readonly = false] {
+    background-color: bisque;
+}
+
+.children-container[aria-readonly = true] {
+    background-color: #ffc38d;
+}
+
+.children-container[aria-readonly = false] {
+    background-color: bisque;
 }
 
 .children-components {

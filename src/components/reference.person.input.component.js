@@ -6,8 +6,8 @@ import moment from "moment";
 
 import '../style/table.input.component.css';
 
-export default function ReferencePerson({callback}) {
-
+export default function ReferencePerson({callback, data, disabled}) {
+    //TODO dann hier "data" verarbeiten
     const [tableData, setTableData] = useState([]);
     const [toggle, setToggle] = useState(false);
 
@@ -111,7 +111,7 @@ export default function ReferencePerson({callback}) {
         [onDeleteClick]
     )
 
-    const data = useMemo(() => tableData, [tableData]);
+    const tData = useMemo(() => tableData, [tableData]);
 
     const addInputToReferencePersons = (input) => {
         let temp_data = [...tableData];
@@ -145,7 +145,7 @@ export default function ReferencePerson({callback}) {
     }
 
     return(
-        <div className="table-input-container">
+        <div className="table-input-container" aria-readonly={disabled}>
             <div className="table-input-toggle-row">
                 {!toggle && <button className="table-input-toggle-button" type="button" onClick={activateToggle}>Bezugspersonen anzeigen</button>}
                 {toggle && <button className="table-input-toggle-button" type="button" onClick={deactivateToggle}>Einklappen</button>}
@@ -157,14 +157,16 @@ export default function ReferencePerson({callback}) {
                         <h1><u>Bezugspersonen</u></h1>
                     </div>
 
-                    <Table columns={columns} data={data}/>
+                    <Table columns={columns} data={tData}/>
 
-                    <div className="table-input-title">
-                        <h2><u>Bezugspersonen hinzufügen</u></h2>
-                    </div>
-
-                    <CreateReferencePerson callback={addInputToReferencePersons}/>
-
+                    {!disabled &&
+                        <div>
+                            <div className="table-input-title">
+                                <h2><u>Bezugspersonen hinzufügen</u></h2>
+                            </div>
+                            <CreateReferencePerson callback={addInputToReferencePersons}/>
+                        </div>
+                    }
                 </div>
             }
         </div>

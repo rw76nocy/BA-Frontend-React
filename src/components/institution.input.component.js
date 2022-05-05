@@ -173,14 +173,16 @@ export default function InstitutionInput({title, callback, data, disabled}) {
 
                 <div className="input-create-container">
 
-                    <span className="input-row">
-                        <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingDriverChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
-                            {drivers.map((driver) => (
-                                <option key={driver.id} value={driver.id}>{driver.name}</option>
-                            ))}
-                        </select>
-                    </span>
+                    {!disabled &&
+                        <span className="input-row">
+                            <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
+                            <select onChange={onExistingDriverChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                                {drivers.map((driver) => (
+                                    <option key={driver.id} value={driver.id}>{driver.name}</option>
+                                ))}
+                            </select>
+                        </span>
+                    }
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
