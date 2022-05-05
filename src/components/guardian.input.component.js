@@ -14,16 +14,20 @@ export default function GuardianInput({title, callback, data, disabled}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        console.log("Guardian Data: "+JSON.stringify(data));
         if (disabled && data !== undefined) {
             let guard = findPersonByType(data.personRoles, "GUARDIAN");
             if (!isJsonEmpty(guard)) {
-                console.log(JSON.stringify(guard));
                 setId(guard.id);
                 setName(guard.name);
                 setPhone(guard.phone);
                 setFax(guard.fax);
                 setEmail(guard.email);
+            } else {
+                setId("0");
+                setName("");
+                setPhone("");
+                setFax("");
+                setEmail("");
             }
         }
     }, [data, disabled])

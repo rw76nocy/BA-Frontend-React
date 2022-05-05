@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
+import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
 
-export default function AsdInput({title, callback}) {
+export default function AsdInput({title, callback, data, disabled}) {
 
     const [asds, setAsds] = useState([]);
     const [id, setId] = useState("");
@@ -12,6 +13,28 @@ export default function AsdInput({title, callback}) {
     const [phone, setPhone] = useState("");
     const [fax, setFax] = useState("");
     const [email, setEmail] = useState("");
+
+    useEffect(() => {
+        if (disabled && data !== undefined) {
+            let asd = findPersonByType(data.personRoles, "ASD");
+            console.log(JSON.stringify(asd));
+            if (!isJsonEmpty(asd)) {
+                setId(asd.id);
+                setName(asd.name);
+                setYouthoffice(asd.youthoffice);
+                setPhone(asd.phone);
+                setFax(asd.fax);
+                setEmail(asd.email);
+            } else {
+                setId("0");
+                setName("");
+                setYouthoffice("");
+                setPhone("");
+                setFax("");
+                setEmail("");
+            }
+        }
+    }, [data, disabled])
 
     useEffect(() => {
         Persons.getAllAsds().then(response => {
@@ -82,12 +105,16 @@ export default function AsdInput({title, callback}) {
         asd.phone = phone;
         asd.fax = fax;
         asd.email = email;
-        callback(asd);
+        if (propExist(this.props.callback)) {
+            callback(asd);
+        }
     }
 
     const sendEmptyInputToParent = () => {
         let asd = {};
-        callback(asd);
+        if (propExist(this.props.callback)) {
+            callback(asd);
+        }
     }
 
     return(
@@ -100,37 +127,37 @@ export default function AsdInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingChange} className="input-select" id="existing" name="existing">
-                            {asds.map((guard) => (
-                                <option key={guard.id} value={guard.id}>{guard.name}</option>
+                        <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
+                            {asds.map((asd) => (
+                                <option key={asd.id} value={asd.id}>{asd.name}</option>
                             ))}
                         </select>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
-                        <input onChange={onNameChange} className="input-input" value={name} name="name" id="name" type="text" placeholder="Name"/>
+                        <input onChange={onNameChange} className="input-input" value={name} readOnly={disabled} name="name" id="name" type="text" placeholder="Name"/>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label"><b>Jugendamt*</b></label>
-                        <input onChange={onYouthofficeChange} className="input-input" value={youthoffice} name="youthoffice" id="youthoffice" type="text" placeholder="Jugendamt"/>
+                        <input onChange={onYouthofficeChange} className="input-input" value={youthoffice} readOnly={disabled} name="youthoffice" id="youthoffice" type="text" placeholder="Jugendamt"/>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
-                            <input onChange={onPhoneChange} className="input-input" value={phone} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                            <input onChange={onPhoneChange} className="input-input" value={phone} readOnly={disabled} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="phone"><b>Fax</b></label>
-                            <input onChange={onFaxChange} className="input-input" value={fax} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
+                            <input onChange={onFaxChange} className="input-input" value={fax} readOnly={disabled} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                         </div>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input onChange={onEmailChange} className="input-input" value={email} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                        <input onChange={onEmailChange} className="input-input" value={email} readOnly={disabled} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>

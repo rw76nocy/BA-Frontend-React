@@ -3,6 +3,7 @@ import ImageInput from "./image.input.component";
 import PersonalDataInput from "./personaldata.input.component";
 import TextInput from "./text.input.component";
 import GuardianInput from "./guardian.input.component";
+import AsdInput from "./asd.input.component";
 
 import '../style/table.input.component.css';
 
@@ -24,8 +25,8 @@ export default function Child({child}) {
                 <ImageInput title="Foto" childId={child.id} disabled={disabled}/>
                 <PersonalDataInput title="Persönliche Daten" data={child} disabled={disabled}/>
                 <TextInput title="Grund der Aufnahme" data={child.reason} disabled={disabled}/>
-                {/*//TODO Hier dann weiter machen!!!*/}
                 <GuardianInput title="Vormund/Pfleger" data={child} disabled={disabled}/>
+                <AsdInput title="Allgemeiner sozialer Dienst" data={child} disabled={disabled}/>
                 {/*<ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>
                 <TextInput title="Grund der Aufnahme*" callback={getInputAsReason}/>

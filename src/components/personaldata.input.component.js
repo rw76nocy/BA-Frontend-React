@@ -44,7 +44,6 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
                 if (response.data[0]) {
                     setLivingGroup(response.data[0].name);
                     Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
-                        console.log(JSON.stringify(response.data));
                         setEmployees(response.data);
                         if (response.data[0]) {
                             setEmployee1(response.data[0].name);
