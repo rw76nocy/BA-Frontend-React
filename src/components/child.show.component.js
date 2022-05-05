@@ -10,6 +10,7 @@ import DayCareInput from "./daycare.input.component";
 import HealthInsuranceInput from "./healthinsurance.input.component";
 import '../style/table.input.component.css';
 import FoodSupplierInput from "./foodsupplier.input.component";
+import InstitutionInput from "./institution.input.component";
 
 export default function Child({child}) {
 
@@ -40,15 +41,7 @@ export default function Child({child}) {
                 <DayCareInput title="Kita / Tagespflege" data={child} disabled={disabled}/>
                 <HealthInsuranceInput title="Krankenkasse" data={child} disabled={disabled}/>
                 <FoodSupplierInput title="Essensanbieter" data={child} disabled={disabled}/>
-                {
-                 /*
-                <DayCareInput title="Kita / Tagespflege" callback={getInputAsDaycare}/>
-                <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
-                <FoodSupplierInput title="Essensanbieter" callback={getInputAsFoodsupplier}/>
-                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>
-                */
-
-                }
+                <InstitutionInput title="Fahrdienst" data={child} disabled={disabled}/>
             </div>
             {/*<div>
                 <ReferencePerson callback={getInputAsReferencePersons}/>
