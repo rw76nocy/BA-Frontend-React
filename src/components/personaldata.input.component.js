@@ -5,7 +5,7 @@ import AuthService from "../services/auth.service";
 import LivingGroups from "../services/living.group.service";
 import Employees from "../services/employees.service";
 import Accounts from "../services/accounts.service";
-import {findPersonByType} from "../utils/utils";
+import {findPersonByType, propExist} from "../utils/utils";
 
 export default function PersonalDataInput({title, callback, data, disabled}) {
 
@@ -112,7 +112,9 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
         personal.supervisor2 = supervisor2;
         personal.entrance = entrance;
         personal.release = release;
-        callback(personal);
+        if (propExist(this.props.callback)) {
+            callback(personal);
+        }
     }
 
     return(

@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
+import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
 
-export default function GuardianInput({title, callback}) {
+export default function GuardianInput({title, callback, data, disabled}) {
 
     const [guardians, setGuardians] = useState([]);
     const [id, setId] = useState("");
@@ -11,6 +12,21 @@ export default function GuardianInput({title, callback}) {
     const [phone, setPhone] = useState("");
     const [fax, setFax] = useState("");
     const [email, setEmail] = useState("");
+
+    useEffect(() => {
+        console.log("Guardian Data: "+JSON.stringify(data));
+        if (disabled && data !== undefined) {
+            let guard = findPersonByType(data.personRoles, "GUARDIAN");
+            if (!isJsonEmpty(guard)) {
+                console.log(JSON.stringify(guard));
+                setId(guard.id);
+                setName(guard.name);
+                setPhone(guard.phone);
+                setFax(guard.fax);
+                setEmail(guard.email);
+            }
+        }
+    }, [data, disabled])
 
     useEffect(() => {
         Persons.getAllGuardians().then(response => {
@@ -73,12 +89,16 @@ export default function GuardianInput({title, callback}) {
         guard.phone = phone;
         guard.fax = fax;
         guard.email = email;
-        callback(guard);
+        if (propExist(this.props.callback)) {
+            callback(guard);
+        }
     }
 
     const sendEmptyInputToParent = () => {
         let guard = {};
-        callback(guard);
+        if (propExist(this.props.callback)) {
+            callback(guard);
+        }
     }
 
     return(
@@ -91,7 +111,7 @@ export default function GuardianInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingChange} className="input-select" id="existing" name="existing">
+                        <select onChange={onExistingChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
                             {guardians.map((guard) => (
                                 <option key={guard.id} value={guard.id}>{guard.name}</option>
                             ))}
@@ -100,23 +120,23 @@ export default function GuardianInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
-                        <input onChange={onNameChange} className="input-input" value={name} name="name" id="name" type="text" placeholder="Name"/>
+                        <input onChange={onNameChange} className="input-input" value={name} readOnly={disabled} name="name" id="name" type="text" placeholder="Name"/>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
-                            <input onChange={onPhoneChange} className="input-input" value={phone} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                            <input onChange={onPhoneChange} className="input-input" value={phone} readOnly={disabled} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="phone"><b>Fax</b></label>
-                            <input onChange={onFaxChange} className="input-input" value={fax} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
+                            <input onChange={onFaxChange} className="input-input" value={fax} readOnly={disabled} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                         </div>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input onChange={onEmailChange} className="input-input" value={email} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                        <input onChange={onEmailChange} className="input-input" value={email} readOnly={disabled} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>

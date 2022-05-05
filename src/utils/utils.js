@@ -10,4 +10,12 @@ export function findPersonByType(list,type)  {
     return obj;
 }
 
+export function isJsonEmpty(json) {
+    return JSON.stringify(json) === "{}";
+}
+
+export function propExist(prop) {
+    return typeof prop === 'function';
+}
+
 
