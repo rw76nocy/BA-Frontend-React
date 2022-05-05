@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
 
 export default function FoodSupplierInput({title, callback, data, disabled}) {
 
@@ -115,16 +115,12 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
         supplier.phone = phone;
         supplier.fax = fax;
         supplier.email = email;
-        if (propExist(this.props.callback)) {
-            callback(supplier);
-        }
+        callback(supplier);
     }
 
     const sendEmptyInputToParent = () => {
         let supplier = {};
-        if (propExist(this.props.callback)) {
-            callback(supplier);
-        }
+        callback(supplier);
     }
 
     return(

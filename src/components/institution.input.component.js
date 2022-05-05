@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
 
 export default function InstitutionInput({title, callback, data, disabled}) {
 
@@ -157,16 +157,12 @@ export default function InstitutionInput({title, callback, data, disabled}) {
         driver.phone = phone;
         driver.fax = fax;
         driver.email = email;
-        if (propExist(this.props.callback)) {
-            callback(driver);
-        }
+        callback(driver);
     }
 
     const sendEmptyInputToParent = () => {
         let driver = {};
-        if (propExist(this.props.callback)) {
-            callback(driver);
-        }
+        callback(driver);
     }
 
     return(

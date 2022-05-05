@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
-import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findPersonByType, isJsonEmpty} from "../utils/utils";
 
 export default function GuardianInput({title, callback, data, disabled}) {
 
@@ -93,16 +93,12 @@ export default function GuardianInput({title, callback, data, disabled}) {
         guard.phone = phone;
         guard.fax = fax;
         guard.email = email;
-        if (propExist(this.props.callback)) {
-            callback(guard);
-        }
+        callback(guard);
     }
 
     const sendEmptyInputToParent = () => {
         let guard = {};
-        if (propExist(this.props.callback)) {
-            callback(guard);
-        }
+        callback(guard);
     }
 
     return(

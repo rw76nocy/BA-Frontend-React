@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
-import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findPersonByType, isJsonEmpty} from "../utils/utils";
 
 export default function ChildDoctorInput({title, callback, data, disabled}) {
 
@@ -155,16 +155,12 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
         doc.phone = phone;
         doc.fax = fax;
         doc.email = email;
-        if (propExist(this.props.callback)) {
-            callback(doc);
-        }
+        callback(doc);
     }
 
     const sendEmptyInputToParent = () => {
         let doc = {};
-        if (propExist(this.props.callback)) {
-            callback(doc);
-        }
+        callback(doc);
     }
 
     return(

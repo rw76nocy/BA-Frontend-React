@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
-import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findPersonByType, isJsonEmpty} from "../utils/utils";
 
 export default function PersonInput({title, callback, data, disabled}) {
 
@@ -127,9 +127,7 @@ export default function PersonInput({title, callback, data, disabled}) {
         person.fax = fax;
         person.birthday = birthday;
         person.email = email;
-        if (propExist(this.props.callback)) {
-            callback(person);
-        }
+        callback(person);
     }
 
     return(

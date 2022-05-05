@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
 
 export default function HealthInsuranceInput({title, callback, data, disabled}) {
 
@@ -163,16 +163,12 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
         insurance.address = address;
         insurance.phone = phone;
         insurance.fax = fax;
-        if (propExist(this.props.callback)) {
-            callback(insurance);
-        }
+        callback(insurance);
     }
 
     const sendEmptyInputToParent = () => {
         let insurance = {};
-        if (propExist(this.props.callback)) {
-            callback(insurance);
-        }
+        callback(insurance);
     }
 
     return(

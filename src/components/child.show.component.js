@@ -11,6 +11,7 @@ import HealthInsuranceInput from "./healthinsurance.input.component";
 import '../style/table.input.component.css';
 import FoodSupplierInput from "./foodsupplier.input.component";
 import InstitutionInput from "./institution.input.component";
+import ReferencePerson from "./reference.person.input.component";
 
 export default function Child({child}) {
 
@@ -42,6 +43,12 @@ export default function Child({child}) {
                 <HealthInsuranceInput title="Krankenkasse" data={child} disabled={disabled}/>
                 <FoodSupplierInput title="Essensanbieter" data={child} disabled={disabled}/>
                 <InstitutionInput title="Fahrdienst" data={child} disabled={disabled}/>
+            </div>
+            <div>
+                <ReferencePerson data={child} disabled={disabled}/>
+                {/*<Doctor data={child} disabled={disabled}/>
+                <Therapist data={child} disabled={disabled}/>
+                <Partner data={child} disabled={disabled}/>*/}
             </div>
             {/*<div>
                 <ReferencePerson callback={getInputAsReferencePersons}/>

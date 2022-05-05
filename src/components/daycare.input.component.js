@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty, propExist} from "../utils/utils";
+import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
 
 export default function DayCareInput({title, callback, data, disabled}) {
 
@@ -163,16 +163,12 @@ export default function DayCareInput({title, callback, data, disabled}) {
         daycare.address = address;
         daycare.phone = phone;
         daycare.fax = fax;
-        if (propExist(this.props.callback)) {
-            callback(daycare);
-        }
+        callback(daycare);
     }
 
     const sendEmptyInputToParent = () => {
         let care = {};
-        if (propExist(this.props.callback)) {
-            callback(care);
-        }
+        callback(care);
     }
 
     return(
