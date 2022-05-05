@@ -6,6 +6,7 @@ import GuardianInput from "./guardian.input.component";
 import AsdInput from "./asd.input.component";
 import PersonInput from "./person.input.component";
 import ChildDoctorInput from "./childdoctor.input.component";
+import DayCareInput from "./daycare.input.component";
 
 import '../style/table.input.component.css';
 
@@ -35,12 +36,14 @@ export default function Child({child}) {
                 <TextInput title="Besuch / Umgang / Kontakt" data={child.visit} disabled={disabled}/>
                 <ChildDoctorInput title="Kinderarzt" data={child} disabled={disabled}/>
                 <TextInput title="Erkrankungen / Medikamente" data={child.diseases} disabled={disabled}/>
-                {/*<ImageInput title="Foto" callback={getInputAsImage}/>
-
+                <DayCareInput title="Kita / Tagespflege" data={child} disabled={disabled}/>
+                {
+                 /*
                 <DayCareInput title="Kita / Tagespflege" callback={getInputAsDaycare}/>
                 <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
                 <FoodSupplierInput title="Essensanbieter" callback={getInputAsFoodsupplier}/>
-                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>*/
+                <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>
+                */
 
                 }
             </div>

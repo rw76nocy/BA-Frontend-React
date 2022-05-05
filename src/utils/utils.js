@@ -10,6 +10,18 @@ export function findPersonByType(list,type)  {
     return obj;
 }
 
+export function findInstitutionByType(list,type)  {
+    let obj = {}
+    list.map(i => {
+        if (i.role && i.institution) {
+            if (i.role.type === type) {
+                obj = i.institution;
+            }
+        }
+    })
+    return obj;
+}
+
 export function isJsonEmpty(json) {
     return JSON.stringify(json) === "{}";
 }
