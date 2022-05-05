@@ -5,6 +5,7 @@ import TextInput from "./text.input.component";
 import GuardianInput from "./guardian.input.component";
 import AsdInput from "./asd.input.component";
 import PersonInput from "./person.input.component";
+import ChildDoctorInput from "./childdoctor.input.component";
 
 import '../style/table.input.component.css';
 
@@ -30,13 +31,13 @@ export default function Child({child}) {
                 <AsdInput title="Allgemeiner sozialer Dienst" data={child} disabled={disabled}/>
                 <PersonInput title="Mutter" data={child} disabled={disabled}/>
                 <PersonInput title="Vater" data={child} disabled={disabled}/>
+                <TextInput title="Regelung Sorgerecht" data={child.care} disabled={disabled}/>
+                <TextInput title="Besuch / Umgang / Kontakt" data={child.visit} disabled={disabled}/>
+                <ChildDoctorInput title="Kinderarzt" data={child} disabled={disabled}/>
+                <TextInput title="Erkrankungen / Medikamente" data={child.diseases} disabled={disabled}/>
                 {/*<ImageInput title="Foto" callback={getInputAsImage}/>
 
-                <TextInput title="Regelung Sorgerecht" callback={getInputAsCare}/>
-                <TextInput title="Besuch / Umgang / Kontakt" callback={getInputAsVisit}/>
-                <ChildDoctorInput title="Kinderarzt" callback={getInputAsChilddoctor}/>
                 <DayCareInput title="Kita / Tagespflege" callback={getInputAsDaycare}/>
-                <TextInput title="Erkrankungen / Medikamente" callback={getInputAsDiseases}/>
                 <HealthInsuranceInput title="Krankenkasse" callback={getInputAsHealthinsurance}/>
                 <FoodSupplierInput title="Essensanbieter" callback={getInputAsFoodsupplier}/>
                 <InstitutionInput title="Fahrdienst" callback={getInputAsDriver}/>*/

@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
+import {findPersonByType, isJsonEmpty, propExist} from "../utils/utils";
 
-export default function ChildDoctorInput({title, callback}) {
+export default function ChildDoctorInput({title, callback, data, disabled}) {
 
     const [childdoctors, setChilddoctors] = useState([]);
     const [id, setId] = useState("");
@@ -16,6 +17,35 @@ export default function ChildDoctorInput({title, callback}) {
     const [phone, setPhone] = useState("");
     const [fax, setFax] = useState("");
     const [email, setEmail] = useState("");
+
+    useEffect(() => {
+        if (disabled && data !== undefined) {
+            let doc = findPersonByType(data.personRoles, "CHILDDOCTOR");
+            if (!isJsonEmpty(doc)) {
+                setId(doc.id);
+                setName(doc.name);
+                setAddress(doc.address);
+                setStreet(doc.address.street);
+                setNumber(doc.address.number);
+                setZipcode(doc.address.zipCode);
+                setCity(doc.address.city);
+                setPhone(doc.phone);
+                setFax(doc.fax);
+                setEmail(doc.email);
+            } else {
+                setId("0");
+                setName("");
+                setAddress({});
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+                setPhone("");
+                setFax("");
+                setEmail("");
+            }
+        }
+    }, [data, disabled])
 
     useEffect(() => {
         Persons.getAllChilddoctors().then(response => {
@@ -125,12 +155,16 @@ export default function ChildDoctorInput({title, callback}) {
         doc.phone = phone;
         doc.fax = fax;
         doc.email = email;
-        callback(doc);
+        if (propExist(this.props.callback)) {
+            callback(doc);
+        }
     }
 
     const sendEmptyInputToParent = () => {
         let doc = {};
-        callback(doc);
+        if (propExist(this.props.callback)) {
+            callback(doc);
+        }
     }
 
     return(
@@ -143,7 +177,7 @@ export default function ChildDoctorInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="existing"><b>Vorhandene auswählen</b></label>
-                        <select onChange={onExistingDocChange} className="input-select" id="existing" name="existing">
+                        <select onChange={onExistingDocChange} className="input-select" value={id} aria-readonly={disabled} id="existing" name="existing">
                             {childdoctors.map((doc) => (
                                 <option key={doc.id} value={doc.id}>{doc.name}</option>
                             ))}
@@ -152,35 +186,35 @@ export default function ChildDoctorInput({title, callback}) {
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="name"><b>Name*</b></label>
-                        <input onChange={onNameChange} className="input-input" value={name} name="name" id="name" type="text" placeholder="Name"/>
+                        <input onChange={onNameChange} className="input-input" value={name} readOnly={disabled} name="name" id="name" type="text" placeholder="Name"/>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label"><b>Adresse</b></label>
                         <div className="input-address-row">
-                            <input onChange={onChangeStreet} className="input-address-street" value={street} name="address-street" id="address-street" type="text" placeholder="Straße"/>
-                            <input onChange={onChangeNumber} className="input-address-number" value={number} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
+                            <input onChange={onChangeStreet} className="input-address-street" value={street} readOnly={disabled} name="address-street" id="address-street" type="text" placeholder="Straße"/>
+                            <input onChange={onChangeNumber} className="input-address-number" value={number} readOnly={disabled} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>
                         </div>
                         <div className="input-address-row">
-                            <input onChange={onChangeZipcode} className="input-address-zipcode" value={zipcode} name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
-                            <input onChange={onChangeCity} className="input-address-city" value={city} name="address-city" id="address-city" type="text" placeholder="Stadt"/>
+                            <input onChange={onChangeZipcode} className="input-address-zipcode" value={zipcode} readOnly={disabled} name="address-zipcode" id="address-zipcode" type="text" placeholder="Postleitzahl"/>
+                            <input onChange={onChangeCity} className="input-address-city" value={city} readOnly={disabled} name="address-city" id="address-city" type="text" placeholder="Stadt"/>
                         </div>
                     </span>
 
                     <span className="input-sub-row">
                         <div className="input-half-row-first">
                             <label className="input-label" htmlFor="phone"><b>Telefon*</b></label>
-                            <input onChange={onPhoneChange} className="input-input" value={phone} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
+                            <input onChange={onPhoneChange} className="input-input" value={phone} readOnly={disabled} name="phone" id="phone" type="text" placeholder="Telefon-Nummer"/>
                         </div>
                         <div className="input-half-row-second">
                             <label className="input-label" htmlFor="phone"><b>Fax</b></label>
-                            <input onChange={onFaxChange} className="input-input" value={fax} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
+                            <input onChange={onFaxChange} className="input-input" value={fax} readOnly={disabled} name="fax" id="fax" type="text" placeholder="Fax-Nummer"/>
                         </div>
                     </span>
 
                     <span className="input-row">
                         <label className="input-label" htmlFor="email"><b>E-Mail-Adresse</b></label>
-                        <input onChange={onEmailChange} className="input-input" value={email} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
+                        <input onChange={onEmailChange} className="input-input" value={email} readOnly={disabled} name="email" id="email" type="text" placeholder="E-Mail-Adresse"/>
                     </span>
 
                 </div>
