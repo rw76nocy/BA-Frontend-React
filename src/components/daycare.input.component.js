@@ -80,7 +80,7 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 }
                 setPhone(response.data.phone);
                 setFax(response.data.fax);
-                sendInputToParent(response.data.id,response.data.name,response.data.teacher,response.data.group,response.data.address,response.data.phone,response.data.fax);
+                sendInputToParent(response.data.id,response.data.name,teacher,group,response.data.address,response.data.phone,response.data.fax);
             } else {
                 setId("0");
                 setName("");
@@ -158,11 +158,12 @@ export default function DayCareInput({title, callback, data, disabled}) {
         let daycare = {};
         daycare.id = id;
         daycare.name = name;
-        daycare.teacher = teacher;
-        daycare.group = group;
         daycare.address = address;
         daycare.phone = phone;
         daycare.fax = fax;
+        daycare.email = "";
+        daycare.teacher = teacher;
+        daycare.group = group;
         callback(daycare);
     }
 

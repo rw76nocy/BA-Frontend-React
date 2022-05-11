@@ -50,7 +50,6 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
     useEffect(() => {
         Persons.getAllChilddoctors().then(response => {
             if (response.data) {
-                console.log(JSON.stringify(response.data));
                 let docs = [{ id: 0, name: "keine"}];
                 response.data.map(doc => {
                     docs.push(doc);

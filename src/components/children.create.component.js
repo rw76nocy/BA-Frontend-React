@@ -265,7 +265,7 @@ export default function Children() {
                 });
         }
 
-        printData();
+        /*printData();*/
     }
 
     const printData = () => {
