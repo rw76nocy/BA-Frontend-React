@@ -7,8 +7,9 @@ export default function TextInput({title, callback, data, disabled}) {
     const [input, setInput] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             setInput(data);
+            callback(data);
         }
     }, [data, disabled])
 

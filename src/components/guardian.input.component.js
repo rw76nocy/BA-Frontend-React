@@ -14,7 +14,7 @@ export default function GuardianInput({title, callback, data, disabled}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             let guard = findPersonByType(data.personRoles, "GUARDIAN");
             if (!isJsonEmpty(guard)) {
                 setId(guard.id);
@@ -22,12 +22,16 @@ export default function GuardianInput({title, callback, data, disabled}) {
                 setPhone(guard.phone);
                 setFax(guard.fax);
                 setEmail(guard.email);
+                console.log("Send Guardian to Parent!");
+                sendInputToParent(guard.id,guard.name,guard.phone,guard.fax,guard.email);
             } else {
                 setId("0");
                 setName("");
                 setPhone("");
                 setFax("");
                 setEmail("");
+                console.log("Send empty Guardian to Parent!");
+                sendEmptyInputToParent();
             }
         }
     }, [data, disabled])

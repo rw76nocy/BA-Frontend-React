@@ -22,7 +22,7 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
     const [release, setRelease] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             setGender(data.gender.toLowerCase());
             setBirthday(data.birthday);
             setFirstname(data.firstName);
@@ -33,6 +33,8 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
             setEmployee2(p2.name);
             setEntrance(data.entranceDate);
             setRelease(data.releaseDate);
+            console.log("Send Personal Data to Parent!");
+            sendInputToParent(data.gender.toLowerCase(),data.birthday,data.firstName,data.lastName,p1.name,p2.name,data.entranceDate,data.releaseDate);
         }
     }, [data, disabled])
 

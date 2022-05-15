@@ -5,11 +5,24 @@ import Trash from "../icons/trash.svg";
 import moment from "moment";
 
 import '../style/table.input.component.css';
+import {findPersonListByType} from "../utils/utils";
+import Edit from "../icons/edit.svg";
 
-export default function Partners({callback}) {
+export default function Partners({callback, data, disabled}) {
 
     const [tableData, setTableData] = useState([]);
     const [toggle, setToggle] = useState(false);
+    const [editPartner, setEditPartner] = useState({});
+    const [editorTitle, setEditorTitle] = useState("Netzwerkpartner hinzufügen");
+
+    useEffect(() => {
+        if (data !== undefined) {
+            let list = findPersonListByType(data.personRoles, "PARTNER");
+            console.log("Partners: " + JSON.stringify(list));
+            setTableData(list);
+            callback(list);
+        }
+    }, [data, disabled])
 
     const activateToggle = () => {
         setToggle(true);
@@ -28,6 +41,24 @@ export default function Partners({callback}) {
         });
         setTableData(newData);
         sendInputToParent(newData);
+    }
+
+    const onEditClick = (e) => {
+        console.log("Edit-Internal-Id: " + e.target.value);
+        tableData.map(p => {
+            if (String(p.internal_id) === String(e.target.value)) {
+                setEditPartner(p);
+            }
+        });
+
+        let newData = [];
+        tableData.map(p => {
+            if (String(p.internal_id) !== String(e.target.value)) {
+                newData.push(p)
+            }
+        });
+        setTableData(newData);
+        setEditorTitle("Netzwerkpartner ändern");
     }
 
     const columns = useMemo(
@@ -87,21 +118,87 @@ export default function Partners({callback}) {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: ({ value, row }) => (
-                    <input className="table-input-cell"
-                           style={{height: 25, width: 25}}
-                           type="image"
-                           value={row.values.internal_id}
-                           src={Trash}
-                           alt="löschen"
-                           onClick={onDeleteClick}
-                    />
+                    <div>
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Edit}
+                               alt="bearbeiten"
+                               onClick={onEditClick}
+                        />
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Trash}
+                               alt="löschen"
+                               onClick={onDeleteClick}
+                        />
+                    </div>
                 ),
             }
         ],
         [onDeleteClick]
     )
 
-    const data = useMemo(() => tableData, [tableData]);
+    const showColumns = useMemo(
+        () => [
+            {
+                width: 20,
+                Header: "Interne-ID",
+                accessor: "internal_id",
+            },
+            {
+                width: 200,
+                Header: "Typ",
+                accessor: "type",
+            },
+            {
+                width: 200,
+                Header: "Name",
+                accessor: "name",
+            },
+            {
+                width: 300,
+                Header: 'Straße',
+                accessor: 'address.street',
+            },
+            {
+                width: 100,
+                Header: 'Nr',
+                accessor: 'address.number',
+            },
+            {
+                width: 100,
+                Header: 'PLZ',
+                accessor: 'address.zipCode',
+            },
+            {
+                width: 150,
+                Header: 'Stadt',
+                accessor: 'address.city',
+            },
+            {
+                width: 200,
+                Header: "Telefon",
+                accessor: "phone",
+            },
+            {
+                width: 200,
+                Header: "Fax",
+                accessor: "fax",
+            },
+            {
+                width: 300,
+                Header: "E-Mail",
+                accessor: "email",
+            }
+        ],
+        []
+    )
+
+    const tData = useMemo(() => tableData, [tableData]);
 
     const addInputToPartners = (input) => {
         let temp_data = [...tableData];
@@ -131,6 +228,8 @@ export default function Partners({callback}) {
     }
 
     const sendInputToParent = (input) => {
+        setEditPartner({});
+        setEditorTitle("Netzwerkpartner hinzufügen")
         callback(input);
     }
 
@@ -147,14 +246,20 @@ export default function Partners({callback}) {
                         <h1><u>Netzwerkpartner</u></h1>
                     </div>
 
-                    <Table columns={columns} data={data}/>
+                    {disabled ?
+                        <Table columns={showColumns} data={tData}/>
+                        :
+                        <Table columns={columns} data={tData}/>
+                    }
 
-                    <div className="table-input-title">
-                        <h2><u>Netzwerkpartner hinzufügen</u></h2>
-                    </div>
-
-                    <CreatePartner callback={addInputToPartners}/>
-
+                    {!disabled &&
+                        <div>
+                            <div className="table-input-title">
+                                <h2><u>{editorTitle}</u></h2>
+                            </div>
+                            <CreatePartner editPartner={editPartner} callback={addInputToPartners}/>
+                        </div>
+                    }
                 </div>
             }
         </div>

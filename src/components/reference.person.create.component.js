@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import '../style/table.input.component.css';
 import '../style/input.component.css';
+import {isJsonEmpty} from "../utils/utils";
 
-export default function CreateReferencePerson({callback}) {
+export default function CreateReferencePerson({editperson,callback}) {
     const [type, setType] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
@@ -17,6 +18,26 @@ export default function CreateReferencePerson({callback}) {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
+
+    const [buttonTitle, setButtonTitle] = useState("Hinzufügen")
+
+    useEffect(() => {
+        if (editperson !== undefined && !isJsonEmpty(editperson)) {
+            console.log("Edit_Person: " + JSON.stringify(editperson));
+            setType(editperson.type);
+            let names = editperson.name.split(/(\s+)/);
+            setFirstname(names[0]);
+            setLastname(names[2]);
+            setBirthday(editperson.birthday);
+            setStreet(editperson.address.street);
+            setNumber(editperson.address.number);
+            setZipcode(editperson.address.zipCode);
+            setCity(editperson.address.city);
+            setPhone(editperson.phone);
+            setEmail(editperson.email);
+            setButtonTitle("Ändern");
+        }
+    }, [editperson])
 
     const onChangeType = (e) => {
         setType(e.target.value);
@@ -124,6 +145,7 @@ export default function CreateReferencePerson({callback}) {
         person.address = address;
         person.phone = phone;
         person.email = email;
+        setButtonTitle("Hinzufügen");
         callback(person);
     }
 
@@ -182,7 +204,7 @@ export default function CreateReferencePerson({callback}) {
             </div>
 
             <div className="table-input-submit-row">
-                <button type="button" className="table-input-submit" onClick={onCreate}>Hinzufügen</button>
+                <button type="button" className="table-input-submit" onClick={onCreate}>{buttonTitle}</button>
             </div>
 
             <div>

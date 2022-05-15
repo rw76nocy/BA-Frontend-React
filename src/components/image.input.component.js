@@ -12,12 +12,13 @@ export default function ImageInput({title, callback, childId, disabled}) {
     const [id, setID] = useState("");
 
     useEffect(() => {
-        if (disabled && childId !== undefined) {
+        if (childId !== undefined) {
             setID(childId);
             FileService.getFile(childId).then(response => {
                 if (response.data) {
                     setImagePreview(URL.createObjectURL(response.data));
                     setImage(response.data);
+                    callback(response.data);
                 }
             });
         }

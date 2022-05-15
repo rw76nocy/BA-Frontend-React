@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import '../style/table.input.component.css';
 import '../style/input.component.css';
+import {isJsonEmpty} from "../utils/utils";
 
-export default function CreateDoctor({callback}) {
+export default function CreateDoctor({editDoctor,callback}) {
     const [type, setType] = useState("");
     const [name, setName] = useState("");
     const [street, setStreet] = useState("");
@@ -16,6 +17,24 @@ export default function CreateDoctor({callback}) {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
+
+    const [buttonTitle, setButtonTitle] = useState("Hinzufügen")
+
+    useEffect(() => {
+        if (editDoctor !== undefined && !isJsonEmpty(editDoctor)) {
+            console.log("Edit_Doctor: " + JSON.stringify(editDoctor));
+            setType(editDoctor.type);
+            setName(editDoctor.name);
+            setStreet(editDoctor.address.street);
+            setNumber(editDoctor.address.number);
+            setZipcode(editDoctor.address.zipCode);
+            setCity(editDoctor.address.city);
+            setPhone(editDoctor.phone);
+            setFax(editDoctor.fax);
+            setEmail(editDoctor.email);
+            setButtonTitle("Ändern");
+        }
+    }, [editDoctor])
 
     const onChangeType = (e) => {
         setType(e.target.value);
@@ -113,6 +132,7 @@ export default function CreateDoctor({callback}) {
         doctor.phone = phone;
         doctor.fax = fax;
         doctor.email = email;
+        setButtonTitle("Hinzufügen");
         callback(doctor);
     }
 
@@ -166,7 +186,7 @@ export default function CreateDoctor({callback}) {
             </div>
 
             <div className="table-input-submit-row">
-                <button type="button" className="table-input-submit" onClick={onCreate}>Hinzufügen</button>
+                <button type="button" className="table-input-submit" onClick={onCreate}>{buttonTitle}</button>
             </div>
 
             <div>

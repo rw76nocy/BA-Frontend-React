@@ -19,7 +19,7 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             let doc = findPersonByType(data.personRoles, "CHILDDOCTOR");
             if (!isJsonEmpty(doc)) {
                 setId(doc.id);
@@ -32,6 +32,8 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
                 setPhone(doc.phone);
                 setFax(doc.fax);
                 setEmail(doc.email);
+                console.log("Send Childdoctor to Parent!");
+                sendInputToParent(doc.id,doc.name,buildAddress(doc.address.street,doc.address.number,doc.address.zipCode,doc.address.city),doc.phone,doc.fax,doc.email);
             } else {
                 setId("0");
                 setName("");
@@ -43,6 +45,8 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
+                console.log("Send empty Childdoctor to Parent!");
+                sendEmptyInputToParent();
             }
         }
     }, [data, disabled])

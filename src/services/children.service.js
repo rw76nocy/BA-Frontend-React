@@ -16,6 +16,16 @@ class ChildrenService {
             { headers : authHeader() });
     }
 
+    updateChild(child) {
+        return axios.post(
+            API_URL + 'update/',
+            child,
+            { headers : authHeader() });
+    }
+
+    deleteChild(id) {
+        return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
+    }
 }
 
 export default new ChildrenService();

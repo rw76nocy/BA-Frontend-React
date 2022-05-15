@@ -20,7 +20,7 @@ export default function DayCareInput({title, callback, data, disabled}) {
     const [fax, setFax] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             let dc = findInstitutionByType(data.institutionRoles, "DAYCARE");
             if (!isJsonEmpty(dc)) {
                 setId(dc.id);
@@ -36,6 +36,8 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 setCity(dc.address.city);
                 setPhone(dc.phone);
                 setFax(dc.fax);
+                console.log("Send Daycare to Parent!");
+                sendInputToParent(dc.id,dc.name,data.teach.dayCareTeacher,data.teach.dayCareGroup,buildAddress(dc.address.street,dc.address.number,dc.address.zipCode,dc.address.city),dc.phone,dc.fax);
             } else {
                 setId("0");
                 setName("");
@@ -48,6 +50,8 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 setCity("");
                 setPhone("");
                 setFax("");
+                console.log("Send empty Daycare to Parent!");
+                sendEmptyInputToParent();
             }
         }
     }, [data, disabled])

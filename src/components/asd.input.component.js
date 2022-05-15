@@ -15,7 +15,7 @@ export default function AsdInput({title, callback, data, disabled}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             let asd = findPersonByType(data.personRoles, "ASD");
             if (!isJsonEmpty(asd)) {
                 setId(asd.id);
@@ -24,6 +24,8 @@ export default function AsdInput({title, callback, data, disabled}) {
                 setPhone(asd.phone);
                 setFax(asd.fax);
                 setEmail(asd.email);
+                console.log("Send Asd to Parent!");
+                sendInputToParent(asd.id,asd.name,asd.youthoffice,asd.phone,asd.fax,asd.email);
             } else {
                 setId("0");
                 setName("");
@@ -31,6 +33,8 @@ export default function AsdInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
+                console.log("Send empty Asd to Parent!");
+                sendEmptyInputToParent();
             }
         }
     }, [data, disabled])

@@ -21,6 +21,13 @@ class ChildrenService {
             { headers : authFileHeader() });
     }
 
+    updateFile(file) {
+        return axios.post(
+            API_URL + 'update/',
+            file,
+            { headers : authFileHeader() });
+    }
+
 }
 
 export default new ChildrenService();

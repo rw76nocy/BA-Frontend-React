@@ -197,10 +197,10 @@ export default function Children() {
         child.foodSupplier = foodsupplier;
         child.driver = driver;
 
-        child.referencePersons = removeInternalId(referencePersons);
-        child.doctors = removeInternalId(doctors);
-        child.therapists = removeInternalId(therapists);
-        child.partners = removeInternalId(partners);
+        child.referencePersons = referencePersons;
+        child.doctors = doctors;
+        child.therapists = therapists;
+        child.partners = partners;
 
         return child;
     }
@@ -217,18 +217,6 @@ export default function Children() {
         format.birthday = person.birthday;
         format.email = person.email;
         return format;
-    }
-
-    const removeInternalId = (list) => {
-        let temp = [];
-        list.map(e => {
-            if (e.internal_id) {
-                let n = e;
-                delete n.internal_id;
-                temp.push(n);
-            }
-        });
-        return temp;
     }
 
     const createChild = () => {

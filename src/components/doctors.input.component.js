@@ -4,11 +4,24 @@ import CreateDoctor from "./doctors.create.component";
 import Trash from "../icons/trash.svg";
 
 import '../style/table.input.component.css';
+import {findPersonListByType} from "../utils/utils";
+import Edit from "../icons/edit.svg";
 
-export default function Doctors({callback}) {
+export default function Doctors({callback, data, disabled}) {
 
     const [tableData, setTableData] = useState([]);
     const [toggle, setToggle] = useState(false);
+    const [editDoctor, setEditDoctor] = useState({});
+    const [editorTitle, setEditorTitle] = useState("Facharzt hinzufügen");
+
+    useEffect(() => {
+        if (data !== undefined) {
+            let list = findPersonListByType(data.personRoles, "DOCTOR");
+            console.log("Doctors: " + JSON.stringify(list));
+            setTableData(list);
+            callback(list);
+        }
+    }, [data, disabled])
 
     const activateToggle = () => {
         setToggle(true);
@@ -27,6 +40,24 @@ export default function Doctors({callback}) {
         });
         setTableData(newData);
         sendInputToParent(newData);
+    }
+
+    const onEditClick = (e) => {
+        console.log("Edit-Internal-Id: " + e.target.value);
+        tableData.map(p => {
+            if (String(p.internal_id) === String(e.target.value)) {
+                setEditDoctor(p);
+            }
+        });
+
+        let newData = [];
+        tableData.map(p => {
+            if (String(p.internal_id) !== String(e.target.value)) {
+                newData.push(p)
+            }
+        });
+        setTableData(newData);
+        setEditorTitle("Facharzt ändern");
     }
 
     const columns = useMemo(
@@ -86,21 +117,87 @@ export default function Doctors({callback}) {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: ({ value, row }) => (
-                    <input className="table-input-cell"
-                           style={{height: 25, width: 25}}
-                           type="image"
-                           value={row.values.internal_id}
-                           src={Trash}
-                           alt="löschen"
-                           onClick={onDeleteClick}
-                    />
+                    <div>
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Edit}
+                               alt="bearbeiten"
+                               onClick={onEditClick}
+                        />
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Trash}
+                               alt="löschen"
+                               onClick={onDeleteClick}
+                        />
+                    </div>
                 ),
             }
         ],
         [onDeleteClick]
     )
 
-    const data = useMemo(() => tableData, [tableData]);
+    const showColumns = useMemo(
+        () => [
+            {
+                width: 20,
+                Header: "Interne-ID",
+                accessor: "internal_id",
+            },
+            {
+                width: 200,
+                Header: "Fachrichtung",
+                accessor: "type",
+            },
+            {
+                width: 200,
+                Header: "Name",
+                accessor: "name",
+            },
+            {
+                width: 300,
+                Header: 'Straße',
+                accessor: 'address.street',
+            },
+            {
+                width: 100,
+                Header: 'Nr',
+                accessor: 'address.number',
+            },
+            {
+                width: 100,
+                Header: 'PLZ',
+                accessor: 'address.zipCode',
+            },
+            {
+                width: 150,
+                Header: 'Stadt',
+                accessor: 'address.city',
+            },
+            {
+                width: 200,
+                Header: "Telefon",
+                accessor: "phone",
+            },
+            {
+                width: 200,
+                Header: "Fax",
+                accessor: "fax",
+            },
+            {
+                width: 300,
+                Header: "E-Mail",
+                accessor: "email",
+            }
+        ],
+        []
+    )
+
+    const tData = useMemo(() => tableData, [tableData]);
 
     const addInputToDoctors = (input) => {
         let temp_data = [...tableData];
@@ -130,6 +227,8 @@ export default function Doctors({callback}) {
     }
 
     const sendInputToParent = (input) => {
+        setEditDoctor({});
+        setEditorTitle("Facharzt hinzufügen")
         callback(input);
     }
 
@@ -146,14 +245,20 @@ export default function Doctors({callback}) {
                         <h1><u>Fachärzte</u></h1>
                     </div>
 
-                    <Table columns={columns} data={data}/>
+                    {disabled ?
+                        <Table columns={showColumns} data={tData}/>
+                        :
+                        <Table columns={columns} data={tData}/>
+                    }
 
-                    <div className="table-input-title">
-                        <h2><u>Facharzt hinzufügen</u></h2>
-                    </div>
-
-                    <CreateDoctor callback={addInputToDoctors}/>
-
+                    {!disabled &&
+                        <div>
+                            <div className="table-input-title">
+                                <h2><u>{editorTitle}</u></h2>
+                            </div>
+                            <CreateDoctor editDoctor={editDoctor} callback={addInputToDoctors}/>
+                        </div>
+                    }
                 </div>
             }
         </div>

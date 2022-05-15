@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import '../style/table.input.component.css';
 import '../style/input.component.css';
+import {isJsonEmpty} from "../utils/utils";
 
-export default function CreatePartner({callback}) {
+export default function CreatePartner({editPartner,callback}) {
     const [type, setType] = useState("");
     const [name, setName] = useState("");
     const [street, setStreet] = useState("");
@@ -16,6 +17,24 @@ export default function CreatePartner({callback}) {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
+
+    const [buttonTitle, setButtonTitle] = useState("Hinzufügen")
+
+    useEffect(() => {
+        if (editPartner !== undefined && !isJsonEmpty(editPartner)) {
+            console.log("Edit_Partner: " + JSON.stringify(editPartner));
+            setType(editPartner.type);
+            setName(editPartner.name);
+            setStreet(editPartner.address.street);
+            setNumber(editPartner.address.number);
+            setZipcode(editPartner.address.zipCode);
+            setCity(editPartner.address.city);
+            setPhone(editPartner.phone);
+            setFax(editPartner.fax);
+            setEmail(editPartner.email);
+            setButtonTitle("Ändern");
+        }
+    }, [editPartner])
 
     const onChangeType = (e) => {
         setType(e.target.value);
@@ -113,6 +132,7 @@ export default function CreatePartner({callback}) {
         partner.phone = phone;
         partner.fax = fax;
         partner.email = email;
+        setButtonTitle("Hinzufügen");
         callback(partner);
     }
 
@@ -166,7 +186,7 @@ export default function CreatePartner({callback}) {
             </div>
 
             <div className="table-input-submit-row">
-                <button type="button" className="table-input-submit" onClick={onCreate}>Hinzufügen</button>
+                <button type="button" className="table-input-submit" onClick={onCreate}>{buttonTitle}</button>
             </div>
 
             <div>

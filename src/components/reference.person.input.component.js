@@ -1,15 +1,27 @@
 import React, {useEffect, useMemo, useState} from "react";
 import Table from "./table.component";
 import CreateReferencePerson from "./reference.person.create.component";
+import Edit from "../icons/edit.svg";
 import Trash from "../icons/trash.svg";
 import moment from "moment";
 
 import '../style/table.input.component.css';
+import {findPersonListByType} from "../utils/utils";
 
 export default function ReferencePerson({callback, data, disabled}) {
-    //TODO dann hier "data" verarbeiten
     const [tableData, setTableData] = useState([]);
     const [toggle, setToggle] = useState(false);
+    const [editPerson, setEditPerson] = useState({});
+    const [editorTitle, setEditorTitle] = useState("Bezugspersonen hinzufügen");
+
+    useEffect(() => {
+        if (data !== undefined) {
+            let list = findPersonListByType(data.personRoles, "REFERENCE_PERSON");
+            console.log("Reference_Person: " + JSON.stringify(list));
+            setTableData(list);
+            callback(list);
+        }
+    }, [data, disabled])
 
     const activateToggle = () => {
         setToggle(true);
@@ -28,6 +40,24 @@ export default function ReferencePerson({callback, data, disabled}) {
         });
         setTableData(newData);
         sendInputToParent(newData);
+    }
+
+    const onEditClick = (e) => {
+        console.log("Edit-Internal-Id: " + e.target.value);
+        tableData.map(p => {
+            if (String(p.internal_id) === String(e.target.value)) {
+                setEditPerson(p);
+            }
+        });
+
+        let newData = [];
+        tableData.map(p => {
+            if (String(p.internal_id) !== String(e.target.value)) {
+                newData.push(p)
+            }
+        });
+        setTableData(newData);
+        setEditorTitle("Bezugsperson ändern");
     }
 
     const columns = useMemo(
@@ -97,18 +127,94 @@ export default function ReferencePerson({callback, data, disabled}) {
                 Header: "Aktion",
                 accessor: "action",
                 Cell: ({ value, row }) => (
-                    <input className="table-input-cell"
-                           style={{height: 25, width: 25}}
-                           type="image"
-                           value={row.values.internal_id}
-                           src={Trash}
-                           alt="löschen"
-                           onClick={onDeleteClick}
-                    />
+                    <div>
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Edit}
+                               alt="bearbeiten"
+                               onClick={onEditClick}
+                        />
+                        <input className="table-input-cell"
+                               style={{height: 25, width: 25}}
+                               type="image"
+                               value={row.values.internal_id}
+                               src={Trash}
+                               alt="löschen"
+                               onClick={onDeleteClick}
+                        />
+                    </div>
                 ),
             }
         ],
         [onDeleteClick]
+    )
+
+    const showColumns = useMemo(
+        () => [
+            {
+                width: 20,
+                Header: "Interne-ID",
+                accessor: "internal_id",
+            },
+            {
+                width: 200,
+                Header: "Typ",
+                accessor: "type",
+            },
+            {
+                width: 200,
+                Header: "Name",
+                accessor: "name",
+            },
+            {
+                width: 150,
+                Header: "Geburtsdatum",
+                accessor: "birthday",
+                Cell: ({ value }) => {
+                    if (value !== undefined && value !== "") {
+                        let formatedDate = moment(value).format("DD.MM.YYYY")
+                        return String(formatedDate);
+                    } else {
+                        return "";
+                    }
+                },
+            },
+            {
+                width: 300,
+                Header: 'Straße',
+                accessor: 'address.street',
+            },
+            {
+                width: 100,
+                Header: 'Nr',
+                accessor: 'address.number',
+            },
+            {
+                width: 100,
+                Header: 'PLZ',
+                accessor: 'address.zipCode',
+            },
+            {
+                width: 150,
+                Header: 'Stadt',
+                accessor: 'address.city',
+            },
+            {
+                //default editable cell
+                width: 200,
+                Header: "Telefon",
+                accessor: "phone",
+            },
+            {
+                //default editable cell
+                width: 300,
+                Header: "E-Mail",
+                accessor: "email",
+            }
+        ],
+        []
     )
 
     const tData = useMemo(() => tableData, [tableData]);
@@ -141,6 +247,8 @@ export default function ReferencePerson({callback, data, disabled}) {
     }
 
     const sendInputToParent = (input) => {
+        setEditPerson({});
+        setEditorTitle("Bezugspersonen hinzufügen")
         callback(input);
     }
 
@@ -157,14 +265,18 @@ export default function ReferencePerson({callback, data, disabled}) {
                         <h1><u>Bezugspersonen</u></h1>
                     </div>
 
-                    <Table columns={columns} data={tData}/>
+                    {disabled ?
+                        <Table columns={showColumns} data={tData}/>
+                        :
+                        <Table columns={columns} data={tData}/>
+                    }
 
                     {!disabled &&
                         <div>
                             <div className="table-input-title">
-                                <h2><u>Bezugspersonen hinzufügen</u></h2>
+                                <h2><u>{editorTitle}</u></h2>
                             </div>
-                            <CreateReferencePerson callback={addInputToReferencePersons}/>
+                            <CreateReferencePerson editperson={editPerson} callback={addInputToReferencePersons}/>
                         </div>
                     }
                 </div>

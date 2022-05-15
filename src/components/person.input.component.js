@@ -18,7 +18,7 @@ export default function PersonInput({title, callback, data, disabled}) {
     const [email, setEmail] = useState("");
 
     useEffect(() => {
-        if (disabled && data !== undefined) {
+        if (data !== undefined) {
             let person = {};
             if (title === "Mutter") {
                 person = findPersonByType(data.personRoles, "MOTHER");
@@ -39,6 +39,8 @@ export default function PersonInput({title, callback, data, disabled}) {
                 setFax(person.fax);
                 setBirthday(person.birthday);
                 setEmail(person.email);
+                console.log("Send Person to Parent!");
+                sendInputToParent(names[0],names[2],buildAddress(person.address.street,person.address.number,person.address.zipCode,person.address.city),person.phone,person.fax,person.birthday,person.email);
             } else {
                 setFirstname("");
                 setLastname("");
@@ -51,6 +53,8 @@ export default function PersonInput({title, callback, data, disabled}) {
                 setFax("");
                 setBirthday("");
                 setEmail("");
+                console.log("Send empty Person to Parent!");
+                sendEmptyInputToParent();
             }
         }
     }, [data, disabled])
@@ -127,6 +131,11 @@ export default function PersonInput({title, callback, data, disabled}) {
         person.fax = fax;
         person.birthday = birthday;
         person.email = email;
+        callback(person);
+    }
+
+    const sendEmptyInputToParent = () => {
+        let person = {};
         callback(person);
     }
 
