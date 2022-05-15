@@ -222,7 +222,6 @@ export default function Children() {
     const createChild = () => {
         if (validate()) {
             let child = buildChildFromInput();
-            console.log(JSON.stringify(child));
 
             ChildrenService.addChild(child).then(
                 response => {
@@ -252,32 +251,6 @@ export default function Children() {
                     console.log("FEHLER: " + resMessage);
                 });
         }
-
-        /*printData();*/
-    }
-
-    const printData = () => {
-        console.log("CHILD-DATA IN CREATE-CHILDREN-PANEL");
-        console.log("Living Group: "+JSON.stringify(livingGroup));
-        console.log("Image: "+image);
-        console.log("Personal Data: "+JSON.stringify(personal));
-        console.log("Reason: "+JSON.stringify(reason));
-        console.log("Guardian: "+JSON.stringify(guardian));
-        console.log("Asd: "+JSON.stringify(asd));
-        console.log("Mother: "+JSON.stringify(mother));
-        console.log("Father: "+JSON.stringify(father));
-        console.log("Care: "+JSON.stringify(care));
-        console.log("Visit: "+JSON.stringify(visit));
-        console.log("Childdoctor: "+JSON.stringify(childdoctor));
-        console.log("Daycare: "+JSON.stringify(daycare));
-        console.log("Diseases: "+JSON.stringify(diseases));
-        console.log("Healthinsurance: "+JSON.stringify(healthinsurance));
-        console.log("Foodsupplier: "+JSON.stringify(foodsupplier));
-        console.log("Driver: "+JSON.stringify(driver));
-        console.log("Reference Persons: "+JSON.stringify(referencePersons));
-        console.log("Doctors: "+JSON.stringify(doctors));
-        console.log("Therapists: "+JSON.stringify(therapists));
-        console.log("Partners: "+JSON.stringify(partners));
     }
 
     return(
@@ -285,7 +258,7 @@ export default function Children() {
             <div className="children-components">
                 <ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>
-                <TextInput title="Grund der Aufnahme*" callback={getInputAsReason}/>
+                <TextInput title="Grund der Aufnahme" callback={getInputAsReason}/>
                 <GuardianInput title="Vormund/Pfleger" callback={getInputAsGuardian}/>
                 <AsdInput title="Allgemeiner sozialer Dienst" callback={getInputAsAsd}/>
                 <PersonInput title="Mutter" callback={getInputAsMother}/>

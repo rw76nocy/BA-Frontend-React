@@ -235,7 +235,6 @@ export default function Child({child}) {
 
     const update = () => {
         let child = buildChildFromInput();
-        console.log(JSON.stringify(child));
 
         if (validate()) {
             ChildrenService.updateChild(child).then(
@@ -271,12 +270,14 @@ export default function Child({child}) {
     return(
         <div className="children-container" aria-readonly={disabled}>
             {disabled ?
-                <div className="table-input-toggle-row">
-                    <button className="table-input-toggle-button" type="button" onClick={edit}>Bearbeiten</button>
-                    <button className="table-input-toggle-button" type="button" onClick={clear}>Entfernen</button>
+                <div className="table-input-top-row">
+                    <div className="table-input-toggle-row">
+                        <button className="table-input-toggle-button" type="button" onClick={edit}>Bearbeiten</button>
+                        <button className="table-input-toggle-button" type="button" onClick={clear}>Entfernen</button>
+                    </div>
                 </div>
                 :
-                <div>
+                <div className="table-input-top-row">
                     <div className="table-input-toggle-row">
                         <button className="table-input-toggle-button" type="button" onClick={edit}>Zurücksetzen</button>
                         <button className="table-input-toggle-button" type="button" onClick={update}>Änderung speichern</button>

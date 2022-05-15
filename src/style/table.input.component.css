@@ -87,8 +87,12 @@
     align-items: center;
 }
 
+.table-input-top-row {
+    padding-top: 20px;
+}
+
 .table-input-toggle-button {
-    margin-right: 5px;
+    margin-right: 20px;
     font-size: 20px;
     font-weight: bold;
     border-radius: 30px;
