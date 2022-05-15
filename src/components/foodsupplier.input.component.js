@@ -28,7 +28,6 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
                 setPhone(fs.phone);
                 setFax(fs.fax);
                 setEmail(fs.email);
-                console.log("Send Foodsupplier to Parent!");
                 sendInputToParent(fs.id,fs.name,data.supply.customerNumber,data.supply.pin,fs.phone,fs.fax,fs.email);
             } else {
                 setId("0");
@@ -38,7 +37,6 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
-                console.log("Send empty Foodsupplier to Parent!");
                 sendEmptyInputToParent();
             }
         }

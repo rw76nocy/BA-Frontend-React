@@ -39,7 +39,6 @@ export default function PersonInput({title, callback, data, disabled}) {
                 setFax(person.fax);
                 setBirthday(person.birthday);
                 setEmail(person.email);
-                console.log("Send Person to Parent!");
                 sendInputToParent(names[0],names[2],buildAddress(person.address.street,person.address.number,person.address.zipCode,person.address.city),person.phone,person.fax,person.birthday,person.email);
             } else {
                 setFirstname("");
@@ -53,7 +52,6 @@ export default function PersonInput({title, callback, data, disabled}) {
                 setFax("");
                 setBirthday("");
                 setEmail("");
-                console.log("Send empty Person to Parent!");
                 sendEmptyInputToParent();
             }
         }

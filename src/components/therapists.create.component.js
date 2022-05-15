@@ -22,7 +22,6 @@ export default function CreateTherapist({editTherapist,callback}) {
 
     useEffect(() => {
         if (editTherapist !== undefined && !isJsonEmpty(editTherapist)) {
-            console.log("Edit_Therapist: " + JSON.stringify(editTherapist));
             setType(editTherapist.type);
             setName(editTherapist.name);
             setStreet(editTherapist.address.street);

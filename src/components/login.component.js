@@ -31,14 +31,12 @@ export default function Login() {
 
         setLoading(true);
         setMessage("Lädt");
-        console.log('login started')
 
         if (validate()) {
             AuthService.login(username, password).then(
                 () => {
                     navigate("/home");
                     window.location.reload();
-                    console.log('login completed');
                 },
                 error => {
                     const resMessage = (
@@ -54,7 +52,6 @@ export default function Login() {
         } else {
             setLoading(false);
             setMessage("Anmeldung ungültig");
-            console.log('login invalid')
         }
     }
 

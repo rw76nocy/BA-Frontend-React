@@ -50,7 +50,7 @@ export default function Child({child}) {
     const [messageInvalid, setMessageInvalid] = useState("");
 
     useEffect(() => {
-        console.log("Actual child: " + JSON.stringify(child));
+        setDisabled(true);
         setId(child.id);
         setLivingGroup(child.livingGroup);
     }, [child])

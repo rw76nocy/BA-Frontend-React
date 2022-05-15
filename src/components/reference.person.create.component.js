@@ -23,7 +23,6 @@ export default function CreateReferencePerson({editperson,callback}) {
 
     useEffect(() => {
         if (editperson !== undefined && !isJsonEmpty(editperson)) {
-            console.log("Edit_Person: " + JSON.stringify(editperson));
             setType(editperson.type);
             let names = editperson.name.split(/(\s+)/);
             setFirstname(names[0]);

@@ -32,7 +32,6 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
                 setPhone(doc.phone);
                 setFax(doc.fax);
                 setEmail(doc.email);
-                console.log("Send Childdoctor to Parent!");
                 sendInputToParent(doc.id,doc.name,buildAddress(doc.address.street,doc.address.number,doc.address.zipCode,doc.address.city),doc.phone,doc.fax,doc.email);
             } else {
                 setId("0");
@@ -45,7 +44,6 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
-                console.log("Send empty Childdoctor to Parent!");
                 sendEmptyInputToParent();
             }
         }

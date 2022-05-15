@@ -22,7 +22,6 @@ export default function GuardianInput({title, callback, data, disabled}) {
                 setPhone(guard.phone);
                 setFax(guard.fax);
                 setEmail(guard.email);
-                console.log("Send Guardian to Parent!");
                 sendInputToParent(guard.id,guard.name,guard.phone,guard.fax,guard.email);
             } else {
                 setId("0");
@@ -30,7 +29,6 @@ export default function GuardianInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
-                console.log("Send empty Guardian to Parent!");
                 sendEmptyInputToParent();
             }
         }

@@ -22,6 +22,32 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
     const [release, setRelease] = useState("");
 
     useEffect(() => {
+        let id = AuthService.getCurrentUser().id;
+        Accounts.getAccountById(id).then(response => {
+            LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
+                if (response.data[0]) {
+                    setLivingGroup(response.data[0].name);
+                    Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
+                        setEmployees(response.data);
+                        if (data === undefined) {
+                            if (response.data[0]) {
+                                setEmployee1(response.data[0].name);
+                                setEmployee2(response.data[0].name);
+                                sendInputToParent(gender,birthday,firstname,lastname,response.data[0].name,response.data[0].name,entrance,release);
+                            } else {
+                                setEmployee1("");
+                                setEmployee2("");
+                                sendInputToParent(gender,birthday,firstname,lastname,"","",entrance,release);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+    }, [])
+
+    useEffect(() => {
         if (data !== undefined) {
             setGender(data.gender.toLowerCase());
             setBirthday(data.birthday);
@@ -33,35 +59,9 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
             setEmployee2(p2.name);
             setEntrance(data.entranceDate);
             setRelease(data.releaseDate);
-            console.log("Send Personal Data to Parent!");
             sendInputToParent(data.gender.toLowerCase(),data.birthday,data.firstName,data.lastName,p1.name,p2.name,data.entranceDate,data.releaseDate);
         }
     }, [data, disabled])
-
-    useEffect(() => {
-        let id = AuthService.getCurrentUser().id;
-
-        Accounts.getAccountById(id).then(response => {
-            LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                if (response.data[0]) {
-                    setLivingGroup(response.data[0].name);
-                    Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
-                        setEmployees(response.data);
-                        if (response.data[0]) {
-                            setEmployee1(response.data[0].name);
-                            setEmployee2(response.data[0].name);
-                            sendInputToParent(gender,birthday,firstname,lastname,response.data[0].name,response.data[0].name,entrance,release);
-                        } else {
-                            setEmployee1("");
-                            setEmployee2("");
-                            sendInputToParent(gender,birthday,firstname,lastname,"","",entrance,release);
-                        }
-                    });
-                }
-            });
-        });
-
-    }, [])
 
     const onChangeGender = (e) => {
         setGender(e.target.value);

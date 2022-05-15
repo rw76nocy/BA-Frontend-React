@@ -17,7 +17,6 @@ export default function ReferencePerson({callback, data, disabled}) {
     useEffect(() => {
         if (data !== undefined) {
             let list = findPersonListByType(data.personRoles, "REFERENCE_PERSON");
-            console.log("Reference_Person: " + JSON.stringify(list));
             setTableData(list);
             callback(list);
         }
@@ -43,7 +42,6 @@ export default function ReferencePerson({callback, data, disabled}) {
     }
 
     const onEditClick = (e) => {
-        console.log("Edit-Internal-Id: " + e.target.value);
         tableData.map(p => {
             if (String(p.internal_id) === String(e.target.value)) {
                 setEditPerson(p);

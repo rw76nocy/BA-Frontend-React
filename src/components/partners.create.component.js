@@ -22,7 +22,6 @@ export default function CreatePartner({editPartner,callback}) {
 
     useEffect(() => {
         if (editPartner !== undefined && !isJsonEmpty(editPartner)) {
-            console.log("Edit_Partner: " + JSON.stringify(editPartner));
             setType(editPartner.type);
             setName(editPartner.name);
             setStreet(editPartner.address.street);

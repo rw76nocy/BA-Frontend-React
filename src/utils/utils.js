@@ -16,7 +16,6 @@ export function findPersonListByType(list,type)  {
     list.map(p => {
         if (p.role && p.person) {
             if (p.role.type === type) {
-                console.log("Object: " + JSON.stringify(p));
                 let obj = {};
                 obj.internal_id = internalId;
                 obj.type = p.role.specification;

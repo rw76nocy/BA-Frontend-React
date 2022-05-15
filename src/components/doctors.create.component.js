@@ -22,7 +22,6 @@ export default function CreateDoctor({editDoctor,callback}) {
 
     useEffect(() => {
         if (editDoctor !== undefined && !isJsonEmpty(editDoctor)) {
-            console.log("Edit_Doctor: " + JSON.stringify(editDoctor));
             setType(editDoctor.type);
             setName(editDoctor.name);
             setStreet(editDoctor.address.street);

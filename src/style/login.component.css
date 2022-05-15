@@ -51,3 +51,8 @@
     border-radius: 30px;
     background-color: lightgrey;
 }
+
+.login-title {
+    text-align: center;
+    margin-top: 50px;
+}

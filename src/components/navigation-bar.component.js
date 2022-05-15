@@ -32,7 +32,6 @@ function Navbar() {
                     LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
                         setLivingGroup(response.data[0].name)
                         ChildrenService.getChildrenByLivingGroup(response.data[0].name).then(response => {
-                            console.log("Children: "+JSON.stringify(response.data));
                             setChildren(response.data);
                         });
                     });
@@ -49,8 +48,6 @@ function Navbar() {
             if (roles) {
                 setShowModeratorBoard(roles.includes("ROLE_MODERATOR"));
                 setShowAdminBoard(roles.includes("ROLE_ADMIN"));
-                console.log("Is_Mod: "+roles.includes("ROLE_MODERATOR"));
-                console.log("Is_Admin: "+roles.includes("ROLE_ADMIN"));
             }
         } else {
             setShowModeratorBoard(false);

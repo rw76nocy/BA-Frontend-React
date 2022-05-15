@@ -35,7 +35,6 @@ export default function InstitutionInput({title, callback, data, disabled}) {
                 setPhone(d.phone);
                 setFax(d.fax);
                 setEmail(d.email);
-                console.log("Send Driver to Parent!");
                 sendInputToParent(d.id,d.name,buildAddress(d.address.street,d.address.number,d.address.zipCode,d.address.city),d.phone,d.fax,d.email);
             } else {
                 setId("0");
@@ -48,7 +47,6 @@ export default function InstitutionInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
-                console.log("Send empty Driver to Parent!");
                 sendEmptyInputToParent();
             }
         }

@@ -19,10 +19,8 @@ function ChildNav() {
             if (user || mod) {
                 Accounts.getAccountById(id).then(response => {
                     LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                        console.log("LivingGroup: "+ response.data[0].name);
                         setLivingGroup(response.data[0].name)
                         ChildrenService.getChildrenByLivingGroup(response.data[0].name).then(response => {
-                            console.log("Children: "+JSON.stringify(response.data));
                             setChildren(response.data);
                         });
                     });

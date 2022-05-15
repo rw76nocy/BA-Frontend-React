@@ -24,7 +24,6 @@ export default function AsdInput({title, callback, data, disabled}) {
                 setPhone(asd.phone);
                 setFax(asd.fax);
                 setEmail(asd.email);
-                console.log("Send Asd to Parent!");
                 sendInputToParent(asd.id,asd.name,asd.youthoffice,asd.phone,asd.fax,asd.email);
             } else {
                 setId("0");
@@ -33,7 +32,6 @@ export default function AsdInput({title, callback, data, disabled}) {
                 setPhone("");
                 setFax("");
                 setEmail("");
-                console.log("Send empty Asd to Parent!");
                 sendEmptyInputToParent();
             }
         }
