@@ -58,8 +58,13 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
             setEmployee1(p1.name);
             setEmployee2(p2.name);
             setEntrance(data.entranceDate);
-            setRelease(data.releaseDate);
-            sendInputToParent(data.gender.toLowerCase(),data.birthday,data.firstName,data.lastName,p1.name,p2.name,data.entranceDate,data.releaseDate);
+            if (data.releaseDate) {
+                setRelease(data.releaseDate);
+                sendInputToParent(data.gender.toLowerCase(),data.birthday,data.firstName,data.lastName,p1.name,p2.name,data.entranceDate,data.releaseDate);
+            } else {
+                setRelease("");
+                sendInputToParent(data.gender.toLowerCase(),data.birthday,data.firstName,data.lastName,p1.name,p2.name,data.entranceDate,"");
+            }
         }
     }, [data, disabled])
 
