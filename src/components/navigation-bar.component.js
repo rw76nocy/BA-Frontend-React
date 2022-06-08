@@ -187,16 +187,14 @@ function Navbar() {
                 {showChildNav &&
                     <div>
                         <ChildNav/>
-                        <ul>
-                            <div>
-                                <Routes>
-                                    {children.map((c) => (
-                                        <Route key={c.id} path={"/child/" + c.id} element={<Child child={c}/>}/>
-                                    ))}
-                                    <Route path="/create" element={<Children/>} />
-                                </Routes>
-                            </div>
-                        </ul>
+                        <div>
+                            <Routes>
+                                {children.map((c) => (
+                                    <Route key={c.id} path={"/child/" + c.id} element={<Child child={c}/>}/>
+                                ))}
+                                <Route path="/create" element={<Children/>} />
+                            </Routes>
+                        </div>
                     </div>
                 }
             </div>
