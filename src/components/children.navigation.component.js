@@ -38,7 +38,7 @@ function ChildNav() {
                         <div className="children-nav-left-action-panel">
                             {children.map((c) => (
                                 <li key={c.id}>
-                                    <Link key={c.id} to={"/child/" + c.id} >{c.firstName} {c.lastName}</Link>
+                                    <Link key={c.id} to={"/child/" + c.id} >{c.fullName}</Link>
                                 </li>
                             ))}
                             </div>

@@ -24,10 +24,17 @@ export default function CreateDoctor({editDoctor,callback}) {
         if (editDoctor !== undefined && !isJsonEmpty(editDoctor)) {
             setType(editDoctor.type);
             setName(editDoctor.name);
-            setStreet(editDoctor.address.street);
-            setNumber(editDoctor.address.number);
-            setZipcode(editDoctor.address.zipCode);
-            setCity(editDoctor.address.city);
+            if (editDoctor.address) {
+                setStreet(editDoctor.address.street);
+                setNumber(editDoctor.address.number);
+                setZipcode(editDoctor.address.zipCode);
+                setCity(editDoctor.address.city);
+            } else {
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+            }
             setPhone(editDoctor.phone);
             setFax(editDoctor.fax);
             setEmail(editDoctor.email);

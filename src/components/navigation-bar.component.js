@@ -136,6 +136,14 @@ function Navbar() {
                                     </div>
                                 }
 
+                                {showModeratorBoard &&
+                                    <div className="middle-action-panel">
+                                        <li>
+                                            <Link to="/options" onClick={deactivateChildNav}>Einstellungen</Link>
+                                        </li>
+                                    </div>
+                                }
+
                                 {(showModeratorBoard || showAdminBoard) &&
                                     <div className="middle-action-panel">
                                         <li>

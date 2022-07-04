@@ -24,15 +24,23 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
             if (!isJsonEmpty(doc)) {
                 setId(doc.id);
                 setName(doc.name);
-                setAddress(doc.address);
-                setStreet(doc.address.street);
-                setNumber(doc.address.number);
-                setZipcode(doc.address.zipCode);
-                setCity(doc.address.city);
+                if (doc.address) {
+                    setAddress(doc.address);
+                    setStreet(doc.address.street);
+                    setNumber(doc.address.number);
+                    setZipcode(doc.address.zipCode);
+                    setCity(doc.address.city);
+                } else {
+                    setAddress({});
+                    setStreet("");
+                    setNumber("");
+                    setZipcode("");
+                    setCity("");
+                }
                 setPhone(doc.phone);
                 setFax(doc.fax);
                 setEmail(doc.email);
-                sendInputToParent(doc.id,doc.name,buildAddress(doc.address.street,doc.address.number,doc.address.zipCode,doc.address.city),doc.phone,doc.fax,doc.email);
+                sendInputToParent(doc.id,doc.name,doc.address,doc.phone,doc.fax,doc.email);
             } else {
                 setId("0");
                 setName("");
@@ -69,11 +77,17 @@ export default function ChildDoctorInput({title, callback, data, disabled}) {
                 setId(response.data.id);
                 setName(response.data.name);
                 if (response.data.address) {
-                    setAddress(buildAddress(response.data.address.street,response.data.address.number,response.data.address.zipCode,response.data.address.city));
+                    setAddress(response.data.address);
                     setStreet(response.data.address.street);
                     setNumber(response.data.address.number);
                     setZipcode(response.data.address.zipCode);
                     setCity(response.data.address.city);
+                } else {
+                    setAddress({});
+                    setStreet("");
+                    setNumber("");
+                    setZipcode("");
+                    setCity("");
                 }
                 setPhone(response.data.phone);
                 setFax(response.data.fax);

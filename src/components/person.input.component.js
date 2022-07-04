@@ -30,16 +30,24 @@ export default function PersonInput({title, callback, data, disabled}) {
                 let names = person.name.split(/(\s+)/);
                 setFirstname(names[0]);
                 setLastname(names[2]);
-                setAddress(person.address);
-                setStreet(person.address.street);
-                setNumber(person.address.number);
-                setZipcode(person.address.zipCode);
-                setCity(person.address.city);
+                if (person.address) {
+                    setAddress(person.address);
+                    setStreet(person.address.street);
+                    setNumber(person.address.number);
+                    setZipcode(person.address.zipCode);
+                    setCity(person.address.city);
+                } else {
+                    setAddress({});
+                    setStreet("");
+                    setNumber("");
+                    setZipcode("");
+                    setCity("");
+                }
                 setPhone(person.phone);
                 setFax(person.fax);
                 setBirthday(person.birthday);
                 setEmail(person.email);
-                sendInputToParent(names[0],names[2],buildAddress(person.address.street,person.address.number,person.address.zipCode,person.address.city),person.phone,person.fax,person.birthday,person.email);
+                sendInputToParent(names[0],names[2],person.address,person.phone,person.fax,person.birthday,person.email);
             } else {
                 setFirstname("");
                 setLastname("");
@@ -157,7 +165,7 @@ export default function PersonInput({title, callback, data, disabled}) {
                     </span>
 
                     <span className="input-row">
-                        <label className="input-label"><b>Adresse*</b></label>
+                        <label className="input-label"><b>Adresse</b></label>
                         <div className="input-address-row">
                             <input onChange={onChangeStreet} className="input-address-street" value={street} readOnly={disabled} name="address-street" id="address-street" type="text" placeholder="Straße"/>
                             <input onChange={onChangeNumber} className="input-address-number" value={number} readOnly={disabled} name="address-number" id="address-number" type="text" placeholder="Hausnummer"/>

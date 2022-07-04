@@ -27,11 +27,22 @@ export default function CreateReferencePerson({editperson,callback}) {
             let names = editperson.name.split(/(\s+)/);
             setFirstname(names[0]);
             setLastname(names[2]);
-            setBirthday(editperson.birthday);
-            setStreet(editperson.address.street);
-            setNumber(editperson.address.number);
-            setZipcode(editperson.address.zipCode);
-            setCity(editperson.address.city);
+            if (editperson.birthday) {
+                setBirthday(editperson.birthday);
+            } else {
+                setBirthday("");
+            }
+            if (editperson.address) {
+                setStreet(editperson.address.street);
+                setNumber(editperson.address.number);
+                setZipcode(editperson.address.zipCode);
+                setCity(editperson.address.city);
+            } else {
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+            }
             setPhone(editperson.phone);
             setEmail(editperson.email);
             setButtonTitle("Ändern");

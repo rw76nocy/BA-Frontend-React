@@ -1,0 +1,17 @@
+.appointment-container {
+    display: inline-block;
+    width: 100%;
+}
+
+.appointment-left {
+    display: inline-block;
+    width: 20%;
+    margin-right: 1%;
+    vertical-align: top;
+}
+
+.appointment-right {
+    display: inline-block;
+    width: 79%;
+    vertical-align: top;
+}

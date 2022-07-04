@@ -24,10 +24,17 @@ export default function CreatePartner({editPartner,callback}) {
         if (editPartner !== undefined && !isJsonEmpty(editPartner)) {
             setType(editPartner.type);
             setName(editPartner.name);
-            setStreet(editPartner.address.street);
-            setNumber(editPartner.address.number);
-            setZipcode(editPartner.address.zipCode);
-            setCity(editPartner.address.city);
+            if (editPartner.address) {
+                setStreet(editPartner.address.street);
+                setNumber(editPartner.address.number);
+                setZipcode(editPartner.address.zipCode);
+                setCity(editPartner.address.city);
+            } else {
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+            }
             setPhone(editPartner.phone);
             setFax(editPartner.fax);
             setEmail(editPartner.email);

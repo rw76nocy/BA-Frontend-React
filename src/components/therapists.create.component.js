@@ -24,10 +24,17 @@ export default function CreateTherapist({editTherapist,callback}) {
         if (editTherapist !== undefined && !isJsonEmpty(editTherapist)) {
             setType(editTherapist.type);
             setName(editTherapist.name);
-            setStreet(editTherapist.address.street);
-            setNumber(editTherapist.address.number);
-            setZipcode(editTherapist.address.zipCode);
-            setCity(editTherapist.address.city);
+            if (editTherapist.address) {
+                setStreet(editTherapist.address.street);
+                setNumber(editTherapist.address.number);
+                setZipcode(editTherapist.address.zipCode);
+                setCity(editTherapist.address.city);
+            } else {
+                setStreet("");
+                setNumber("");
+                setZipcode("");
+                setCity("");
+            }
             setPhone(editTherapist.phone);
             setFax(editTherapist.fax);
             setEmail(editTherapist.email);

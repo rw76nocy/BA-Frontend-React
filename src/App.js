@@ -9,10 +9,12 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
+import Appointment from "./components/appointments.component";
 import Employees from './components/employees.component';
 import NavBar from './components/navigation-bar.component';
 import LivingGroup from "./components/living-group.component";
 import Accounts from './components/account.component';
+import Options from "./components/options.component";
 
 export default function App() {
     return (
@@ -25,8 +27,9 @@ export default function App() {
                     <Route path="register" element={<Register/>} />
                     <Route path="living_group" element={<LivingGroup/>} />
                     <Route path="profile" element={<Profile/>} />
-                    <Route path="appointment" element={<BoardUser/>} />
+                    <Route path="appointment" element={<Appointment/>} />
                     <Route path="record" element={<BoardUser/>} />
+                    <Route path="options" element={<Options/>} />
                     <Route path="employees" element={<Employees/>} />
                     <Route path="accounts" element={<Accounts/>} />
                 </Routes>

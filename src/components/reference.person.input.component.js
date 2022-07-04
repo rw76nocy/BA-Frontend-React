@@ -80,7 +80,7 @@ export default function ReferencePerson({callback, data, disabled}) {
                 Header: "Geburtsdatum",
                 accessor: "birthday",
                 Cell: ({ value }) => {
-                    if (value !== undefined && value !== "") {
+                    if (value !== undefined && value !== null && value !== "") {
                         let formatedDate = moment(value).format("DD.MM.YYYY")
                         return String(formatedDate);
                     } else {
