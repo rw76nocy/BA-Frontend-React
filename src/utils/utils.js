@@ -56,4 +56,15 @@ export function isJsonArrayEmpty(jsonArray) {
     return JSON.stringify(jsonArray) === "[]";
 }
 
+export function isDateValid(date) {
+    let d = new Date(date);
+    return d.getTime() === d.getTime();
+}
+
+export function isAfter(date1,date2) {
+    let d1 = new Date(date1);
+    let d2 = new Date(date2);
+    return d1 > d2;
+}
+
 

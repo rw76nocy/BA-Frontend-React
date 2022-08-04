@@ -154,6 +154,7 @@ export default function ListView({data, title, callback}) {
 
             <span className="input-row">
                 <div className="appointment-half-row-first">
+                    <label className="input-label"><b>Ausgewählt</b></label>
                     <Box sx={{ width: '100%',  bgcolor: 'background.paper', border: '1px solid black' }}>
                         <List component="nav" aria-label="secondary mailbox folder">
                             {selectedParticipants.map((part) => (

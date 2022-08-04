@@ -9,9 +9,30 @@ class AppointmentService {
         return axios.get(API_URL + 'get/all/' + livingGroup, { headers: authHeader() });
     }
 
+    checkOverlaps(appointment) {
+        return axios.post(
+            API_URL + 'check/',
+            appointment,
+            { headers : authHeader() });
+    }
+
+    getAlternative(appointment) {
+        return axios.post(
+            API_URL + 'alternative/',
+            appointment,
+            { headers : authHeader() });
+    }
+
     addAppointment(appointment) {
         return axios.post(
             API_URL + 'add/',
+            appointment,
+            { headers : authHeader() });
+    }
+
+    updateAppointment(appointment) {
+        return axios.post(
+            API_URL + 'update/',
             appointment,
             { headers : authHeader() });
     }

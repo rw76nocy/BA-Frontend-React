@@ -11,6 +11,7 @@ import Employees from "../services/employees.service";
 import ChildrenService from "../services/children.service";
 import AppointmentService from "../services/appointment.service";
 
+//TODO das kann dann evtl gelöscht werden!!!
 export default function AppointmentInput({isGlobalAppointment, callback}) {
 
     const [title, setTitle] = useState("");
