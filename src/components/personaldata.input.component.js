@@ -5,7 +5,8 @@ import AuthService from "../services/auth.service";
 import LivingGroups from "../services/living.group.service";
 import Employees from "../services/employees.service";
 import Accounts from "../services/accounts.service";
-import {findPersonByType} from "../utils/utils";
+import {findPersonByType, handleError} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function PersonalDataInput({title, callback, data, disabled}) {
 
@@ -21,30 +22,28 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
     const [entrance, setEntrance] = useState("");
     const [release, setRelease] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         let id = AuthService.getCurrentUser().id;
-        Accounts.getAccountById(id).then(response => {
-            LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                if (response.data[0]) {
-                    setLivingGroup(response.data[0].name);
-                    Employees.getAllEmployeesByLivingGroup(response.data[0].name).then(response => {
-                        setEmployees(response.data);
-                        if (data === undefined) {
-                            if (response.data[0]) {
-                                setEmployee1(response.data[0].name);
-                                setEmployee2(response.data[0].name);
-                                sendInputToParent(gender,birthday,firstname,lastname,response.data[0].name,response.data[0].name,entrance,release);
-                            } else {
-                                setEmployee1("");
-                                setEmployee2("");
-                                sendInputToParent(gender,birthday,firstname,lastname,"","",entrance,release);
-                            }
-                        }
-                    });
+        try {
+            const account = await Accounts.getAccountById(id);
+            const lg = (await LivingGroups.getLivingGroup(account.data.person.livingGroup.name)).data;
+            setLivingGroup(lg[0].name);
+            const emps = (await Employees.getAllEmployeesByLivingGroup(lg[0].name)).data;
+            setEmployees(emps);
+            if (data === undefined) {
+                if (emps[0]) {
+                    setEmployee1(emps[0].name);
+                    setEmployee2(emps[0].name);
+                    sendInputToParent(gender,birthday,firstname,lastname,emps[0].name,emps[0].name,entrance,release);
+                } else {
+                    setEmployee1("");
+                    setEmployee2("");
+                    sendInputToParent(gender,birthday,firstname,lastname,"","",entrance,release);
                 }
-            });
-        });
-
+            }
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
     useEffect(() => {
@@ -127,6 +126,10 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
             <div className="input-container">
                 <h3><u>{title}</u></h3>
 
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
+
                 <div className="input-create-container">
 
                     <span className="input-sub-row">
@@ -188,7 +191,6 @@ export default function PersonalDataInput({title, callback, data, disabled}) {
                 </div>
 
             </div>
-
 
         </div>
     );

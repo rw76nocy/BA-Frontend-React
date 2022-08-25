@@ -34,6 +34,10 @@ class AuthService {
     getCurrentUser() {
         return JSON.parse(localStorage.getItem('user'));
     }
+
+    navigateToLogin() {
+        window.location.assign('/login');
+    }
 }
 
 export default new AuthService();

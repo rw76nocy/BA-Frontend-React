@@ -1,3 +1,8 @@
+import AuthService from "../services/auth.service";
+import {toast} from "react-toastify";
+import parse from "html-react-parser";
+import React from "react";
+
 export function findPersonByType(list,type)  {
     let obj = {}
     list.map(p => {
@@ -65,6 +70,36 @@ export function isAfter(date1,date2) {
     let d1 = new Date(date1);
     let d2 = new Date(date2);
     return d1 > d2;
+}
+
+export function toastError(error) {
+    const errorMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message || error.toString();
+    toast.error(errorMessage);
+}
+
+export function handleError(error) {
+    const errorStatus =
+        (error.response && error.response.data && error.response.data.status) ||
+        error.status || error.toString();
+    if (errorStatus === 401) {
+        AuthService.navigateToLogin();
+    } else {
+        toastError(error);
+    }
+}
+
+export function formatErrorMessage(errors) {
+    let message = "<b>Fehler</b><br/><br/>"
+    message = message.concat("<ul>")
+    errors.map(error => {
+        message = message.concat("<li>");
+        message = message.concat(error);
+        message = message.concat("</li>");
+    });
+    message = message.concat("</ul>")
+    return <div>{parse(message)}</div>
 }
 
 

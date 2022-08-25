@@ -5,6 +5,8 @@ import EmployeesService from '../services/employees.service';
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
 import AuthService from "../services/auth.service";
+import {toast, ToastContainer} from "react-toastify";
+import {formatErrorMessage, handleError} from "../utils/utils";
 
 export default function CreateEmployees({reloadTable}) {
     const [gender, setGender] = useState("m");
@@ -22,35 +24,34 @@ export default function CreateEmployees({reloadTable}) {
     const [fax, setFax] = useState("");
 
     const [errors, setErrors] = useState([]);
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
         if (admin) {
-            LivingGroups.getLivingGroups().then(response => {
-                setLivingGroups(response.data);
-                if (response.data[0]) {
-                    setLivingGroup(response.data[0].name);
+            try {
+                const lg = (await LivingGroups.getLivingGroups()).data;
+                if (lg[0]) {
+                    setLivingGroup(lg[0].name);
                 }
-            });
+            } catch (error) {
+                handleError(error);
+            }
         }
 
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setLivingGroups(response.data);
-                    if (response.data[0]) {
-                        setLivingGroup(response.data[0].name);
-                    }
-                });
-            });
+            try {
+                const account = await Accounts.getAccountById(id);
+                const lg = (await LivingGroups.getLivingGroup(account.data.person.livingGroup.name)).data;
+                if (lg[0]) {
+                    setLivingGroup(lg[0].name);
+                }
+            } catch (error) {
+                handleError(error);
+            }
         }
-
-
     },[])
 
     const onChangeGender = (e) => {
@@ -112,10 +113,6 @@ export default function CreateEmployees({reloadTable}) {
     const validate = () => {
         setErrors([]);
 
-        if (errors.length === 0) {
-            console.log("Error Array ist hier noch leer");
-        }
-
         if (firstname === "") {
             errors.push("Vorname darf nicht leer sein!");
         }
@@ -137,20 +134,16 @@ export default function CreateEmployees({reloadTable}) {
         }
 
         if (errors.length !== 0) {
-            setMessageInvalid(JSON.stringify(errors));
+            toast.error(formatErrorMessage(errors));
             return false;
         } else {
-            setMessageInvalid("");
             return true;
         }
     }
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (validate()) {
-            console.log("Alle Eingaben sind gültig!");
-
             let name = firstname + ' ' + lastname;
-            console.log(name);
 
             let address = {};
             address.street = street;
@@ -161,30 +154,24 @@ export default function CreateEmployees({reloadTable}) {
             let lg = {};
             lg.name = livingGroup;
 
-            console.log(JSON.stringify(address));
-
-            EmployeesService.addEmployee(gender, name, phone, fax, email, birthday, address, lg).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    clearInput();
-                    reloadTable();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessageInvalid(resMessage);
-                });
+            try {
+                const response = await EmployeesService.addEmployee(gender, name, phone, fax, email, birthday, address, lg);
+                toast.success(response.data.message);
+                clearInput();
+                await reloadTable();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     return(
         <div>
             <div className="table-input-create-panel">
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="table-input-create-column-left">
 
@@ -258,13 +245,6 @@ export default function CreateEmployees({reloadTable}) {
 
             <div>
                 <button type="button" className="table-input-submit" onClick={onCreate}>Anlegen</button>
-            </div>
-
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
 
         </div>

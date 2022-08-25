@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
+import {findInstitutionByType, handleError, isJsonEmpty} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function DayCareInput({title, callback, data, disabled}) {
 
@@ -62,8 +63,9 @@ export default function DayCareInput({title, callback, data, disabled}) {
         }
     }, [data, disabled])
 
-    useEffect(() => {
-        Institutions.getAllDaycares().then(response => {
+    useEffect(async () => {
+        try {
+            const response = await Institutions.getAllDaycares();
             if (response.data) {
                 let cares = [{ id: 0, name: "keine"}];
                 response.data.map(care => {
@@ -71,13 +73,16 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 })
                 setDaycares(cares);
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
-    const onExistingDayCareChange = (e) => {
+    const onExistingDayCareChange = async (e) => {
         let id = e.target.value;
 
-        Institutions.getDaycareById(id).then(response => {
+        try {
+            const response = await Institutions.getDaycareById(id);
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
@@ -111,7 +116,9 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 setFax("");
                 sendEmptyInputToParent();
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onChangeName = (e) => {
@@ -193,6 +200,10 @@ export default function DayCareInput({title, callback, data, disabled}) {
 
             <div className="input-container">
                 <h3><u>{title}</u></h3>
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="input-create-container">
 

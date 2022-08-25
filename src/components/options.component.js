@@ -7,113 +7,86 @@ import AuthService from "../services/auth.service";
 import AppointmentService from "../services/appointment.service";
 import Trash from "../icons/trash.svg";
 import CreateOptions from "./options.create.component";
+import {toast, ToastContainer} from "react-toastify";
+import {handleError} from "../utils/utils";
 
 export default function Options() {
     const [data, setData] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [livingGroup, setLivingGroup] = useState({});
 
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
-
-    useEffect(() => {
-        fetchData();
+    useEffect(async () => {
+        await fetchData();
     }, [])
 
     //set data from database
-    const fetchData = () => {
+    const fetchData = async () => {
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                setLivingGroup(response.data.person.livingGroup);
-                AppointmentService.getAppointmentTypesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setData(response.data);
-                });
-                AppointmentService.getAppointmentTypesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setOriginalData(response.data);
-                });
-            });
+            try {
+                const account = (await Accounts.getAccountById(id)).data;
+                const lg = account.person.livingGroup;
+                setLivingGroup(lg);
+                const dat = (await AppointmentService.getAppointmentTypesByLivingGroup(lg.name)).data;
+                setData(dat);
+                const ori = (await AppointmentService.getAppointmentTypesByLivingGroup(lg.name)).data;
+                setOriginalData(ori);
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
-    const onDeleteClick = (e) => {
+    const onDeleteClick = async (e) => {
         let confirm = window.confirm("Bist du dir sicher?");
         if (confirm) {
-            AppointmentService.deleteAppointmentType(e.target.value).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    fetchData();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessage("");
-                    setMessageInvalid(resMessage);
-                });
+            try {
+                const response = await AppointmentService.deleteAppointmentType(e.target.value);
+                toast.success(response.data.message);
+                await fetchData();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     const validateRow = (e) => {
-        if (e.name === "") {
-            return false;
-        }
-        return true;
+        return e.name !== "";
     }
 
-    const saveData = () => {
+    const saveData = async () => {
         setOriginalData(data);
 
-        {data.map((e) => {
+        {data.map(async (e) => {
             if (validateRow(e)) {
-                AppointmentService.updateAppointmentType(e).then(
-                    response => {
-                            setMessage(response.data.message);
-                            setMessageInvalid("");
-                    }, error => {
-                            const resMessage =
-                                (error.response &&
-                                    error.response.data &&
-                                    error.response.data.message) ||
-                                error.message ||
-                                error.toString();
-                            setMessageInvalid(resMessage);
-                            setMessage("");
-                    });
+                try {
+                    const response = await AppointmentService.updateAppointmentType(e);
+                    toast.success(response.data.message);
+                } catch (error) {
+                    handleError(error);
+                }
             } else {
-                setMessageInvalid("Werte für Terminart-ID: "+e.id+" sind ungültig!");
+                toast.error("Werte für Terminart-ID: " + e.id + " sind ungültig!");
             }
         })}
     }
 
     //reset to original data
-    const resetData = () => {
+    const resetData = async () => {
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                AppointmentService.getAppointmentTypesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setData(response.data);
-                    setMessage("Erfolreich zurückgesetzt!")
-                    setMessageInvalid("");
-                }, error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessageInvalid(resMessage);
-                    setMessage("");
-                });
-            });
+            try {
+                const account = await Accounts.getAccountById(id);
+                const dat = (await AppointmentService.getAppointmentTypesByLivingGroup(account.data.person.livingGroup.name)).data;
+                setData(dat);
+                toast.success("Erfolreich zurückgesetzt!");
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
@@ -209,8 +182,8 @@ export default function Options() {
         [onDeleteClick]
    )
 
-    const reloadTable = () => {
-        fetchData();
+    const reloadTable = async () => {
+        await fetchData();
     }
 
     return (
@@ -218,6 +191,10 @@ export default function Options() {
 
             <div className="title">
                 <h1><u>Terminart anlegen</u></h1>
+            </div>
+
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
             </div>
 
             <CreateOptions reloadTable={reloadTable}/>
@@ -234,13 +211,6 @@ export default function Options() {
             <div>
                 <button onClick={saveData}>Speichern</button>
                 <button className="employees-button-row-reset" onClick={resetData}>Zurücksetzen</button>
-            </div>
-
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
 
         </div>

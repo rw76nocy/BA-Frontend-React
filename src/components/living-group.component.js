@@ -4,22 +4,25 @@ import '../style/table.input.component.css';
 import Trash from '../icons/trash.svg';
 
 import LivingGroups from '../services/living.group.service';
+import {handleError} from "../utils/utils";
+import {toast, ToastContainer} from "react-toastify";
 
 export default function LivingGroup() {
 
     const [lgName, setLgName] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
-    const [message, setMessage] = useState("");
     const [tableData, setTableData] = useState([]);
 
-    useEffect(() => {
-        fetchData();
+    useEffect(async () => {
+        await fetchData();
     }, [])
 
-    const fetchData = () => {
-        LivingGroups.getLivingGroups().then(response => {
+    const fetchData = async () => {
+        try {
+            const response = await LivingGroups.getLivingGroups();
             setTableData(response.data);
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onChangeLgName = (e) => {
@@ -28,52 +31,34 @@ export default function LivingGroup() {
 
     const validate = () => {
         if (lgName) {
-            setMessageInvalid("");
             return true;
         } else {
-            setMessageInvalid("Name der Wohngruppe darf nicht leer sein!");
-            setMessage("");
+            toast.error("Name der Wohngruppe darf nicht leer sein!");
             return false;
         }
     }
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (validate()) {
-            LivingGroups.addLivingGroup(lgName).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    setLgName("");
-                    fetchData();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessageInvalid(resMessage);
-                });
+            try {
+                const response = await LivingGroups.addLivingGroup(lgName);
+                toast.success(response.data.message);
+                setLgName("");
+                await fetchData();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
-    const onDeleteClick = (e) => {
-        LivingGroups.deleteLivingGroup(e.target.value).then(
-            response => {
-                setMessage(response.data.message)
-                setMessageInvalid("");
-                fetchData();
-            },
-            error => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                setMessageInvalid(resMessage);
-            })
+    const onDeleteClick = async (e) => {
+        try {
+            const response = await LivingGroups.deleteLivingGroup(e.target.value);
+            toast.success(response.data.message);
+            await fetchData();
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const columns = useMemo(
@@ -111,7 +96,9 @@ export default function LivingGroup() {
 
     return(
         <div className="tableview-container">
-
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
             <div className="title">
                 <h1><u>Wohngruppe anlegen</u></h1>
             </div>
@@ -119,12 +106,6 @@ export default function LivingGroup() {
                 <label className="living-group-label" htmlFor="lgname"><b>Name der Wohngruppe</b></label>
                 <input className="living-group-input" value={lgName} id="lgname" type="text" onChange={onChangeLgName}/>
                 <button type="button" className="living-group-submit" onClick={onCreate}>Anlegen</button>
-            </div>
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
             <div className="title">
                 <h1><u>Übersicht Wohngruppen </u></h1>

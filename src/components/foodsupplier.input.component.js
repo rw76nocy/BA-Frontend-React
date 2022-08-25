@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
+import {findInstitutionByType, handleError, isJsonEmpty} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function FoodSupplierInput({title, callback, data, disabled}) {
 
@@ -42,8 +43,9 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
         }
     }, [data, disabled])
 
-    useEffect(() => {
-        Institutions.getAllFoodsuppliers().then(response => {
+    useEffect(async () => {
+        try {
+            const response = await Institutions.getAllFoodsuppliers();
             if (response.data) {
                 let suppliers = [{ id: 0, name: "keine"}];
                 response.data.map(supplier => {
@@ -51,20 +53,23 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
                 })
                 setFoodsuppliers(suppliers);
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
-    const onExistingFoodsupplierChange = (e) => {
+    const onExistingFoodsupplierChange = async (e) => {
         let id = e.target.value;
 
-        Institutions.getFoodsupplierById(id).then(response => {
+        try {
+            const response = await Institutions.getFoodsupplierById(id);
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
                 setPhone(response.data.phone);
                 setFax(response.data.fax);
                 setEmail(response.data.email);
-                sendInputToParent(response.data.id,response.data.name,response.data.cnumber,response.data.pin,response.data.phone,response.data.fax,response.data.email);
+                sendInputToParent(response.data.id, response.data.name, response.data.cnumber, response.data.pin, response.data.phone, response.data.fax, response.data.email);
             } else {
                 setId("0");
                 setName("");
@@ -75,7 +80,9 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
                 setEmail("");
                 sendEmptyInputToParent();
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onChangeName = (e) => {
@@ -130,6 +137,10 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
 
             <div className="input-container">
                 <h3><u>{title}</u></h3>
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="input-create-container">
 

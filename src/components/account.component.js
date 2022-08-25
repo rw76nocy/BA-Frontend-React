@@ -5,57 +5,50 @@ import Trash from '../icons/trash.svg';
 
 import Accounts from '../services/accounts.service';
 import AuthService from "../services/auth.service";
+import {handleError} from "../utils/utils";
+import {toast, ToastContainer} from "react-toastify";
 
 export default function Account() {
 
-    const [messageInvalid, setMessageInvalid] = useState("");
-    const [message, setMessage] = useState("");
     const [tableData, setTableData] = useState([]);
 
-    useEffect(() => {
-        fetchData();
+    useEffect(async () => {
+        await fetchData();
     }, [])
 
-    const fetchData = () => {
+    const fetchData = async () => {
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
         if (admin) {
-            Accounts.getAllAccounts().then(response => {
+            try {
+                const response = await Accounts.getAllAccounts();
                 setTableData(response.data);
-            });
+            } catch (error) {
+                handleError(error);
+            }
         }
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                Accounts.getUserAccountByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setTableData(response.data);
-                });
-            });
+            try {
+                const response = await Accounts.getAccountById(id);
+                const response2 = await Accounts.getUserAccountByLivingGroup(response.data.person.livingGroup.name);
+                setTableData(response2.data);
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
-    const onDeleteClick = (e) => {
+    const onDeleteClick = async (e) => {
         let confirm = window.confirm("Bist du dir sicher?");
         if (confirm) {
-            console.log(e.target.value);
-            Accounts.deleteAccount(e.target.value).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    fetchData();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessage("");
-                    setMessageInvalid(resMessage);
-                });
-        } else {
-            console.log("Abbruch!");
+            try {
+                const response = await Accounts.deleteAccount(e.target.value);
+                toast.success(response.data.message);
+                await fetchData();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
@@ -138,13 +131,10 @@ export default function Account() {
             <div className="title">
                 <h1><u>Übersicht Konten </u></h1>
             </div>
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
             <Table columns={columns} data={data}/>
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
-            </div>
         </div>
     );
 }

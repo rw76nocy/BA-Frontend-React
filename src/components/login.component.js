@@ -3,15 +3,14 @@ import {useNavigate} from 'react-router-dom';
 import '../style/login.component.css';
 
 import AuthService from "../services/auth.service";
+import {toast, ToastContainer} from "react-toastify";
+import {toastError} from "../utils/utils";
 
 export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [userInvalid, setUserInvalid] = useState("");
-    const [passInvalid, setPassInvalid] = useState("");
     const navigate = useNavigate();
 
     const onChangeUsername = (e) => {
@@ -22,52 +21,31 @@ export default function Login() {
         setPassword(e.target.value);
     }
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         if (loading) {
             return;
         }
-
         setLoading(true);
-        setMessage("Lädt");
 
         if (validate()) {
-            AuthService.login(username, password).then(
-                () => {
-                    navigate("/home");
-                    window.location.reload();
-                },
-                error => {
-                    const resMessage = (
-                        error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-
-                    setLoading(false);
-                    setMessage(resMessage);
-                });
+            try {
+                await AuthService.login(username, password);
+                navigate("/home");
+                window.location.reload();
+            } catch (error) {
+                setLoading(false);
+                toastError(error);
+            }
         } else {
             setLoading(false);
-            setMessage("Anmeldung ungültig");
+            toast.error("Anmeldedaten ungültig");
         }
     }
 
     const validate = () => {
         if (!username || !password) {
-            if (!username) {
-                setUserInvalid("Benutzername ungültig");
-            } else {
-                setUserInvalid("");
-            }
-
-            if (!password) {
-                setPassInvalid("Passwort ungültig");
-            } else {
-                setPassInvalid("");
-            }
             return false;
         }
 
@@ -78,6 +56,9 @@ export default function Login() {
 
     return (
         <div className="login-container">
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
 
             <div className="title">
                 <h1><u>Anmeldung</u></h1>
@@ -87,27 +68,16 @@ export default function Login() {
                 <span className="login-row">
                     <label className="login-label" htmlFor="username"><b>Benutzername</b></label>
                     <input className="login-input" name="username" id="username" type="text" onChange={onChangeUsername}/>
-                    <span style={{ color: "red" }}>{userInvalid}</span>
                 </span>
                 <span className="login-row">
                     <label className="login-label" htmlFor="password"><b>Passwort</b></label>
                     <input className="login-input" name="password" id="password" type="password" onChange={onChangePassword}/>
-                    <span style={{ color: "red" }}>{passInvalid}</span>
                 </span>
             </div>
 
             <div className="button-row">
                 <button type="button" className="login-submit" onClick={handleLogin}>Anmelden</button>
             </div>
-
-            {message && (
-                <div className="alert-row">
-                    <div>
-                        {message}
-                    </div>
-                </div>
-            )}
-
         </div>
     );
 

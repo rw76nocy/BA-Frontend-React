@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Persons from "../services/person.service";
-import {findPersonByType, isJsonEmpty} from "../utils/utils";
+import {findPersonByType, handleError, isJsonEmpty} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function GuardianInput({title, callback, data, disabled}) {
 
@@ -34,8 +35,9 @@ export default function GuardianInput({title, callback, data, disabled}) {
         }
     }, [data, disabled])
 
-    useEffect(() => {
-        Persons.getAllGuardians().then(response => {
+    useEffect(async () => {
+        try {
+            const response = await Persons.getAllGuardians();
             if (response.data) {
                 let guards = [{ id: 0, name: "keine"}];
                 response.data.map(guard => {
@@ -43,13 +45,16 @@ export default function GuardianInput({title, callback, data, disabled}) {
                 })
                 setGuardians(guards);
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
-    const onExistingChange = (e) => {
+    const onExistingChange = async (e) => {
         let id = e.target.value;
 
-        Persons.getPersonById(id).then(response => {
+        try {
+            const response = await Persons.getPersonById(id);
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
@@ -65,7 +70,9 @@ export default function GuardianInput({title, callback, data, disabled}) {
                 setEmail("");
                 sendEmptyInputToParent();
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onNameChange = (e) => {
@@ -108,6 +115,10 @@ export default function GuardianInput({title, callback, data, disabled}) {
 
             <div className="input-container">
                 <h3><u>{title}</u></h3>
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="input-create-container">
 

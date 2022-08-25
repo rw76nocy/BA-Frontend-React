@@ -3,8 +3,6 @@ import authHeader from "./auth-header";
 
 const API_URL = 'http://localhost:8080/api/test/livinggroup/';
 
-
-
 class LivingGroup {
 
     getLivingGroups() {

@@ -21,6 +21,8 @@ import Accounts from "../services/accounts.service";
 import LivingGroups from "../services/living.group.service";
 import ChildrenService from "../services/children.service";
 import FileService from "../services/file.service";
+import {toast, ToastContainer} from "react-toastify";
+import {formatErrorMessage, handleError} from "../utils/utils";
 
 export default function Children() {
 
@@ -48,20 +50,18 @@ export default function Children() {
     const [partners, setPartners] = useState([]);
 
     const [errors, setErrors] = useState([]);
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         let id = AuthService.getCurrentUser().id;
-
-        Accounts.getAccountById(id).then(response => {
-            LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                if (response.data[0]) {
-                    setLivingGroup(response.data[0]);
-                }
-            });
-        });
-
+        try {
+            const account = await Accounts.getAccountById(id);
+            const lg = (await LivingGroups.getLivingGroup(account.data.person.livingGroup.name)).data;
+            if (lg[0]) {
+                setLivingGroup(lg[0]);
+            }
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
     const getInputAsImage = (input) => {
@@ -160,13 +160,9 @@ export default function Children() {
         }
 
         if (errors.length !== 0) {
-            setMessageInvalid(JSON.stringify(errors));
-            setMessage("");
-            console.log("INPUT UNGÜLTIG!!!");
+            toast.error(formatErrorMessage(errors));
             return false;
         } else {
-            setMessageInvalid("");
-            console.log("INPUT GÜLTIG!!!");
             return true;
         }
     }
@@ -219,42 +215,34 @@ export default function Children() {
         return format;
     }
 
-    const createChild = () => {
+    const createChild = async () => {
         if (validate()) {
             let child = buildChildFromInput();
 
-            ChildrenService.addChild(child).then(
-                response => {
-                    let childId = response.data.childId;
-                    console.log("ERFOLG:" + response.data.message);
-                    console.log("ChildId:" + childId);
-                    if (image !== undefined) {
-                        let formData = new FormData();
-                        formData.append('file', image);
-                        formData.append('child_id', childId);
+            try {
+                const response = await ChildrenService.addChild(child);
+                toast.success(response.data.message);
+                let childId = response.data.childId;
+                if (image !== undefined) {
+                    let formData = new FormData();
+                    formData.append('file', image);
+                    formData.append('child_id', childId);
 
-                        FileService.uploadFile(formData).then(response => {
-                            console.log("ERFOLG FOTO:" + response.data.message);
-                            window.location.reload();
-                        });
-                    } else {
-                        window.location.reload();
-                    }
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    console.log("FEHLER: " + resMessage);
-                });
+                    const response = await FileService.uploadFile(formData);
+                    toast.success(response.data.message);
+                }
+                window.location.reload();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     return(
         <div className="children-container" aria-readonly={disabled}>
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
             <div className="children-components">
                 <ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>
@@ -281,14 +269,6 @@ export default function Children() {
             <div>
                 <button className="children-submit" onClick={createChild}>Kind anlegen</button>
             </div>
-
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
-            </div>
-
         </div>
     );
 }

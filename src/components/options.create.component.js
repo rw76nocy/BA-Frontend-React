@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import '../style/table.input.component.css';
 import '../style/input.component.css';
-import EmployeesService from '../services/employees.service';
 import AppointmentService from "../services/appointment.service";
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
 import AuthService from "../services/auth.service";
+import {formatErrorMessage, handleError} from "../utils/utils";
+import {toast, ToastContainer} from "react-toastify";
 
 export default function CreateOptions({reloadTable}) {
     const [livingGroup, setLivingGroup] = useState({});
@@ -13,21 +14,19 @@ export default function CreateOptions({reloadTable}) {
     const [color, setColor] = useState("#09afff");
 
     const [errors, setErrors] = useState([]);
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    if (response.data[0]) {
-                        setLivingGroup(response.data[0]);
-                    }
-                });
-            });
+            try {
+                const account = await Accounts.getAccountById(id);
+                const lg = (await LivingGroups.getLivingGroup(account.data.person.livingGroup.name)).data;
+                setLivingGroup(lg[0]);
+            } catch (error) {
+                handleError(error);
+            }
         }
     },[])
 
@@ -52,47 +51,37 @@ export default function CreateOptions({reloadTable}) {
         }
 
         if (errors.length !== 0) {
-            setMessageInvalid(JSON.stringify(errors));
+            toast.error(formatErrorMessage(errors));
             return false;
         } else {
-            setMessageInvalid("");
             return true;
         }
     }
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (validate()) {
-            console.log("Alle Eingaben sind gültig!");
-
             let appointmentType = {};
             appointmentType.name = name;
             appointmentType.color = color;
             appointmentType.livingGroup = livingGroup.name;
 
-            console.log(JSON.stringify(appointmentType));
-
-            AppointmentService.addAppointmentType(appointmentType).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    clearInput();
-                    reloadTable();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessageInvalid(resMessage);
-                }
-            );
+            try {
+                const response = await AppointmentService.addAppointmentType(appointmentType);
+                toast.success(response.data.message);
+                clearInput();
+                await reloadTable();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     return(
         <div>
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
+
             <div className="table-input-create-panel">
 
                 <div className="table-input-create-column-left">
@@ -117,13 +106,6 @@ export default function CreateOptions({reloadTable}) {
 
             <div>
                 <button type="button" className="table-input-submit" onClick={onCreate}>Anlegen</button>
-            </div>
-
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
 
         </div>

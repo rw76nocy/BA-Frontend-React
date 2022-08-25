@@ -11,16 +11,15 @@ export default function ImageInput({title, callback, childId, disabled}) {
     const [inputkey, setInputKey] = useState("");
     const [id, setID] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         if (childId !== undefined) {
             setID(childId);
-            FileService.getFile(childId).then(response => {
-                if (response.data) {
-                    setImagePreview(URL.createObjectURL(response.data));
-                    setImage(response.data);
-                    callback(response.data);
-                }
-            });
+            const response = await FileService.getFile(childId);
+            if (response.data) {
+                setImagePreview(URL.createObjectURL(response.data));
+                setImage(response.data);
+                callback(response.data);
+            }
         }
     }, [childId, disabled])
 

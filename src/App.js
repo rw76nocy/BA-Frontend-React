@@ -3,8 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+import {RequireAuth} from "./utils/private_route";
 import Home from "./components/home.component";
-
 import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
@@ -22,16 +22,88 @@ export default function App() {
             <NavBar/>
             <div>
                 <Routes>
+                    <Route
+                        path=""
+                        element={
+                            <RequireAuth navigateTo="../login" isInitial={true}>
+                                <></>
+                            </RequireAuth>
+                        }
+                    />
                     <Route path="/home" element={<Home/>} />
                     <Route path="login" element={<Login/>} />
-                    <Route path="register" element={<Register/>} />
-                    <Route path="living_group" element={<LivingGroup/>} />
-                    <Route path="profile" element={<Profile/>} />
-                    <Route path="appointment" element={<Appointment/>} />
-                    <Route path="record" element={<BoardUser/>} />
-                    <Route path="options" element={<Options/>} />
-                    <Route path="employees" element={<Employees/>} />
-                    <Route path="accounts" element={<Accounts/>} />
+                    <Route
+                        path="register"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Register/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="living_group"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <LivingGroup/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="profile"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Profile/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="appointment"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Appointment/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="record"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <BoardUser/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="options"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Options/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="employees"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Employees/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="accounts"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <Accounts/>
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="children"
+                        element={
+                            <RequireAuth navigateTo="../login">
+                                <></>
+                            </RequireAuth>
+                        }
+                    />
                 </Routes>
             </div>
         </div>

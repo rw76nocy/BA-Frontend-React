@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Link, Route, Routes} from "react-router-dom";
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 
 import "../style/navigation-bar.component.css";
 
+import {RequireAuth} from "../utils/private_route";
 import ChildNav from './children.navigation.component';
 import Children from "./children.create.component";
 import Child from "./child.show.component";
@@ -11,6 +12,8 @@ import AuthService from "../services/auth.service";
 import Accounts from '../services/accounts.service';
 import LivingGroups from "../services/living.group.service";
 import ChildrenService from "../services/children.service";
+import {toast, ToastContainer} from "react-toastify";
+import {handleError} from "../utils/utils";
 
 function Navbar() {
     const [livingGroup, setLivingGroup] = useState("");
@@ -20,22 +23,24 @@ function Navbar() {
     const [childNav, setChildNav] = useState(false);
     const [showChildNav, setShowChildNav] = useState(false);
     const [children, setChildren] = useState([]);
+    const navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect(async () => {
         setCurrentUser(AuthService.getCurrentUser());
         if (AuthService.getCurrentUser()) {
             let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
             let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
             let id = AuthService.getCurrentUser().id;
             if (user || mod) {
-                Accounts.getAccountById(id).then(response => {
-                    LivingGroups.getLivingGroup(response.data.person.livingGroup.name).then(response => {
-                        setLivingGroup(response.data[0].name)
-                        ChildrenService.getChildrenByLivingGroup(response.data[0].name).then(response => {
-                            setChildren(response.data);
-                        });
-                    });
-                });
+                try {
+                    const account = (await Accounts.getAccountById(id)).data;
+                    const lg = (await LivingGroups.getLivingGroup(account.person.livingGroup.name)).data;
+                    setLivingGroup(lg[0].name);
+                    const childs = (await ChildrenService.getChildrenByLivingGroup(lg[0].name)).data;
+                    setChildren(childs);
+                } catch (error) {
+                    handleError(error);
+                }
             }
         }
     }, [])
@@ -56,7 +61,11 @@ function Navbar() {
     }, [currentUser])
 
     useEffect(() => {
-        setShowChildNav(childNav);
+        if (AuthService.getCurrentUser()) {
+            setShowChildNav(childNav);
+        } else {
+            setShowChildNav(false);
+        }
     }, [childNav])
 
     const logout = () => {
@@ -66,13 +75,20 @@ function Navbar() {
         setCurrentUser(undefined);
         setShowModeratorBoard(false);
         setShowAdminBoard(false);
+        toast.success("Abmeldung erfolgreich!");
     }
 
     const changeChildNav = () => {
-        if (childNav) {
-            setChildNav(false);
+        const user = AuthService.getCurrentUser();
+        if (user !== null) {
+            if (childNav) {
+                setChildNav(false);
+            } else {
+                setChildNav(true);
+            }
         } else {
-            setChildNav(true);
+            navigate('./login');
+            logout();
         }
     }
 
@@ -82,6 +98,10 @@ function Navbar() {
 
     return (
         <header className="header">
+
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
 
             <div className="first-level">
 
@@ -192,15 +212,23 @@ function Navbar() {
             </div>
 
             <div className="second-level">
-                {showChildNav &&
+                {showChildNav  &&
                     <div>
                         <ChildNav/>
                         <div>
                             <Routes>
                                 {children.map((c) => (
-                                    <Route key={c.id} path={"/child/" + c.id} element={<Child child={c}/>}/>
+                                    <Route key={c.id} path={"/child/" + c.id} element={
+                                        <RequireAuth navigateTo="./login">
+                                            <Child child={c}/>
+                                        </RequireAuth>
+                                    }/>
                                 ))}
-                                <Route path="/create" element={<Children/>} />
+                                <Route path="/create" element={
+                                    <RequireAuth navigateTo="../login" isCreate={true}>
+                                        <Children/>
+                                    </RequireAuth>
+                                } />
                             </Routes>
                         </div>
                     </div>

@@ -6,34 +6,58 @@ import Accounts from '../services/accounts.service';
 import AuthService from "../services/auth.service";
 
 import Paper from '@mui/material/Paper';
+import {EditingState, ViewState} from '@devexpress/dx-react-scheduler';
 import {
-    EditingState,
-    ViewState
-} from '@devexpress/dx-react-scheduler';
-import {Scheduler, WeekView, Toolbar, DateNavigator, Appointments, TodayButton, ViewSwitcher, MonthView, DayView, AppointmentTooltip, AppointmentForm, Resources, EditRecurrenceMenu, ConfirmationDialog} from '@devexpress/dx-react-scheduler-material-ui';
+    AppointmentForm,
+    Appointments,
+    AppointmentTooltip,
+    ConfirmationDialog,
+    DateNavigator,
+    DayView,
+    EditRecurrenceMenu,
+    MonthView,
+    Resources,
+    Scheduler,
+    TodayButton,
+    Toolbar,
+    ViewSwitcher,
+    WeekView
+} from '@devexpress/dx-react-scheduler-material-ui';
 import AppointmentService from "../services/appointment.service";
 import {
-    Button, Dialog,
+    Button,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, FormControl, FormControlLabel,
-    Radio, RadioGroup,
+    DialogTitle,
+    FormControl,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
 import {getAppointmentResources, loadAppointmentTypes} from "../utils/resources";
 import "moment/locale/de";
 import moment from "moment";
-import { ToastContainer, toast } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import parse from 'html-react-parser'
-import {isAfter, isDateValid} from "../utils/utils";
+import {handleError, isAfter, isDateValid} from "../utils/utils";
 import Box from "@mui/material/Box";
-import {DateEditor, TextEditor, BooleanEditor, Label, ResourceEditor, BasicLayout} from "./appointment.editor.components";
-import {classes, StyledIconButton, StyledFab} from "./appointment.style.helper";
-import {todayText, confirmationMessages, recurrenceMessages, appointmentFormMessages} from "./appointment.messages";
+import {
+    BasicLayout,
+    BooleanEditor,
+    DateEditor,
+    Label,
+    ResourceEditor,
+    TextEditor
+} from "./appointment.editor.components";
+import {classes, StyledFab, StyledIconButton} from "./appointment.style.helper";
+import {appointmentFormMessages, confirmationMessages, recurrenceMessages, todayText} from "./appointment.messages";
 import {renderOverlapTable} from "./appointment.overlap.helper";
+import {renderAlternativeTable} from "./appointment.alternative.helper";
 
 export default function Appointment() {
 
@@ -54,11 +78,18 @@ export default function Appointment() {
     const [currentAppointment, setCurrentAppointment] = useState({});
 
     const [confirmChoice, setConfirmChoice] = useState("keep");
+    const [alternativeChoice, setAlternativeChoice] = useState("edit");
     const addedApp = useRef({});
     const over = useRef([]);
+    const alternatives = useRef([]);
 
     useEffect(async () => {
-        const response = await reloadData();
+        try {
+            const response = await reloadData();
+        } catch (error) {
+            handleError(error);
+        }
+
     }, [])
 
     useEffect(() => {
@@ -75,7 +106,6 @@ export default function Appointment() {
         setLivingGroup(account.data.person.livingGroup);
         const appointments = await AppointmentService.getAppointmentsByLivingGroup(account.data.person.livingGroup.name);
         const formated = await formatAppointments(appointments.data);
-        console.log("FORMATED APPOINTMENTS:", JSON.stringify(formated));
         setSchedulerData(formated);
         const types = await loadAppointmentTypes();
         setTypes(types);
@@ -164,73 +194,58 @@ export default function Appointment() {
 
     const commitChanges = async ({ added, changed, deleted }) => {
         let data = [...schedulerData];
-        console.log("DATA: "+JSON.stringify(data));
-        console.log("DELETED: "+deleted);
-        console.log("CHANGED:", JSON.stringify(changed));
-        console.log("ADDED:", JSON.stringify(added));
-
-        const start = new Date().getTime();
 
         if (added) {
-            const start1 = new Date().getTime();
             if (validateAdded(added)) {
                 const newAppointment = buildNewAppointment({ id: 0, ...added });
                 try {
-                    //TODO die zeitmessung dann wieder raus!
-                    const start2 = new Date().getTime();
-
                     const response = await AppointmentService.checkOverlaps(newAppointment);
-
-                    const end2 = new Date().getTime();
-                    console.log("Check Overlap time: ", end2-start2);
-                    console.log("RESPONSE DATA: ", JSON.stringify(response.data));
 
                     if (response.data[0] !== undefined) {
                         addedApp.current = newAppointment;
                         over.current = response.data;
                         toggleConfirmationVisible();
                     } else {
-                        //TODO die zeitmessung dann wieder raus!
-                        const start3 = new Date().getTime();
-
                         const response = await AppointmentService.addAppointment(newAppointment);
                         setCurrentAppointment({});
-
-                        const end3 = new Date().getTime();
-                        console.log("Add appointment time: ", end3-start3);
-
                         newAppointment.id = response.data.id;
                         data = [...data, newAppointment];
                         toast.success(response.data.message);
                     }
                 } catch (error) {
-                    toastError(error);
+                    handleError(error);
                 }
             }
-            //TODO die zeitmessung dann wieder raus!
-            const end1 = new Date().getTime();
-            console.log("Duration Added: ", end1-start1);
         }
 
         if (changed) {
             if (validateChanged(changed)) {
-                let change = {}
-                data = data.map(appointment => {
-                        if (changed[appointment.id]) {
-                            change = { ...appointment, ...changed[appointment.id] };
-                            return change;
-                        }
-                        return appointment;
-                });
+                let filtered = data.filter(appointment => changed[appointment.id])[0];
+                let change = {...filtered, ...changed[filtered.id]};
+                change.livingGroup = livingGroup;
+
                 try {
-                    //TODO detect intersection on change
-                    // da dann das selbe wie beim adden machen???
-                    const response = await AppointmentService.updateAppointment(change);
-                    toast.success(response.data.message);
+                    const response = await AppointmentService.checkOverlaps(change);
+
+                    if (response.data[0] !== undefined) {
+                        addedApp.current = change;
+                        over.current = response.data;
+                        toggleConfirmationVisible();
+                    } else {
+                        const response = await AppointmentService.updateAppointment(change);
+                        setCurrentAppointment({});
+                        data = data.map(appointment => {
+                            if (changed[appointment.id]) {
+                                change = { ...appointment, ...changed[appointment.id] };
+                                return change;
+                            }
+                            return appointment;
+                        });
+                        toast.success(response.data.message);
+                    }
                 } catch (error) {
-                    toastError(error);
+                    handleError(error);
                 }
-                console.log("CHANGED APPOINTMENT:", JSON.stringify(change));
             }
         }
 
@@ -240,16 +255,10 @@ export default function Appointment() {
                 const response = await AppointmentService.deleteAppointment(deleted);
                 toast.success(response.data.message);
             } catch (error) {
-                toastError(error);
+                handleError(error);
             }
         }
 
-        //TODO die zeitmessung dann wieder raus!
-        const end = new Date().getTime();
-        const duration = "Duration Commit Changes: "+String(end-start)+" ms";
-        toast.success(duration);
-
-        console.log("NEW DATA:",JSON.stringify(data));
         setSchedulerData(data);
     }
 
@@ -293,12 +302,8 @@ export default function Appointment() {
         let obj = changed[change_id];
 
         let data = [...schedulerData];
-        let change = data.map(appointment => {
-            if (changed[appointment.id]) {
-                return { ...appointment, ...changed[appointment.id] };
-            }
-        });
-
+        let change1 = data.filter(appointment => changed[appointment.id ])[0];
+        let change2 = {...change1, ...changed[change1.id]};
 
         if (obj.title && obj.title === "") {
             errors.push("Titel muss angeben werden!");
@@ -316,7 +321,7 @@ export default function Appointment() {
             }
         }
 
-        if (!isAfter(change.endDate, change.startDate)) {
+        if (!isAfter(change2.endDate, change2.startDate)) {
             errors.push("Der Endzeitpunkt liegt vor dem Startzeitpunkt!");
         }
 
@@ -341,15 +346,7 @@ export default function Appointment() {
             message = message.concat("</li>");
         });
         message = message.concat("</ul>")
-        console.log(message);
         return <div>{parse(message)}</div>
-    }
-
-    const toastError = (error) => {
-        const errorMessage =
-            (error.response && error.response.data && error.response.data.message) ||
-            error.message || error.toString();
-        toast.error(errorMessage);
     }
 
     const buildNewAppointment = (added) => {
@@ -360,7 +357,6 @@ export default function Appointment() {
         if (appointment.children === undefined || !appointment.children[0]) {
             appointment.children = [];
         }
-        console.log("NEW BUILDED APPOINTMENT:", JSON.stringify(appointment));
         return appointment;
     }
 
@@ -383,10 +379,8 @@ export default function Appointment() {
             data = [...data, newAppointment];
             setSchedulerData(data);
         } catch (error) {
-            toastError(error);
+            handleError(error);
         }
-
-        toggleConfirmationVisible();
     }
 
     const onEditingAppointmentChange = (editingAppointment) => {
@@ -423,9 +417,18 @@ export default function Appointment() {
         setConfirmChoice(e.target.value);
     }
 
+    const onCancelConfirmation = () => {
+        addedApp.current = {};
+        over.current = [];
+        setCurrentAppointment({});
+        setConfirmChoice("keep");
+        toggleConfirmationVisible();
+    }
+
     const executeConfirmationChoice = async () => {
         if (confirmChoice === "keep") {
             await commitAddedAppointment();
+            await toggleConfirmationVisible();
         }
         if (confirmChoice === "edit") {
             setCurrentAppointment(addedApp.current);
@@ -433,25 +436,121 @@ export default function Appointment() {
             toggleConfirmationVisible();
         }
         if (confirmChoice === "altBefore") {
-            //TODO hier dann die nächsten 5 alternative davor suchen und in einem extra dialog anzeigen und auswählbar machen!
-            // in den grenzen von 7-20 Uhr
-            // es kann auch keine alternativen in diesem zeitraum geben, in dem fall dann eben manuelles bearbeiuten ermöglichen!
-            console.log("ALTERNATIVE: ich suche dann jetzt mal Alternativen davor für dich!");
-            toggleConfirmationVisible();
-            toggleAlternativeVisible();
+            try {
+                const alts = await AppointmentService.getEarlierAlternatives(addedApp.current);
+                alternatives.current = alts.data;
+                setConfirmChoice("keep");
+                setAlternativeChoice("edit");
+                toggleConfirmationVisible();
+                toggleAlternativeVisible();
+            } catch (error) {
+                handleError(error);
+            }
         }
         if (confirmChoice === "altAfter") {
-            //TODO hier dann die nächsten 5 alternative danach suchen und in einem extra dialog anzeigen und auswählbar machen!
-            // in den grenzen von 7-20 Uhr
-            // es kann auch keine alternativen in diesem zeitraum geben, in dem fall dann eben manuelles bearbeiuten ermöglichen!
-            console.log("ALTERNATIVE: ich suche dann jetzt mal Alternativen danach für dich!");
-            toggleConfirmationVisible();
-            toggleAlternativeVisible();
+            try {
+                const alts = await AppointmentService.getLaterAlternatives(addedApp.current);
+                alternatives.current = alts.data;
+                setConfirmChoice("keep");
+                setAlternativeChoice("edit");
+                toggleConfirmationVisible();
+                toggleAlternativeVisible();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
-    const executeAlternativeChoice = () => {
+    const alternativeDialogContent = () => {
+        if (alternatives.current.length === 0) {
+            return (
+                <div>
+                    <DialogContentText>
+                        Es konnten keine Alternativen gefunden werden.
+                    </DialogContentText>
+                    <br/>
+                    <FormControl>
+                        <RadioGroup
+                            aria-labelledby="demo-radio-buttons-group-label"
+                            defaultValue="edit"
+                            name="radio-buttons-group"
+                            value={alternativeChoice}
+                            onChange={onChangeAlternativeChoice}
+                        >
+                            <FormControlLabel value="edit" control={<Radio />} label="Termin manuell bearbeiten" />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
+            );
+        }
+        return (
+            <div>
+                <DialogContentText>
+                    Es wurden folgende Alternativen gefunden.
+                </DialogContentText>
+                <br/>
+                <FormControl>
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="edit"
+                        name="radio-buttons-group"
+                        value={alternativeChoice}
+                        onChange={onChangeAlternativeChoice}
+                    >
+                        {alternatives.current.length !== 0 &&
+                            alternatives.current.map(alt => {
+                                return (
+                                    <FormControlLabel
+                                        value={alternatives.current.indexOf(alt)}
+                                        control={<Radio />}
+                                        label={renderAlternativeTable(alt)}
+                                    />
+                                );
+                            })
+                        }
+                        <FormControlLabel value="edit" control={<Radio />} label="Termin manuell bearbeiten" />
+                    </RadioGroup>
+                </FormControl>
+            </div>
+        );
+    }
 
+    const onChangeAlternativeChoice = (e) => {
+        setAlternativeChoice(e.target.value);
+    }
+
+    const onCancelAlternative = () => {
+        addedApp.current = {};
+        over.current = [];
+        setCurrentAppointment({});
+        toggleAlternativeVisible();
+    }
+
+    const formatAddedApp = (added) => {
+        const newAppointment = {...added};
+        newAppointment.startDate = moment(added.startDate).toDate();
+        newAppointment.endDate = moment(added.endDate).toDate();
+        newAppointment.type = added.appointmentType.name;
+        addedApp.current = newAppointment;
+    }
+
+    const executeAlternativeChoice = async () => {
+        if (alternativeChoice === "edit") {
+            setCurrentAppointment(addedApp.current);
+            setEditingFormVisible(true);
+            toggleAlternativeVisible();
+        } else {
+            const added = alternatives.current[alternativeChoice];
+            if (added) {
+                try {
+                    formatAddedApp(added);
+                    await commitAddedAppointment();
+                    await toggleAlternativeVisible();
+                } catch (error) {
+                    handleError(error);
+                }
+            }
+        }
     }
 
     return(
@@ -538,7 +637,7 @@ export default function Appointment() {
                             </div>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={toggleConfirmationVisible} color="primary" variant="outlined">
+                            <Button onClick={onCancelConfirmation} color="primary" variant="outlined">
                                 Abbrechen
                             </Button>
                             <Button onClick={executeConfirmationChoice} color="secondary" variant="outlined">
@@ -555,41 +654,10 @@ export default function Appointment() {
                             Terminalternativen
                         </DialogTitle>
                         <DialogContent>
-                            <DialogContentText>
-                                Hier könnten ihre Terminalternativen stehen!
-                                {/*{temporalOverlapsDialogContent()}*/}
-                            </DialogContentText>
-                            <br/>
-                            <div>
-                                <FormControl>
-                                    <RadioGroup
-                                        aria-labelledby="demo-radio-buttons-group-label"
-                                        defaultValue="keep"
-                                        name="radio-buttons-group"
-                                        /*value={confirmChoice}
-                                        onChange={onChangeConfirmChoice}*/
-                                    >
-                                        <FormControlLabel value="app1" control={<Radio />} label={
-                                            "Alternative 1"
-                                            /*//TODO ja hier dann eben die Alternative in ne Komponente packen!*/
-                                            /*<div>
-                                                <span>Lalala in bin</span>
-                                                <br/>
-                                                <span>das DIV von</span>
-                                                <br/>
-                                                <span>Radio 1</span>
-                                            </div>*/
-                                        } />
-                                        <FormControlLabel value="app2" control={<Radio />} label="Alternative 2" />
-                                        <FormControlLabel value="app3" control={<Radio />} label="Alternative 3" />
-                                        <FormControlLabel value="app4" control={<Radio />} label="Alternative 4" />
-                                        <FormControlLabel value="edit" control={<Radio />} label="Termin manuell bearbeiten" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </div>
+                            {alternativeDialogContent()}
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={toggleAlternativeVisible} color="primary" variant="outlined">
+                            <Button onClick={onCancelAlternative} color="primary" variant="outlined">
                                 Abbrechen
                             </Button>
                             <Button onClick={executeAlternativeChoice} color="secondary" variant="outlined">
@@ -601,8 +669,8 @@ export default function Appointment() {
                     <StyledFab
                         color="secondary"
                         className={classes.addButton}
-                        onClick={() => {
-                            onEditingAppointmentChange(undefined);
+                        onClick={async () => {
+                            await onEditingAppointmentChange(undefined);
                             setEditingFormVisible(true);
                         }}
                     >

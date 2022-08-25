@@ -18,6 +18,8 @@ import Partner from "./partners.input.component";
 
 import ChildrenService from "../services/children.service";
 import FileService from "../services/file.service";
+import {toast, ToastContainer} from "react-toastify";
+import {formatErrorMessage, handleError} from "../utils/utils";
 
 export default function Child({child}) {
 
@@ -46,8 +48,6 @@ export default function Child({child}) {
     const [partners, setPartners] = useState([]);
 
     const [errors, setErrors] = useState([]);
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
 
     useEffect(() => {
         setDisabled(true);
@@ -151,13 +151,9 @@ export default function Child({child}) {
         }
 
         if (errors.length !== 0) {
-            setMessageInvalid(JSON.stringify(errors));
-            setMessage("");
-            console.log("INPUT UNGÜLTIG!!!");
+            toast.error(formatErrorMessage(errors));
             return false;
         } else {
-            setMessageInvalid("");
-            console.log("INPUT GÜLTIG!!!");
             return true;
         }
     }
@@ -215,60 +211,43 @@ export default function Child({child}) {
         setDisabled(!disabled);
     }
 
-    const clear = () => {
-        ChildrenService.deleteChild(child.id).then(
-            response => {
-                console.log("ERFOLG:" + response.data.message);
-                window.location.reload();
-            },
-            error => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                console.log("FEHLER: " + resMessage);
-            }
-        );
+    const clear = async () => {
+        try {
+            const response = await ChildrenService.deleteChild(child.id);
+            toast.success(response.data.message);
+            window.location.reload();
+        } catch (error) {
+            handleError(error);
+        }
     }
 
-    const update = () => {
+    const update = async () => {
         let child = buildChildFromInput();
 
         if (validate()) {
-            ChildrenService.updateChild(child).then(
-                response => {
-                    let childId = response.data.childId;
-                    console.log("ERFOLG:" + response.data.message);
-                    console.log("ChildId:" + childId);
-                    if (image !== undefined) {
-                        let formData = new FormData();
-                        formData.append('file', image);
-                        formData.append('child_id', childId);
-
-                        FileService.updateFile(formData).then(response => {
-                            console.log("ERFOLG FOTO:" + response.data.message);
-                            window.location.reload();
-                        });
-                    } else {
-                        window.location.reload();
-                    }
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    console.log("FEHLER: " + resMessage);
-                });
+            try {
+                const response = await ChildrenService.updateChild(child);
+                toast.success(response.data.message);
+                let childId = response.data.childId;
+                if (image !== undefined) {
+                    let formData = new FormData();
+                    formData.append('file', image);
+                    formData.append('child_id', childId);
+                    const response = await FileService.updateFile(formData);
+                    toast.success(response.data.message);
+                }
+                window.location.reload();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     return(
         <div className="children-container" aria-readonly={disabled}>
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
             {disabled ?
                 <div className="table-input-top-row">
                     <div className="table-input-toggle-row">
@@ -281,12 +260,6 @@ export default function Child({child}) {
                     <div className="table-input-toggle-row">
                         <button className="table-input-toggle-button" type="button" onClick={edit}>Zurücksetzen</button>
                         <button className="table-input-toggle-button" type="button" onClick={update}>Änderung speichern</button>
-                    </div>
-                    <div>
-                        <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-                    </div>
-                    <div>
-                        <span style={{color: "green", width: "100%"}}>{message}</span>
                     </div>
                 </div>
             }

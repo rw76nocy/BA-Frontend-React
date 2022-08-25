@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
+import {findInstitutionByType, handleError, isJsonEmpty} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function HealthInsuranceInput({title, callback, data, disabled}) {
 
@@ -62,8 +63,9 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
         }
     }, [data, disabled])
 
-    useEffect(() => {
-        Institutions.getAllHealthinsurances().then(response => {
+    useEffect(async () => {
+        try {
+            const response = await Institutions.getAllHealthinsurances();
             if (response.data) {
                 let insurances = [{ id: 0, name: "keine"}];
                 response.data.map(insurance => {
@@ -71,13 +73,16 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
                 })
                 setHealthinsurances(insurances);
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
-    const onExistingInsuranceChange = (e) => {
+    const onExistingInsuranceChange = async (e) => {
         let id = e.target.value;
 
-        Institutions.getHealthinsuranceById(id).then(response => {
+        try {
+            const response = await Institutions.getHealthinsuranceById(id);
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
@@ -111,7 +116,9 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
                 setFax("");
                 sendEmptyInputToParent();
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onChangeName = (e) => {
@@ -192,6 +199,10 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
 
             <div className="input-container">
                 <h3><u>{title}</u></h3>
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="input-create-container">
 

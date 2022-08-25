@@ -8,6 +8,8 @@ import LivingGroups from '../services/living.group.service';
 import EmployeesService from '../services/employees.service';
 import Trash from "../icons/trash.svg";
 import moment from 'moment';
+import {handleError} from "../utils/utils";
+import {toast, ToastContainer} from "react-toastify";
 
 export default function Employees() {
     const [data, setData] = useState([]);
@@ -19,15 +21,18 @@ export default function Employees() {
     const [message, setMessage] = useState("");
     const [messageInvalid, setMessageInvalid] = useState("");
 
-    useEffect(() => {
-        fetchData();
+    useEffect(async () => {
+        await fetchData();
     }, [])
     
     //set data from database
-    const fetchData = () => {
-        LivingGroups.getLivingGroups().then(response => {
-           setLivingGroups(response.data);
-        });
+    const fetchData = async () => {
+        try {
+            const lg = await LivingGroups.getLivingGroups();
+            setLivingGroups(lg.data);
+        } catch (error) {
+            handleError(error);
+        }
 
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
@@ -37,49 +42,39 @@ export default function Employees() {
         setAdmin(admin);
 
         if (admin) {
-            EmployeesService.getEmployees().then(response => {
-                setData(response.data);
-            });
-
-            EmployeesService.getEmployees().then(response => {
-                setOriginalData(response.data);
-            });
+            try {
+                const dat = await EmployeesService.getEmployees();
+                setData(dat.data);
+                const ori = await EmployeesService.getEmployees();
+                setData(ori.data);
+            } catch (error) {
+                handleError(error);
+            }
         }
 
         if (mod) {
-            Accounts.getAccountById(id).then(response => {
-                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setData(response.data);
-                });
-                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setOriginalData(response.data);
-                });
-            });
+            try {
+                const account = await Accounts.getAccountById(id);
+                const dat = await EmployeesService.getEmployeesByLivingGroup(account.data.person.livingGroup.name);
+                setData(dat.data);
+                const ori = await EmployeesService.getEmployeesByLivingGroup(account.data.person.livingGroup.name);
+                setData(ori.data);
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
-    const onDeleteClick = (e) => {
+    const onDeleteClick = async (e) => {
         let confirm = window.confirm("Bist du dir sicher?");
         if (confirm) {
-            console.log(e.target.value);
-            EmployeesService.deleteEmployee(e.target.value).then(
-                response => {
-                    setMessage(response.data.message);
-                    setMessageInvalid("");
-                    fetchData();
-                },
-                error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessage("");
-                    setMessageInvalid(resMessage);
-                });
-        } else {
-            console.log("Abbruch!");
+            try {
+                const response = await EmployeesService.deleteEmployee(e.target.value);
+                toast.success(response.data.message);
+                await fetchData()
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
@@ -113,69 +108,45 @@ export default function Employees() {
         return true;
     }
 
-    const saveData = () => {
+    const saveData = async () => {
         setOriginalData(data);
 
-        {data.map((e) => {
+        {data.map(async (e) => {
             if (validateRow(e)) {
-                EmployeesService.updateEmployee(
-                    e.id, e.gender, e.name, e.phone, e.fax, e.email, e.birthday, e.address, e.livingGroup)
-                    .then(response => {
-                            setMessage(response.data.message);
-                            setMessageInvalid("");
-                        }, error => {
-                            const resMessage =
-                                (error.response &&
-                                    error.response.data &&
-                                    error.response.data.message) ||
-                                error.message ||
-                                error.toString();
-                            setMessageInvalid(resMessage);
-                            setMessage("");
-                        }
-                    )
+                try {
+                    const response = await EmployeesService.updateEmployee(
+                        e.id, e.gender, e.name, e.phone, e.fax, e.email, e.birthday, e.address, e.livingGroup)
+                    toast.success(response.data.message);
+                } catch (error) {
+                    handleError(error);
+                }
             } else {
-                setMessageInvalid("Werte für Mitarbeiter-ID: "+e.id+" sind ungültig!");
+                toast.error("Werte für Mitarbeiter-ID: " + e.id + " sind ungültig!");
             }
         })}
     }
 
     //reset to original data
-    const resetData = () => {
+    const resetData = async () => {
         if (admin) {
-            EmployeesService.getEmployees().then(response => {
-                setData(response.data);
-                setMessage("Erfolreich zurückgesetzt!")
-                setMessageInvalid("");
-            }, error => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                setMessageInvalid(resMessage);
-                setMessage("");
-            });
+            try {
+                const emps = await EmployeesService.getEmployees();
+                setData(emps.data);
+                toast.success("Erfolreich zurückgesetzt!");
+            } catch (error) {
+                handleError(error);
+            }
         }
 
         if (mod) {
-            Accounts.getAccountById(AuthService.getCurrentUser().id).then(response => {
-                EmployeesService.getEmployeesByLivingGroup(response.data.person.livingGroup.name).then(response => {
-                    setData(response.data);
-                    setMessage("Erfolreich zurückgesetzt!")
-                    setMessageInvalid("");
-                }, error => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    setMessageInvalid(resMessage);
-                    setMessage("");
-                });
-            });
+            try {
+                const account = await Accounts.getAccountById(AuthService.getCurrentUser().id);
+                const emps = await EmployeesService.getEmployeesByLivingGroup(account.data.person.livingGroup.name);
+                setData(emps.data);
+                toast.success("Erfolreich zurückgesetzt!");
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
@@ -393,8 +364,8 @@ export default function Employees() {
         [onDeleteClick]
    )
 
-    const reloadTable = () => {
-        fetchData();
+    const reloadTable = async () => {
+        await fetchData();
     }
 
     return (
@@ -402,6 +373,10 @@ export default function Employees() {
 
             <div className="title">
                 <h1><u>Mitarbeiter anlegen</u></h1>
+            </div>
+
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
             </div>
 
             <CreateEmployees reloadTable={reloadTable}/>
@@ -418,13 +393,6 @@ export default function Employees() {
             <div>
                 <button onClick={saveData}>Speichern</button>
                 <button className="employees-button-row-reset" onClick={resetData}>Zurücksetzen</button>
-            </div>
-
-            <div>
-                <span style={{color: "red", width: "100%"}}>{messageInvalid}</span>
-            </div>
-            <div>
-                <span style={{color: "green", width: "100%"}}>{message}</span>
             </div>
 
         </div>

@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import '../style/input.component.css';
 import Institutions from "../services/institution.service";
-import {findInstitutionByType, isJsonEmpty} from "../utils/utils";
+import {findInstitutionByType, handleError, isJsonEmpty} from "../utils/utils";
+import {ToastContainer} from "react-toastify";
 
 export default function InstitutionInput({title, callback, data, disabled}) {
 
@@ -60,8 +61,9 @@ export default function InstitutionInput({title, callback, data, disabled}) {
         }
     }, [data, disabled])
 
-    useEffect(() => {
-        Institutions.getAllDrivers().then(response => {
+    useEffect(async () => {
+        try {
+            const response = await Institutions.getAllDrivers();
             if (response.data) {
                 let drivers = [{ id: 0, name: "keine"}];
                 response.data.map(driver => {
@@ -69,13 +71,16 @@ export default function InstitutionInput({title, callback, data, disabled}) {
                 })
                 setDrivers(drivers);
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }, [])
 
-    const onExistingDriverChange = (e) => {
+    const onExistingDriverChange = async (e) => {
         let id = e.target.value;
 
-        Institutions.getInstitutionById(id).then(response => {
+        try {
+            const response = await Institutions.getInstitutionById(id);
             if (response.data) {
                 setId(response.data.id);
                 setName(response.data.name);
@@ -109,7 +114,9 @@ export default function InstitutionInput({title, callback, data, disabled}) {
                 setEmail("");
                 sendEmptyInputToParent();
             }
-        });
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const onNameChange = (e) => {
@@ -186,6 +193,10 @@ export default function InstitutionInput({title, callback, data, disabled}) {
 
             <div className="input-container">
                 <h3><u>{title}</u></h3>
+
+                <div>
+                    <ToastContainer position="bottom-center" autoClose={15000}/>
+                </div>
 
                 <div className="input-create-container">
 

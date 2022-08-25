@@ -16,9 +16,16 @@ class AppointmentService {
             { headers : authHeader() });
     }
 
-    getAlternative(appointment) {
+    getEarlierAlternatives(appointment) {
         return axios.post(
-            API_URL + 'alternative/',
+            API_URL + 'alternative/earlier',
+            appointment,
+            { headers : authHeader() });
+    }
+
+    getLaterAlternatives(appointment) {
+        return axios.post(
+            API_URL + 'alternative/later',
             appointment,
             { headers : authHeader() });
     }
