@@ -1,8 +1,9 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 import authFileHeader from "./auth-file-header";
+import {getApiUrl} from "../utils/utils";
 
-const API_URL = 'http://localhost:8080/api/test/files/';
+const API_URL = getApiUrl("api/test/files/");
 
 class ChildrenService {
 

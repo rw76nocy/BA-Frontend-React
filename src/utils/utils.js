@@ -102,4 +102,12 @@ export function formatErrorMessage(errors) {
     return <div>{parse(message)}</div>
 }
 
+export function getApiPrefix() {
+    return `http://${window.location.hostname}:8080/`;
+}
+
+export function getApiUrl(path) {
+    return `${getApiPrefix()}${path}`;
+}
+
 
