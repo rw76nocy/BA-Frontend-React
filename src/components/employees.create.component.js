@@ -34,6 +34,7 @@ export default function CreateEmployees({reloadTable}) {
             try {
                 const lg = (await LivingGroups.getLivingGroups()).data;
                 if (lg[0]) {
+                    setLivingGroups(lg);
                     setLivingGroup(lg[0].name);
                 }
             } catch (error) {
@@ -46,6 +47,7 @@ export default function CreateEmployees({reloadTable}) {
                 const account = await Accounts.getAccountById(id);
                 const lg = (await LivingGroups.getLivingGroup(account.data.person.livingGroup.name)).data;
                 if (lg[0]) {
+                    setLivingGroups(lg);
                     setLivingGroup(lg[0].name);
                 }
             } catch (error) {
