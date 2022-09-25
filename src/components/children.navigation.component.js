@@ -47,7 +47,7 @@ function ChildNav() {
             </div>
 
             <div className="children-nav-right">
-                <ul>
+                <ul className="children-navBar">
                     <div className="children-nav-right-panel">
                         <li>
                             <Link to="/create">Anlegen</Link>

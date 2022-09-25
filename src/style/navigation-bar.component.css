@@ -4,7 +4,7 @@
 }
 
 .first-level {
-    display: inline-block;
+    display: flex;
     background-color: lightsalmon;
     width: 100%;
     border-bottom: black solid 4px;
@@ -15,10 +15,9 @@
 }
 
 .left {
+    flex: 1 1 20%;
     text-align: center;
     display: inline-block;
-    width: 15%;
-    border-right: black solid 4px;
     padding-top: 12px;
 }
 
@@ -32,9 +31,11 @@
 }
 
 .middle {
+    flex: 3 1 60%;
     display: inline-block;
-    width: 70%;
     padding-top: 12px;
+    border-left: black solid 4px;
+    border-right: black solid 4px;
 }
 
 .middle-panel {
@@ -50,9 +51,8 @@
 }
 
 .right {
+    flex: 1 1 20%;
     display: inline-block;
-    width: 15%;
-    border-left: black solid 4px;
     padding-top: 12px;
 }
 
@@ -82,6 +82,8 @@
 
 .navBar {
     display: inline-block;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .navBar li {

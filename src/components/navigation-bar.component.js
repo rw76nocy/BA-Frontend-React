@@ -106,7 +106,7 @@ function Navbar() {
             <div className="first-level">
 
                 <div className="left">
-                    <ul>
+                    <ul className="navBar">
                         {currentUser ?
                             <div>
                                 {showAdminBoard ?
@@ -185,7 +185,7 @@ function Navbar() {
                 </div>
 
                 <div className="right">
-                    <ul>
+                    <ul className="navBar">
                         {currentUser ?
                             <div className="right-panel">
                                 <li>
