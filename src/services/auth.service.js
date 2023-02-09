@@ -33,7 +33,15 @@ class AuthService {
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            return null;
+        }
+        const isExpired = new Date(Number(user.expiration)) < new Date().getTime();
+        if (isExpired) {
+            return null;
+        }
+        return user;
     }
 
     navigateToLogin() {

@@ -22,14 +22,7 @@ export default function App() {
             <NavBar/>
             <div>
                 <Routes>
-                    <Route
-                        path=""
-                        element={
-                            <RequireAuth navigateTo="../login" isInitial={true}>
-                                <></>
-                            </RequireAuth>
-                        }
-                    />
+                    <Route path="/" element={<Login/>} />
                     <Route path="/home" element={<Home/>} />
                     <Route path="login" element={<Login/>} />
                     <Route
