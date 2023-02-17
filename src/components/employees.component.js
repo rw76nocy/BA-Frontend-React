@@ -16,6 +16,7 @@ export default function Employees() {
     const [originalData, setOriginalData] = useState([]);
     const [livingGroups, setLivingGroups] = useState([]);
     const [mod, setMod] = useState(false);
+    const [management, setManagement] = useState(false);
     const [admin, setAdmin] = useState(false);
 
     const [message, setMessage] = useState("");
@@ -35,18 +36,29 @@ export default function Employees() {
         }
 
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+        let management = AuthService.getCurrentUser().roles.includes("ROLE_MANAGEMENT");
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
         let id = AuthService.getCurrentUser().id;
 
         setMod(mod);
+        setManagement(management);
         setAdmin(admin);
 
-        if (admin) {
+        if (admin || management) {
             try {
                 const dat = await EmployeesService.getEmployees();
-                setData(dat.data);
                 const ori = await EmployeesService.getEmployees();
-                setData(ori.data);
+
+                if (management) {
+                    const account = await Accounts.getAccountById(id);
+                    const dat1 = dat.data.filter(a => a.id !== account.data.person.id);
+                    setData(dat1);
+                    const ori1 = ori.data.filter(a => a.id !== account.data.person.id);
+                    setData(ori1);
+                } else {
+                    setData(dat.data);
+                    setData(ori.data);
+                }
             } catch (error) {
                 handleError(error);
             }
@@ -66,6 +78,10 @@ export default function Employees() {
     }
 
     const onDeleteClick = async (e) => {
+        //TODO Modal-Dialog einbauen
+        // wenn Mitarbeiter noch Bezugsbetreuer ist oder Termine in der Zukunft hat
+        // Bei Kindern: Hinweis das man erst die Zuweisung ändern soll -> Nicht löschen!
+        // Bei Terminen: Fragen ob man ihn trotzdem löschen will? ja: -> löschen, nein -> nicht löschen!
         let confirm = window.confirm("Bist du dir sicher?");
         if (confirm) {
             try {
@@ -128,10 +144,17 @@ export default function Employees() {
 
     //reset to original data
     const resetData = async () => {
-        if (admin) {
+        if (admin || management) {
             try {
                 const emps = await EmployeesService.getEmployees();
-                setData(emps.data);
+                if (management) {
+                    let id = AuthService.getCurrentUser().id;
+                    const account = await Accounts.getAccountById(id);
+                    const emps1 = emps.data.filter(a => a.id !== account.data.person.id);
+                    setData(emps1);
+                } else {
+                    setData(emps.data);
+                }
                 toast.success("Erfolreich zurückgesetzt!");
             } catch (error) {
                 handleError(error);
@@ -216,7 +239,7 @@ export default function Employees() {
     }
 
     const renderLgCell = (value, row) => {
-        if (admin) {
+        if (admin || management) {
             return (
                 <select defaultValue={value} onChange={(e) => onChangeLivingGroup(e, row.index)} >
                 {livingGroups.map((lg) => (

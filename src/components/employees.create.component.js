@@ -27,10 +27,11 @@ export default function CreateEmployees({reloadTable}) {
 
     useEffect(async () => {
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let management = AuthService.getCurrentUser().roles.includes("ROLE_MANAGEMENT");
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
-        if (admin) {
+        if (admin || management) {
             try {
                 const lg = (await LivingGroups.getLivingGroups()).data;
                 if (lg[0]) {

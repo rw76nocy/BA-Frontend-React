@@ -19,6 +19,7 @@ function Navbar() {
     const [livingGroup, setLivingGroup] = useState("");
     const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showManagementBoard, setShowManagementBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
     const [childNav, setChildNav] = useState(false);
     const [showChildNav, setShowChildNav] = useState(false);
@@ -30,8 +31,9 @@ function Navbar() {
         if (AuthService.getCurrentUser()) {
             let user = AuthService.getCurrentUser().roles.includes("ROLE_USER");
             let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
+            let management = AuthService.getCurrentUser().roles.includes("ROLE_MANAGEMENT");
             let id = AuthService.getCurrentUser().id;
-            if (user || mod) {
+            if (user || mod || management) {
                 try {
                     const account = (await Accounts.getAccountById(id)).data;
                     const lg = (await LivingGroups.getLivingGroup(account.person.livingGroup.name)).data;
@@ -52,10 +54,12 @@ function Navbar() {
             roles = currentUser.roles;
             if (roles) {
                 setShowModeratorBoard(roles.includes("ROLE_MODERATOR"));
+                setShowManagementBoard(roles.includes("ROLE_MANAGEMENT"));
                 setShowAdminBoard(roles.includes("ROLE_ADMIN"));
             }
         } else {
             setShowModeratorBoard(false);
+            setShowManagementBoard(false);
             setShowAdminBoard(false);
         }
     }, [currentUser])
@@ -74,6 +78,7 @@ function Navbar() {
         AuthService.logout();
         setCurrentUser(undefined);
         setShowModeratorBoard(false);
+        setShowManagementBoard(false);
         setShowAdminBoard(false);
         toast.success("Abmeldung erfolgreich!");
     }
@@ -133,13 +138,15 @@ function Navbar() {
                     <ul className="navBar">
                         {currentUser &&
                             <div className="middle-panel">
-                                {showAdminBoard ?
+                                {showAdminBoard &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/living_group">Wohngruppen</Link>
                                         </li>
                                     </div>
-                                    :
+                                }
+
+                                {!(showAdminBoard || showManagementBoard) &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/children" onClick={changeChildNav}>Kinder</Link>
@@ -164,7 +171,7 @@ function Navbar() {
                                     </div>
                                 }
 
-                                {(showModeratorBoard || showAdminBoard) &&
+                                {(showModeratorBoard || showManagementBoard || showAdminBoard) &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/employees" onClick={deactivateChildNav}>Mitarbeiter</Link>
@@ -172,7 +179,7 @@ function Navbar() {
                                     </div>
                                 }
 
-                                {(showModeratorBoard || showAdminBoard) &&
+                                {(showModeratorBoard || showManagementBoard || showAdminBoard) &&
                                     <div className="middle-action-panel">
                                         <li>
                                             <Link to="/accounts" onClick={deactivateChildNav}>Konten</Link>
@@ -191,7 +198,7 @@ function Navbar() {
                                 <li>
                                     <Link to="/login" onClick={logout}>Abmelden</Link>
                                 </li>
-                                {(showModeratorBoard || showAdminBoard) ?
+                                {(showModeratorBoard || showManagementBoard || showAdminBoard) ?
                                     <li>
                                         <Link to="/register" onClick={deactivateChildNav}>Registrierung</Link>
                                     </li>

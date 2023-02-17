@@ -12,6 +12,7 @@ import {formatErrorMessage, handleError} from "../utils/utils";
 export default function Register() {
     const [currentUser, setCurrentUser] = useState(undefined);
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+    const [showManagementBoard, setShowManagementBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
     const [role, setRole] = useState("user");
     const [livingGroup, setLivingGroup] = useState("");
@@ -31,7 +32,7 @@ export default function Register() {
             const employees = response.data;
             setEmployees(employees);
             if (employees[0]) {
-                setEmployee(employees.id);
+                setEmployee(employees[0].id);
             } else {
                 setEmployee("");
             }
@@ -44,10 +45,11 @@ export default function Register() {
         setCurrentUser(AuthService.getCurrentUser());
 
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let management = AuthService.getCurrentUser().roles.includes("ROLE_MANAGEMENT");
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
 
-        if (admin) {
+        if (admin || management) {
             try {
                 const lgs = (await LivingGroups.getLivingGroups()).data;
                 setLivingGroups(lgs);
@@ -95,10 +97,12 @@ export default function Register() {
             roles = currentUser.roles;
             if (roles) {
                 setShowModeratorBoard(roles.includes("ROLE_MODERATOR"))
+                setShowManagementBoard(roles.includes("ROLE_MANAGEMENT"));
                 setShowAdminBoard(roles.includes("ROLE_ADMIN"));
             }
         } else {
             setShowModeratorBoard(false);
+            setShowManagementBoard(false);
             setShowAdminBoard(false);
         }
     }, [currentUser])
@@ -211,12 +215,20 @@ export default function Register() {
             <div className="login-panel">
                 <span className="login-row">
                     <label className="login-label" htmlFor="role"><b>Rolle</b></label>
-                    {showAdminBoard ?
+                    {showAdminBoard &&
+                        <select value={role} onChange={onChangeRole} className="login-select" id="role" name="role">
+                            <option value="management">Verwaltung</option>
+                            <option value="mod">Teamleiter</option>
+                            <option value="user">Mitarbeiter</option>
+                        </select>
+                    }
+                    {showManagementBoard &&
                         <select value={role} onChange={onChangeRole} className="login-select" id="role" name="role">
                             <option value="mod">Teamleiter</option>
                             <option value="user">Mitarbeiter</option>
                         </select>
-                        :
+                    }
+                    {showModeratorBoard &&
                         <select value={role} onChange={onChangeRole} className="login-select" id="role" name="role">
                             <option value="user">Mitarbeiter</option>
                         </select>

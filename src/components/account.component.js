@@ -18,12 +18,14 @@ export default function Account() {
 
     const fetchData = async () => {
         let admin = AuthService.getCurrentUser().roles.includes("ROLE_ADMIN");
+        let management = AuthService.getCurrentUser().roles.includes("ROLE_MANAGEMENT");
         let mod = AuthService.getCurrentUser().roles.includes("ROLE_MODERATOR");
         let id = AuthService.getCurrentUser().id;
-        if (admin) {
+        if (admin || management) {
             try {
                 const response = await Accounts.getAllAccounts();
-                setTableData(response.data);
+                const accounts = response.data.filter(a => a.id !== id);
+                setTableData(accounts);
             } catch (error) {
                 handleError(error);
             }
@@ -80,6 +82,9 @@ export default function Account() {
                             }
                             if (value === "ROLE_MODERATOR") {
                                 return String("Teamleiter");
+                            }
+                            if (value === "ROLE_MANAGEMENT") {
+                                return String("Verwaltung");
                             }
                             return String(value);
                         }
