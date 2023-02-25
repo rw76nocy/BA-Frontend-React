@@ -28,9 +28,6 @@ export default function Home() {
 
     return (
         <div className="login-title">
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
             {isAdmin ?
                 <h1>Herzlich Willkommen Administrator</h1>
                 :

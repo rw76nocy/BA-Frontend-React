@@ -208,10 +208,6 @@ export default function Register() {
                 <h1><u>Registrierung</u></h1>
             </div>
 
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
-
             <div className="login-panel">
                 <span className="login-row">
                     <label className="login-label" htmlFor="role"><b>Rolle</b></label>

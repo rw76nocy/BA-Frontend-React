@@ -104,10 +104,6 @@ function Navbar() {
     return (
         <header className="header">
 
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
-
             <div className="first-level">
 
                 <div className="left">

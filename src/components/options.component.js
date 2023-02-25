@@ -193,10 +193,6 @@ export default function Options() {
                 <h1><u>Terminart anlegen</u></h1>
             </div>
 
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
-
             <CreateOptions reloadTable={reloadTable}/>
 
             <div className="title">

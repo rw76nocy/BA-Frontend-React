@@ -56,10 +56,6 @@ export default function Login() {
 
     return (
         <div className="login-container">
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
-
             <div className="title">
                 <h1><u>Anmeldung</u></h1>
             </div>

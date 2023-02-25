@@ -61,6 +61,10 @@ class Employees {
     deleteEmployee(id) {
         return axios.delete(API_URL + 'delete/' + id, { headers : authHeader() });
     }
+
+    checkEmployee(id) {
+        return axios.get(API_URL + 'check/' + id, {headers : authHeader() })
+    }
 }
 
 export default new Employees();

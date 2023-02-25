@@ -172,10 +172,6 @@ export default function CreateEmployees({reloadTable}) {
         <div>
             <div className="table-input-create-panel">
 
-                <div>
-                    <ToastContainer position="bottom-center" autoClose={15000}/>
-                </div>
-
                 <div className="table-input-create-column-left">
 
                     <span className="input-sub-row">

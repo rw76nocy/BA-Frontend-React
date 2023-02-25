@@ -96,9 +96,6 @@ export default function LivingGroup() {
 
     return(
         <div className="tableview-container">
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
             <div className="title">
                 <h1><u>Wohngruppe anlegen</u></h1>
             </div>

@@ -7,7 +7,8 @@ export default class BoardUser extends Component {
         super(props);
 
         this.state = {
-            content: ""
+            content: "",
+            placeholder: "Diese Seite befindet sich noch in Arbeit. Bitte haben Sie Geduld."
         };
     }
 
@@ -35,7 +36,7 @@ export default class BoardUser extends Component {
         return (
             <div className="container">
                 <header className="jumbotron">
-                    <h3>{this.state.content}</h3>
+                    <h3>{this.state.placeholder}</h3>
                 </header>
             </div>
         );

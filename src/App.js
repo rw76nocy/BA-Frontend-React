@@ -15,11 +15,17 @@ import NavBar from './components/navigation-bar.component';
 import LivingGroup from "./components/living-group.component";
 import Accounts from './components/account.component';
 import Options from "./components/options.component";
+import {ToastContainer} from "react-toastify";
 
 export default function App() {
     return (
         <div>
             <NavBar/>
+
+            <div>
+                <ToastContainer position="bottom-center" autoClose={15000}/>
+            </div>
+
             <div>
                 <Routes>
                     <Route path="/" element={<Login/>} />
@@ -45,7 +51,7 @@ export default function App() {
                         path="profile"
                         element={
                             <RequireAuth navigateTo="../login">
-                                <Profile/>
+                                <BoardUser/>
                             </RequireAuth>
                         }
                     />

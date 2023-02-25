@@ -136,9 +136,6 @@ export default function Account() {
             <div className="title">
                 <h1><u>Übersicht Konten </u></h1>
             </div>
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
             <Table columns={columns} data={data}/>
         </div>
     );

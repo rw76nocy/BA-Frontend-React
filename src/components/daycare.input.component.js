@@ -201,10 +201,6 @@ export default function DayCareInput({title, callback, data, disabled}) {
             <div className="input-container">
                 <h3><u>{title}</u></h3>
 
-                <div>
-                    <ToastContainer position="bottom-center" autoClose={15000}/>
-                </div>
-
                 <div className="input-create-container">
 
                     {!disabled &&

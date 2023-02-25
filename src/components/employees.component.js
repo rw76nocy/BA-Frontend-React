@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, {useEffect, useState, useMemo, useRef} from "react";
 import '../style/table.input.component.css';
 import EditTable from "./edit.table.component";
 import CreateEmployees from "./employees.create.component";
@@ -9,7 +9,14 @@ import EmployeesService from '../services/employees.service';
 import Trash from "../icons/trash.svg";
 import moment from 'moment';
 import {handleError} from "../utils/utils";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
+import {
+    Button, Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from "@mui/material";
 
 export default function Employees() {
     const [data, setData] = useState([]);
@@ -18,9 +25,9 @@ export default function Employees() {
     const [mod, setMod] = useState(false);
     const [management, setManagement] = useState(false);
     const [admin, setAdmin] = useState(false);
+    const [confirmationVisible, setConfirmationVisible] = useState(false);
 
-    const [message, setMessage] = useState("");
-    const [messageInvalid, setMessageInvalid] = useState("");
+    const currentEmp = useRef(undefined);
 
     useEffect(async () => {
         await fetchData();
@@ -77,17 +84,43 @@ export default function Employees() {
         }
     }
 
-    const onDeleteClick = async (e) => {
-        //TODO Modal-Dialog einbauen
-        // wenn Mitarbeiter noch Bezugsbetreuer ist oder Termine in der Zukunft hat
-        // Bei Kindern: Hinweis das man erst die Zuweisung ändern soll -> Nicht löschen!
-        // Bei Terminen: Fragen ob man ihn trotzdem löschen will? ja: -> löschen, nein -> nicht löschen!
-        let confirm = window.confirm("Bist du dir sicher?");
-        if (confirm) {
+    const onCancelConfirmation = () => {
+        currentEmp.current = undefined;
+        setConfirmationVisible(false);
+    }
+
+    const executeConfirmation = async () => {
+        if (currentEmp.current) {
             try {
-                const response = await EmployeesService.deleteEmployee(e.target.value);
+                const response = await EmployeesService.deleteEmployee(currentEmp.current);
                 toast.success(response.data.message);
                 await fetchData()
+            } catch (error) {
+                handleError(error);
+            } finally {
+                currentEmp.current = undefined;
+                setConfirmationVisible(false);
+            }
+        }
+    }
+
+    const onDeleteClick = async (e) => {
+        let id = e.target.value;
+        if (id !== undefined) {
+            try {
+                const response = await EmployeesService.checkEmployee(id);
+                const check = response.data;
+                console.log("Response:", JSON.stringify(check));
+
+                if (check) {
+                    currentEmp.current = id;
+                    setConfirmationVisible(true);
+                } else {
+                    const response = await EmployeesService.deleteEmployee(id);
+                    toast.success(response.data.message);
+                    await fetchData()
+                }
+
             } catch (error) {
                 handleError(error);
             }
@@ -398,10 +431,6 @@ export default function Employees() {
                 <h1><u>Mitarbeiter anlegen</u></h1>
             </div>
 
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
-
             <CreateEmployees reloadTable={reloadTable}/>
 
             <div className="title">
@@ -417,6 +446,30 @@ export default function Employees() {
                 <button onClick={saveData}>Speichern</button>
                 <button className="employees-button-row-reset" onClick={resetData}>Zurücksetzen</button>
             </div>
+
+            <Dialog
+                open={confirmationVisible}
+            >
+                <DialogTitle>
+                    Achtung!
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Der Mitarbeiter ist noch in zukünftigen Terminen eingeteilt.
+                        <br/>
+                        <br/>
+                        Möchten Sie ihn trotzdem entfernen?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onCancelConfirmation} color="primary" variant="outlined">
+                        Abbrechen
+                    </Button>
+                    <Button onClick={executeConfirmation} color="secondary" variant="outlined">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </div>
     );

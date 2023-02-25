@@ -559,9 +559,6 @@ export default function Appointment() {
                 <h1><u>Übersicht Termine </u></h1>
             </div>
             <div className="appointment-container">
-                <div>
-                    <ToastContainer position="bottom-center" autoClose={15000}/>
-                </div>
                 <Paper>
                     <Scheduler data={schedulerData} firstDayOfWeek={1} locale={"de-DE"}>
                         <ViewState currentDate={currentDate} onCurrentDateChange={onCurrentDateChange}/>

@@ -76,7 +76,7 @@ export function toastError(error) {
     const errorMessage =
         (error.response && error.response.data && error.response.data.message) ||
         error.message || error.toString();
-    toast.error(errorMessage);
+    toast.error(<div>{parse(errorMessage)}</div>);
 }
 
 export function handleError(error) {

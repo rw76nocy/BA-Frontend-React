@@ -78,9 +78,6 @@ export default function CreateOptions({reloadTable}) {
 
     return(
         <div>
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
 
             <div className="table-input-create-panel">
 

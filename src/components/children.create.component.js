@@ -240,9 +240,6 @@ export default function Children() {
 
     return(
         <div className="children-container" aria-readonly={disabled}>
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
             <div className="children-components">
                 <ImageInput title="Foto" callback={getInputAsImage}/>
                 <PersonalDataInput title="Persönliche Daten" callback={getInputAsPersonal}/>

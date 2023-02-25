@@ -212,17 +212,21 @@ export default function Child({child}) {
     }
 
     const clear = async () => {
-        try {
-            const response = await ChildrenService.deleteChild(child.id);
-            toast.success(response.data.message);
-            window.location.reload();
-        } catch (error) {
-            handleError(error);
+        let confirm = window.confirm("Bist du dir sicher?");
+        if (confirm) {
+            try {
+                const response = await ChildrenService.deleteChild(child.id);
+                toast.success(response.data.message);
+                window.location.reload();
+            } catch (error) {
+                handleError(error);
+            }
         }
     }
 
     const update = async () => {
         let child = buildChildFromInput();
+        console.log("Child:", JSON.stringify(child));
 
         if (validate()) {
             try {
@@ -245,9 +249,6 @@ export default function Child({child}) {
 
     return(
         <div className="children-container" aria-readonly={disabled}>
-            <div>
-                <ToastContainer position="bottom-center" autoClose={15000}/>
-            </div>
             {disabled ?
                 <div className="table-input-top-row">
                     <div className="table-input-toggle-row">
