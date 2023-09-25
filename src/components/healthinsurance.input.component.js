@@ -45,7 +45,11 @@ export default function HealthInsuranceInput({title, callback, data, disabled}) 
                 }
                 setPhone(dc.phone);
                 setFax(dc.fax);
-                sendInputToParent(dc.id,dc.name,data.insured.holder,data.insured.customerNumber,dc.address,dc.phone,dc.fax);
+                if (data.insured) {
+                    sendInputToParent(dc.id,dc.name,data.insured.holder,data.insured.customerNumber,dc.address,dc.phone,dc.fax);
+                } else {
+                    sendInputToParent(dc.id,dc.name,"","",dc.address,dc.phone,dc.fax);
+                }
             } else {
                 setId("0");
                 setName("");

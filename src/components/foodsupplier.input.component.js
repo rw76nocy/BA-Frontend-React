@@ -29,7 +29,11 @@ export default function FoodSupplierInput({title, callback, data, disabled}) {
                 setPhone(fs.phone);
                 setFax(fs.fax);
                 setEmail(fs.email);
-                sendInputToParent(fs.id,fs.name,data.supply.customerNumber,data.supply.pin,fs.phone,fs.fax,fs.email);
+                if (data.supply) {
+                    sendInputToParent(fs.id,fs.name,data.supply.customerNumber,data.supply.pin,fs.phone,fs.fax,fs.email);
+                } else {
+                    sendInputToParent(fs.id,fs.name,"","",fs.phone,fs.fax,fs.email);
+                }
             } else {
                 setId("0");
                 setName("");

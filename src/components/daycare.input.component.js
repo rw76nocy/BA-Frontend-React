@@ -45,7 +45,11 @@ export default function DayCareInput({title, callback, data, disabled}) {
                 }
                 setPhone(dc.phone);
                 setFax(dc.fax);
-                sendInputToParent(dc.id,dc.name,data.teach.dayCareTeacher,data.teach.dayCareGroup,dc.address,dc.phone,dc.fax);
+                if (data.teach) {
+                    sendInputToParent(dc.id,dc.name,data.teach.dayCareTeacher,data.teach.dayCareGroup,dc.address,dc.phone,dc.fax);
+                } else {
+                    sendInputToParent(dc.id,dc.name,"","",dc.address,dc.phone,dc.fax);
+                }
             } else {
                 setId("0");
                 setName("");
